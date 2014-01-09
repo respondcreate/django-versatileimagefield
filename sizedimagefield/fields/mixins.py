@@ -5,7 +5,7 @@ from ..datastructures import (
     CroppedImage,
     ScaledImage
 )
-from ..utils import (
+from ..validators import (
     convert_string_to_centerpoint_tuple,
     validate_centerpoint_tuple,
     InvalidCropCenterPoint
