@@ -16,10 +16,27 @@ from .datastructures import (
 
 CENTERPOINT_SEPARATOR = '__CENTERPOINT__'
 
+if 'south' in settings.INSTALLED_APPS:
+    from south.modelsinspector import add_introspection_rules
+    add_introspection_rules(
+        [],
+        [
+            "^sizedimagefield\.fields\.SizedImageField",
+        ]
+    )
+
 class InvalidCropCenterPoint(Exception):
     pass
 
 class SizedImageFileDescriptor(ImageFileDescriptor):
+
+    def __set__(self, instance, value):
+        previous_file = instance.__dict__.get(self.field.name)
+        super(SizedImageFileDescriptor, self).__set__(instance, value)
+
+        # Updating centerpoint_field on attribute set
+        if previous_file is not None:
+            self.field.update_centerpoint_field(instance, force=True)
 
     def __get__(self, instance=None, owner=None):
         if instance is None:
@@ -30,7 +47,7 @@ class SizedImageFileDescriptor(ImageFileDescriptor):
         # This is slightly complicated, so worth an explanation.
         # instance.file`needs to ultimately return some instance of `File`,
         # probably a subclass. Additionally, this returned object needs to have
-        # the FieldFile API so that users can easily do things like
+        # the SizedImageFieldFile API so that users can easily do things like
         # instance.file.path and have that delegated to the file storage engine.
         # Easy enough if we're strict about assignment in __set__, but if you
         # peek below you can see that we're not. So depending on the current
@@ -53,22 +70,19 @@ class SizedImageFileDescriptor(ImageFileDescriptor):
             instance.__dict__[self.field.name] = attr
 
         elif isinstance(file, six.string_types):
-            string_split = file.split(CENTERPOINT_SEPARATOR)
-            init_kwargs = {
-                'instance':instance,
-                'field':self.field
-            }
-            if len(string_split) > 1:
-                init_kwargs.update({
-                    'name':string_split[0],
-                    'crop_center_point':string_split[1]
-                })
-            else:
-                init_kwargs.update({
-                    'name':file
-                })
 
-            attr = self.field.attr_class(**init_kwargs)
+            attr = self.field.attr_class(
+                instance=instance,
+                field=self.field,
+                name=file
+            )
+            # Check if this field has a centerpoint_field assigned
+            if attr.field.centerpoint_field:
+                # Pulling the current value of the centerpoint_field...
+                centerpoint = instance.__dict__[attr.field.centerpoint_field]
+                # ...and assigning it to SizedImageField instance
+                attr.crop_center_point = centerpoint
+
             instance.__dict__[self.field.name] = attr
 
         # Other types of files may be assigned as well, but they need to have
@@ -94,12 +108,16 @@ class SizedImageFileDescriptor(ImageFileDescriptor):
             instance.__dict__[self.field.name] = file_copy
 
         # Finally, because of the (some would say boneheaded) way pickle works,
-        # the underlying FieldFile might not actually itself have an associated
+        # the underlying SizedImageFieldFile might not actually itself have an associated
         # file. So we need to reset the details of the FieldFile in those cases.
         elif isinstance(file, SizedImageFieldFile) and not hasattr(file, 'field'):
             file.instance = instance
             file.field = self.field
             file.storage = self.field.storage
+
+            if file.field.centerpoint_field:
+                centerpoint = instance.__dict__[file.field.centerpoint_field]
+                file.crop_center_point = centerpoint
 
         # That was fun, wasn't it?
         return instance.__dict__[self.field.name]
@@ -115,9 +133,12 @@ class SizedImageMixIn(object):
 
     def __setattr__(self, key, value):
         if key == 'crop_center_point':
-            center_point = self.validate_crop_center_point(value)
-            if center_point is not False:
-                super(SizedImageMixIn, self).__setattr__(key, center_point)
+            if not value:
+                pass
+            else:
+                center_point = self.validate_crop_center_point(value)
+                if center_point is not False:
+                    super(SizedImageMixIn, self).__setattr__(key, center_point)
         else:
             super(SizedImageMixIn, self).__setattr__(key, value)
         return self.crop_center_point
@@ -131,8 +152,7 @@ class SizedImageMixIn(object):
                 ccp_split = [float(segment) for segment in val.split('x')]
             except ValueError:
                 ccp_split = tuple()
-            else:
-                to_validate = tuple(ccp_split)
+            to_validate = tuple(ccp_split)
         else:
             to_validate = tuple()
 
@@ -148,17 +168,16 @@ class SizedImageMixIn(object):
 
     def validate_crop_center_point_tuple(self, tup):
         valid = True
-        if len(tup) == 2:
-            while valid == True:
+        while valid == True:
+            if len(tup) == 2:
                 for x in tup:
                     if x >= 0 and x <= 1:
                         pass
                     else:
                         valid = False
                 break
-        else:
-            valid = False
-
+            else:
+                valid = False
         return valid
 
     @property
@@ -184,25 +203,63 @@ class SizedImageField(ImageField):
     descriptor_class = SizedImageFileDescriptor
     description = _('Sized Image Field')
 
-    def __init__(self, *args, **kwargs):
-        kwargs.update({'max_length':200})
-        super(SizedImageField, self).__init__(*args, **kwargs)
+    def __init__(self, verbose_name=None, name=None, width_field=None,
+            height_field=None, centerpoint_field=None, **kwargs):
+        self.centerpoint_field = centerpoint_field
+        super(SizedImageField, self).__init__(verbose_name, name, **kwargs)
 
-    def db_type(self, connection):
-        return 'char(200)'
+    def pre_save(self, model_instance, add):
+        "Returns field's value just before saving."
+        file = super(SizedImageField, self).pre_save(model_instance, add)
+        self.update_centerpoint_field(model_instance, force=True)
+        return file
 
-    def get_prep_value(self, value):
-        "Returns field's value prepared for saving into a database."
-        # Need to convert File objects provided via a form to unicode for database insertion
-        if value is None:
-            return None
-        elif isinstance(value, self.attr_class):
-            if hasattr(value, 'name'):
-                value = '%(file_storage_path)s%(separator)s%(x_axis)sx%(y_axis)s' % {
-                    'file_storage_path':value.name,
-                    'separator':CENTERPOINT_SEPARATOR,
-                    'x_axis':value.crop_center_point[0],
-                    'y_axis':value.crop_center_point[1]
-                }
-        return six.text_type(value)
+    def update_centerpoint_field(self, instance, force=False, *args, **kwargs):
+        """
+        Updates field's centerpoint field, if defined.
+
+        This method is hooked up this field's pre_save method to update
+        the centerpoint immediately before the model instance (`instance`)
+        it is associated with is saved.
+
+        This field's centerpoint can be forced to update with force=True,
+        which is how SizedImageField.pre_save calls this method.
+        """
+        # Nothing to update if the field doesn't have have a centerpoint dimension field.
+        if not self.centerpoint_field:
+            return
+
+        # getattr will call the SizedImageFileDescriptor's __get__ method, which
+        # coerces the assigned value into an instance of self.attr_class
+        # (ImageFieldFile in this case).
+        file = getattr(instance, self.attname)
+
+        # Nothing to update if we have no file and not being forced to update.
+        if not file and not force:
+            return
+
+        centerpoint_filled = not(
+            (self.centerpoint_field and not getattr(instance, self.centerpoint_field))
+        )
+        # When the model instance centerpoint field is filled and force
+        # is `False`, we are most likely loading data from the database or
+        # updating an image field that already had an image stored. In the
+        # first case, we don't want to update the centerpoint field because
+        # we are already getting the value from the database. In the second
+        # case, we do want to update the centerpoint field and will skip this
+        # return because force will be `True` since this method was called
+        # from SizedImageFileDescriptor.__set__.
+        if centerpoint_filled and not force:
+            return
+
+        # file should be an instance of SizedImageFieldFile or should be None.
+        if file:
+            centerpoint = file.crop_center_point
+        else:
+            # No file, so clear the centerpoint field.
+            centerpoint = None
+
+        # Update the centerpoint field.
+        if self.centerpoint_field:
+            setattr(instance, self.centerpoint_field, centerpoint)
 
