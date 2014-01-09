@@ -1,2 +1,0 @@
-class InvalidCropCenterPoint(Exception):
-    pass

@@ -194,21 +194,21 @@ class SizedImage(dict):
 class CroppedImage(SizedImage):
     filename_key = 'crop'
 
-    def __init__(self, path_to_image, storage, crop_center_point=(0.5, 0.5)):
-        self.crop_center_point = crop_center_point
+    def __init__(self, path_to_image, storage, crop_centerpoint=(0.5, 0.5)):
+        self.crop_centerpoint = crop_centerpoint
         super(CroppedImage, self).__init__(path_to_image, storage)
 
     @property
-    def crop_center_point_as_str(self):
+    def crop_centerpoint_as_str(self):
         return "%s__%s" % (
-            str(self.crop_center_point[0]).replace('.', '-'),
-            str(self.crop_center_point[1]).replace('.', '-')
+            str(self.crop_centerpoint[0]).replace('.', '-'),
+            str(self.crop_centerpoint[1]).replace('.', '-')
         )
 
     def get_filename_key(self):
         return "%s-c%s" % (
             self.filename_key,
-            self.crop_center_point_as_str
+            self.crop_centerpoint_as_str
         )
 
     def process_image(self, image, width, height):
@@ -221,7 +221,7 @@ class CroppedImage(SizedImage):
             image=image,
             size=(width, height),
             method=Image.ANTIALIAS,
-            centering=self.crop_center_point
+            centering=self.crop_centerpoint
         ).save(
             imagefile,
             format="jpeg",

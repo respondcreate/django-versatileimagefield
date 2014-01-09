@@ -74,7 +74,7 @@ class SizedImageFileDescriptor(ImageFileDescriptor):
                 # Pulling the current value of the centerpoint_field...
                 centerpoint = instance.__dict__[attr.field.centerpoint_field]
                 # ...and assigning it to SizedImageField instance
-                attr.crop_center_point = centerpoint
+                attr.crop_centerpoint = centerpoint
 
             instance.__dict__[self.field.name] = attr
 
@@ -110,7 +110,7 @@ class SizedImageFileDescriptor(ImageFileDescriptor):
 
             if file.field.centerpoint_field:
                 centerpoint = instance.__dict__[file.field.centerpoint_field]
-                file.crop_center_point = centerpoint
+                file.crop_centerpoint = centerpoint
 
         # That was fun, wasn't it?
         return instance.__dict__[self.field.name]

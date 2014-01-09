@@ -59,7 +59,7 @@ class SizedImageField(ImageField):
 
         # file should be an instance of SizedImageFieldFile or should be None.
         if file:
-            centerpoint = file.crop_center_point
+            centerpoint = file.crop_centerpoint
         else:
             # No file, so clear the centerpoint field.
             centerpoint = None
