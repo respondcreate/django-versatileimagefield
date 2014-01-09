@@ -1,0 +1,2 @@
+class InvalidCropCenterPoint(Exception):
+    pass
