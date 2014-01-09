@@ -12,10 +12,7 @@ from django.core.cache import (
 from django.core.exceptions import ImproperlyConfigured
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
-FMT = 'JPEG'
-EXT = 'jpg'
-
-QUAL = getattr(settings, 'IMAGE_RESIZE_QUALITY', 70)
+QUAL = getattr(settings, 'SIZEDIMAGEFIELD_RESIZE_IMAGE_QUALITY', 70)
 
 SIZEDIMAGEFIELD_DIRECTORY_NAME = '__sized'
 SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE = getattr(settings, 'SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE', None)
@@ -40,11 +37,13 @@ class SizedImage(dict):
         self.path_to_image = path_to_image
         self.storage = storage
         if getattr(self, 'filename_key', None) is None:
-            raise NotImplementedError('SizedImage subclasses MUST provide a `filename_key` attribute')
+            raise NotImplementedError(
+                "Subclasses MUST provide a `filename_key` attribute"
+            )
 
     def __setitem__(self, key, value):
         raise NotImplementedError(
-            'SizedImageDict instances do not allow key assignment.'
+            '%s instances do not allow key assignment.' % self.__class__.__name__
         )
 
     def __getitem__(self, key):
@@ -52,8 +51,9 @@ class SizedImage(dict):
             width, height = [int(i) for i in key.split('x')]
         except KeyError:
             raise SizedImageDictKeyError(
-                "SizedImageDict keys must be in the following format: "
-                "`width`x`height`' where both `width` and `height` are integers."
+                "%s keys must be in the following format: "
+                "'`width`x`height`' where both `width` and `height` are "
+                "integers." % self.__class__.__name__
             )
 
         if not self.path_to_image and USE_PLACEHOLDIT:
@@ -114,8 +114,6 @@ class SizedImage(dict):
     def get_resized_path(self, path_to_image, width, height, filename_key, for_url=False):
         """
         Returns the 'resized' path of `path_to_image`
-
-        If `for_url` is `True`, settings.MEDIA_URL is prepended to the path
         """
         if not path_to_image:
             filename = SIZEDIMAGEFIELD_PLACEHOLDER_FILENAME
@@ -124,9 +122,12 @@ class SizedImage(dict):
             containing_folder, filename = os.path.split(path_to_image)
 
         resized_filename = self.get_resized_filename(filename, width, height, filename_key)
-        path_segments = [SIZEDIMAGEFIELD_DIRECTORY_NAME, containing_folder, resized_filename]
 
-        joined_path = os.path.join(*path_segments)
+        joined_path = os.path.join(*[
+            SIZEDIMAGEFIELD_DIRECTORY_NAME,
+            containing_folder,
+            resized_filename
+        ])
 
         if for_url:
             path_to_return = self.storage.url(joined_path)
@@ -135,7 +136,7 @@ class SizedImage(dict):
         return path_to_return
 
     def process_image(self, image, return_image=False):
-        raise NotImplementedError('SizedImageDict subclasses MUST provide a `process_image` method.')
+        raise NotImplementedError('Subclasses MUST provide a `process_image` method.')
 
     def create_resized_image(self, path_to_image, width, height, filename_key):
         """
