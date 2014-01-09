@@ -1,11 +1,11 @@
 from django.conf import settings
 from django.utils import six
 
-from ..datastructures import (
+from .datastructures import (
     CroppedImage,
     ScaledImage
 )
-from ..validators import (
+from .validators import (
     convert_string_to_centerpoint_tuple,
     validate_centerpoint_tuple,
     InvalidCropCenterPoint
