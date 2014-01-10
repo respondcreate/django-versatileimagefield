@@ -1,8 +1,12 @@
 from django.conf import settings
+from django.db.models import SubfieldBase
+from django.db.models.fields import CharField
 from django.db.models.fields.files import ImageField
 from django.utils.translation import ugettext_lazy as _
 
 from .files import SizedImageFieldFile, SizedImageFileDescriptor
+from .validators import validate_centerpoint
+
 if 'south' in settings.INSTALLED_APPS:
     from south.modelsinspector import add_introspection_rules
     add_introspection_rules(
@@ -76,5 +80,20 @@ class SizedImageField(ImageField):
         # Update the centerpoint field.
         if self.centerpoint_field:
             setattr(instance, self.centerpoint_field, centerpoint)
+
+class SizedImageCenterpointField(CharField):
+    __metaclass__ = SubfieldBase
+    def __init__(self, *args, **kwargs):
+        super(SizedImageCenterpointField, self).__init__(*args, **kwargs)
+        self.validators.append(validate_centerpoint)
+
+    def to_python(self, value):
+        to_return = validate_centerpoint(
+                value, return_converted_tuple=True
+        )
+        return to_return
+
+    def get_prep_value(self, value):
+        return 'x'.join(str(num) for num in value)
 
 __all__ = ['SizedImageField']
