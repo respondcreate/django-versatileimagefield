@@ -8,7 +8,7 @@ from .datastructures import (
 from .validators import (
     convert_string_to_centerpoint_tuple,
     validate_centerpoint_tuple,
-    InvalidCropCenterPoint
+    ValidationError
 )
 
 class SizedImageMixIn(object):
@@ -33,23 +33,29 @@ class SizedImageMixIn(object):
 
     def validate_crop_centerpoint(self, val):
         valid = True
-        if isinstance(val, tuple):
-            to_validate = val
-        elif isinstance(val, six.string_types):
-            try:
-                to_validate = convert_string_to_centerpoint_tuple(val)
-            except InvalidCropCenterPoint:
-                valid = False
-        else:
-            valid = False
-        if valid:
-            if validate_centerpoint_tuple(to_validate):
-                return to_validate
-        else:
-            if getattr(settings, 'DEBUG', True):
-                raise InvalidCropCenterPoint("%s is in invalid centerpoint. `crop_centerpoint` must provide two coordinates, one for the x axis and one for the y where both values are between 0 and 1. You may pass it as either a two-position tuple like this: (0.5,0.5) or as a string where the two values are separated by an 'x' like this: '0.5x0.5'." % val)
+        while valid == True:
+            to_validate = None
+            if isinstance(val, tuple):
+                to_validate = val
+            elif isinstance(val, six.string_types):
+                try:
+                    to_validate = convert_string_to_centerpoint_tuple(val)
+                except ValidationError:
+                    valid = False
             else:
-                return False
+                valid = False
+
+            if to_validate and validate_centerpoint_tuple(to_validate):
+                return to_validate
+            break
+
+        if getattr(settings, 'DEBUG', True):
+            raise ValidationError(
+                message="%s is in invalid centerpoint. `crop_centerpoint` must provide two coordinates, one for the x axis and one for the y where both values are between 0 and 1. You may pass it as either a two-position tuple like this: (0.5,0.5) or as a string where the two values are separated by an 'x' like this: '0.5x0.5'." % val,
+                code='invalid_centerpoint'
+            )
+        else:
+            return False
 
     @property
     def scale(self):
