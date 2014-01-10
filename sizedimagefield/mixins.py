@@ -39,7 +39,10 @@ class SizedImageMixIn(object):
                 to_validate = val
             elif isinstance(val, six.string_types):
                 try:
-                    to_validate = convert_string_to_centerpoint_tuple(val)
+                    to_validate = convert_string_to_centerpoint_tuple(
+                        val,
+                        return_converted_tuple=True
+                    )
                 except ValidationError:
                     valid = False
             else:

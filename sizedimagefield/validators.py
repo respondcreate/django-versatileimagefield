@@ -28,7 +28,7 @@ def validate_centerpoint_tuple(value):
             valid = False
     return valid
 
-def convert_string_to_centerpoint_tuple(value):
+def convert_string_to_centerpoint_tuple(value, return_converted_tuple=False):
     """
     Converts (and validates) a string with formatting:
     '%(x_axis)dx%(y_axis)d' into a two position tuple.
@@ -58,15 +58,14 @@ def convert_string_to_centerpoint_tuple(value):
         else:
             tup = tuple(string_split)
         valid_centerpoint = validate_centerpoint_tuple(tup)
-    print valid_centerpoint
     if not valid_centerpoint:
         raise ValidationError(
-            message=INVALID_CENTERPOINT_ERROR_MESSAGE,
+            message=INVALID_CENTERPOINT_ERROR_MESSAGE % value,
             code='invalid_centerpoint',
             params=value
         )
-        #raise InvalidCropCenterPoint(INVALID_CENTERPOINT_ERROR_MESSAGE % s)
     else:
-        return tup
+        if return_converted_tuple is True:
+            return tup
 
 __all__ = ['validate_centerpoint_tuple', 'convert_string_to_centerpoint_tuple']
