@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.core.files.base import File
 from django.core.files.images import ImageFile
 from django.db.models.fields.files import (
@@ -8,15 +7,6 @@ from django.db.models.fields.files import (
 from django.utils import six
 
 from .mixins import SizedImageMixIn
-
-if 'south' in settings.INSTALLED_APPS:
-    from south.modelsinspector import add_introspection_rules
-    add_introspection_rules(
-        [],
-        [
-            "^sizedimagefield\.fields\.SizedImageField",
-        ]
-    )
 
 class SizedImageFieldFile(SizedImageMixIn, ImageFieldFile):
     pass

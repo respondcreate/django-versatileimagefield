@@ -1,7 +1,16 @@
+from django.conf import settings
 from django.db.models.fields.files import ImageField
 from django.utils.translation import ugettext_lazy as _
 
 from .files import SizedImageFieldFile, SizedImageFileDescriptor
+if 'south' in settings.INSTALLED_APPS:
+    from south.modelsinspector import add_introspection_rules
+    add_introspection_rules(
+        [],
+        [
+            "^sizedimagefield\.fields\.SizedImageField",
+        ]
+    )
 
 class SizedImageField(ImageField):
     attr_class = SizedImageFieldFile
