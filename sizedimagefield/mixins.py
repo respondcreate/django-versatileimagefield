@@ -6,7 +6,7 @@ from .datastructures import (
     ScaledImage
 )
 from .validators import (
-    convert_string_to_centerpoint_tuple,
+    validate_centerpoint,
     validate_centerpoint_tuple,
     ValidationError
 )
@@ -39,7 +39,7 @@ class SizedImageMixIn(object):
                 to_validate = val
             elif isinstance(val, six.string_types):
                 try:
-                    to_validate = convert_string_to_centerpoint_tuple(
+                    to_validate = validate_centerpoint(
                         val,
                         return_converted_tuple=True
                     )

@@ -28,20 +28,25 @@ def validate_centerpoint_tuple(value):
             valid = False
     return valid
 
-def convert_string_to_centerpoint_tuple(value, return_converted_tuple=False):
+def validate_centerpoint(value, return_converted_tuple=False):
     """
-    Converts (and validates) a string with formatting:
+    Converts, validates and optionally returns a string with formatting:
     '%(x_axis)dx%(y_axis)d' into a two position tuple.
+
+    If a tuple is passed to `value` it is also validated.
 
     Both x_axis and y_axis must be floats or ints greater
     than 0 and less than 1.
     """
 
     valid_centerpoint = True
-    tup = tuple()
-    if not isinstance(value, six.string_types):
-        valid_centerpoint = False
-    else:
+    to_return = None
+    if isinstance(value, tuple):
+        valid_centerpoint = validate_centerpoint_tuple(value)
+        if valid_centerpoint:
+            to_return = value
+    elif isinstance(value, six.string_types):
+        tup = tuple()
         try:
             string_split = [
                 float(segment.strip())
@@ -57,15 +62,20 @@ def convert_string_to_centerpoint_tuple(value, return_converted_tuple=False):
                 tup = string_split
         else:
             tup = tuple(string_split)
+
         valid_centerpoint = validate_centerpoint_tuple(tup)
+
+        if valid_centerpoint:
+            to_return = tup
+    else:
+        valid_centerpoint = False
     if not valid_centerpoint:
         raise ValidationError(
             message=INVALID_CENTERPOINT_ERROR_MESSAGE % value,
-            code='invalid_centerpoint',
-            params=value
+            code='invalid_centerpoint'
         )
     else:
-        if return_converted_tuple is True:
-            return tup
+        if to_return and return_converted_tuple is True:
+            return to_return
 
-__all__ = ['validate_centerpoint_tuple', 'convert_string_to_centerpoint_tuple']
+__all__ = ['validate_centerpoint_tuple', 'validate_centerpoint']
