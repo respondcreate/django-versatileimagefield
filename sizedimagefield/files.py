@@ -1,6 +1,7 @@
 from django.core.files.base import File
 from django.core.files.images import ImageFile
 from django.db.models.fields.files import (
+    FieldFile,
     ImageFieldFile,
     ImageFileDescriptor
 )
@@ -19,6 +20,7 @@ class SizedImageFileDescriptor(ImageFileDescriptor):
 
         # Updating centerpoint_field on attribute set
         if previous_file is not None:
+            self.field.update_dimension_fields(instance, force=True)
             self.field.update_centerpoint_field(instance, force=True)
 
     def __get__(self, instance=None, owner=None):
@@ -69,31 +71,19 @@ class SizedImageFileDescriptor(ImageFileDescriptor):
             instance.__dict__[self.field.name] = attr
 
         # Other types of files may be assigned as well, but they need to have
-        # the SizedImageFieldFile interface added to them.
-        # Thus, we wrap any other type of File inside a SizedImageFieldFile
-        # (well, the field's attr_class, which is usually SizedImageFieldFile).
-        elif (
-                isinstance(
-                    file, File
-                ) or isinstance(
-                    file, ImageFile
-                ) or isinstance(
-                    file, ImageFieldFile
-                )
-            ) and not isinstance(file, SizedImageFieldFile):
-            file_copy = self.field.attr_class(
-                instance=instance,
-                field=self.field,
-                name=file.name
-            )
+        # the FieldFile interface added to the. Thus, we wrap any other type of
+        # File inside a FieldFile (well, the field's attr_class, which is
+        # usually FieldFile).
+        elif isinstance(file, File) and not isinstance(file, FieldFile):
+            file_copy = self.field.attr_class(instance, self.field, file.name)
             file_copy.file = file
             file_copy._committed = False
             instance.__dict__[self.field.name] = file_copy
 
         # Finally, because of the (some would say boneheaded) way pickle works,
-        # the underlying SizedImageFieldFile might not actually itself have an associated
+        # the underlying FieldFile might not actually itself have an associated
         # file. So we need to reset the details of the FieldFile in those cases.
-        elif isinstance(file, SizedImageFieldFile) and not hasattr(file, 'field'):
+        elif isinstance(file, FieldFile) and not hasattr(file, 'field'):
             file.instance = instance
             file.field = self.field
             file.storage = self.field.storage

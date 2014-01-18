@@ -24,7 +24,7 @@ class SizedImageField(ImageField):
     def __init__(self, verbose_name=None, name=None, width_field=None,
             height_field=None, centerpoint_field=None, **kwargs):
         self.centerpoint_field = centerpoint_field
-        super(SizedImageField, self).__init__(verbose_name, name, **kwargs)
+        super(SizedImageField, self).__init__(verbose_name, name, width_field, height_field, **kwargs)
 
     def pre_save(self, model_instance, add):
         "Returns field's value just before saving."
