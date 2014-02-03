@@ -1,11 +1,13 @@
 from django.conf import settings
+from django.core.exceptions import FieldError, ValidationError
 from django.db.models import SubfieldBase
 from django.db.models.fields import CharField
 from django.db.models.fields.files import ImageField
+from django.utils import six
 from django.utils.translation import ugettext_lazy as _
 
 from .files import SizedImageFieldFile, SizedImageFileDescriptor
-from .validators import validate_centerpoint
+from .validators import validate_centerpoint, INVALID_CENTERPOINT_ERROR_MESSAGE
 
 if 'south' in settings.INSTALLED_APPS:
     from south.modelsinspector import add_introspection_rules
@@ -13,6 +15,7 @@ if 'south' in settings.INSTALLED_APPS:
         [],
         [
             "^sizedimagefield\.fields\.SizedImageField",
+            "^sizedimagefield\.fields\.SizedImageCenterpointField",
         ]
     )
 
@@ -83,17 +86,31 @@ class SizedImageField(ImageField):
 
 class SizedImageCenterpointField(CharField):
     __metaclass__ = SubfieldBase
+
     def __init__(self, *args, **kwargs):
+        if 'default' not in kwargs:
+            kwargs['default'] = '0.5x0.5'
+        else:
+            try:
+                valid_centerpoint = validate_centerpoint(kwargs['default'])
+            except ValidationError:
+                raise
+
         super(SizedImageCenterpointField, self).__init__(*args, **kwargs)
         self.validators.append(validate_centerpoint)
 
     def to_python(self, value):
         to_return = validate_centerpoint(
-                value, return_converted_tuple=True
+            value, return_converted_tuple=True
         )
         return to_return
 
     def get_prep_value(self, value):
-        return 'x'.join(str(num) for num in value)
+        if isinstance(value, tuple):
+            for_db = 'x'.join(str(num) for num in value)
+        else:
+            for_db = value
+        return for_db
+
 
 __all__ = ['SizedImageField']

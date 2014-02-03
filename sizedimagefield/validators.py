@@ -71,7 +71,7 @@ def validate_centerpoint(value, return_converted_tuple=False):
         valid_centerpoint = False
     if not valid_centerpoint:
         raise ValidationError(
-            message=INVALID_CENTERPOINT_ERROR_MESSAGE % value,
+            message=INVALID_CENTERPOINT_ERROR_MESSAGE % str(value),
             code='invalid_centerpoint'
         )
     else:
