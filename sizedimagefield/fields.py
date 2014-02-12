@@ -76,7 +76,7 @@ class SizedImageField(ImageField):
             return
 
         # file should be an instance of SizedImageFieldFile or should be None.
-        if file:
+        if file and not isinstance(file, tuple):
             centerpoint = file.crop_centerpoint
         else:
             # No file, so clear the centerpoint field.
@@ -111,11 +111,19 @@ class SizedImageField(ImageField):
             # This value is coming from a MultiValueField
             elif isinstance(data, tuple):
                 if data[0] is None:
+                    # This means the file hasn't changed but we need to
+                    # update the centerpoint
                     current_field = getattr(instance, self.name)
                     current_field.crop_centerpoint = data[1]
                     to_assign = current_field
                 elif data[0] is False:
+                    # This means the 'Clear' checkbox was checked so we
+                    # need to empty the field
                     to_assign = ''
+                else:
+                    # This means there is a new upload so we need to unpack
+                    # the tuple and assign the first position to the field attribute
+                    to_assign = data[0]
         super(SizedImageField, self).save_form_data(instance, to_assign)
 
     def formfield(self, **kwargs):
