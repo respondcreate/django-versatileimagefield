@@ -1,0 +1,29 @@
+div.sizedimagefield {
+    float:left;
+    clear:right;
+    display:block;
+}
+
+label.sizedimagefield-label  {
+    display:block;
+    float:left;
+    clear:right;
+    font-weight:bold !important;
+    font-size:1em;
+}
+
+label.sizedimagefield-label:after {
+    content:": ";
+}
+
+div.sizedimage-mod {
+    margin:15px 0;
+}
+
+div.sizedimage-mod:first-child {
+    margin-top:0;
+}
+
+div.sizedimage-mod.preview img {
+    border:1px solid #CCCCCC;
+}
