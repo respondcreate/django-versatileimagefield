@@ -7,6 +7,8 @@ from django.utils import six
 from django.utils.translation import ugettext_lazy as _
 
 from .files import SizedImageFieldFile, SizedImageFileDescriptor
+from .forms import SizedImageCenterpointSelectField
+from .widgets import SizedImageCenterpointSelectWidget
 from .validators import validate_centerpoint, INVALID_CENTERPOINT_ERROR_MESSAGE
 
 if 'south' in settings.INSTALLED_APPS:
@@ -84,6 +86,45 @@ class SizedImageField(ImageField):
         if self.centerpoint_field:
             setattr(instance, self.centerpoint_field, centerpoint)
 
+    def save_form_data(self, instance, data):
+        """
+        Handles data sent from MultiValueField forms that set
+        crop_centerpoint values.
+
+        `instance`: The model instance that is being altered via a form
+        `data`: The data sent from the form to this field which can be either:
+        * `None`: This is unset data from an optional field
+        * A two-position tuple: (image_form_data, centerpoint_data)
+            * `image_form-data` options:
+                * `None` the file for this field is unchanged
+                * `False` unassign the file form the field
+            * `centerpoint_data` data structure:
+                * `%(x_coordinate)sx%(y_coordinate)s': The centerpoint data to
+                  assign to the unchanged file
+
+        """
+        to_assign = data
+        if data is not None:
+            if not data:
+                # OK, it's False, set to an empty string to clear the field
+                to_assign = ''
+            # This value is coming from a MultiValueField
+            elif isinstance(data, tuple):
+                if data[0] is None:
+                    current_field = getattr(instance, self.name)
+                    current_field.crop_centerpoint = data[1]
+                    to_assign = current_field
+                elif data[0] is False:
+                    to_assign = ''
+        super(SizedImageField, self).save_form_data(instance, to_assign)
+
+    def formfield(self, **kwargs):
+        # This is a fairly standard way to set up some defaults
+        # while letting the caller override them.
+        defaults = {'form_class': SizedImageCenterpointSelectField}
+        kwargs.update(defaults)
+        return super(SizedImageField, self).formfield(**defaults)
+
 class SizedImageCenterpointField(CharField):
     __metaclass__ = SubfieldBase
 
@@ -105,6 +146,8 @@ class SizedImageCenterpointField(CharField):
         self.validators.append(validate_centerpoint)
 
     def to_python(self, value):
+        if value is None:
+            value = '0.5x0.5'
         to_return = validate_centerpoint(
             value, return_converted_tuple=True
         )
@@ -116,6 +159,5 @@ class SizedImageCenterpointField(CharField):
         else:
             for_db = value
         return for_db
-
 
 __all__ = ['SizedImageField']
