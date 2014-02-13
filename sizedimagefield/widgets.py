@@ -65,13 +65,17 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
         template = '%(input)s'
         substitutions['input'] = super(FileInput, self).render(name, value, attrs)
         if value and hasattr(value, "url"):
-            template = self.template_with_initial_and_imagepreview
             substitutions['initial'] = format_html('<a href="{0}">{1}</a>',
                                                    value.url,
                                                    force_text(value))
-            image_preview_id = self.image_preview_id(name)
-            image_preview = self.image_preview(image_preview_id, value)
-            substitutions['image_preview'] = image_preview
+            if value.field.centerpoint_field:
+                template = self.template_with_initial_and_imagepreview
+                image_preview_id = self.image_preview_id(name)
+                image_preview = self.image_preview(image_preview_id, value)
+                substitutions['image_preview'] = image_preview
+            else:
+                template = self.template_with_initial
+
             if not self.is_required:
                 checkbox_name = self.clear_checkbox_name(name)
                 checkbox_id = self.clear_checkbox_id(checkbox_name)
