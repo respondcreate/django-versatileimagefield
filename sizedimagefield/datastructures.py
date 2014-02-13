@@ -133,7 +133,8 @@ class SizedImage(dict):
             path_to_return = self.storage.url(joined_path)
         else:
             path_to_return = joined_path
-        return path_to_return
+        # Removing spaces so this path is memcached key friendly
+        return path_to_return.replace(' ', '')
 
     def process_image(self, image, return_image=False):
         raise NotImplementedError('Subclasses MUST provide a `process_image` method.')
