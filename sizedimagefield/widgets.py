@@ -109,16 +109,15 @@ class SizedImageCenterpointSelectWidget(SizedImageCenterpointWidgetMixIn, MultiW
 class SizedImageCenterpointClickWidget(SizedImageCenterpointWidgetMixIn, MultiWidget):
 
     def __init__(self, widgets=None, attrs=None):
-        widgets = [
+        widgets = (
             ClearableFileInputWithImagePreview(attrs={'class':'file-chooser'}),
             HiddenInput(
                 attrs={'class':'centerpoint-input'}
             )
-        ]
+        )
         super(SizedImageCenterpointClickWidget, self).__init__(widgets, attrs)
 
     class Media:
-        pass
         css = {
             'all': ('sizedimagefield/css/sizedimagefield.css',),
         }

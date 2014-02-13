@@ -12,9 +12,10 @@ from django.core.cache import (
 from django.core.exceptions import ImproperlyConfigured
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
+from .utils import get_resized_filename, get_resized_path
+
 QUAL = getattr(settings, 'SIZEDIMAGEFIELD_RESIZE_IMAGE_QUALITY', 70)
 
-SIZEDIMAGEFIELD_DIRECTORY_NAME = '__sized'
 SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE = getattr(settings, 'SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE', None)
 
 if not SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE:
@@ -59,19 +60,19 @@ class SizedImage(dict):
         if not self.path_to_image and USE_PLACEHOLDIT:
             resized_url = "http://placehold.it/%dx%d" % (width, height)
         else:
-            resized_url = self.get_resized_path(
+            resized_url = get_resized_path(
                 path_to_image=self.path_to_image,
                 width=width,
                 height=height,
                 filename_key=self.get_filename_key(),
-                for_url=True
+                base_url=self.storage.base_url
             )
             if cache.get(resized_url):
                 # The sized path exists in the cache so the image already exists.
                 # So we `pass` to skip directly to the return statement.
                 pass
             else:
-                resized_image_path = self.get_resized_path(
+                resized_image_path = get_resized_path(
                     path_to_image=self.path_to_image,
                     width=width,
                     height=height,
@@ -91,51 +92,6 @@ class SizedImage(dict):
     def get_filename_key(self):
         return self.filename_key
 
-    @staticmethod
-    def get_resized_filename(filename, width, height, filename_key):
-        """
-        Returns the 'resized filename' (according to `width`, `height` and `filename_key`)
-        in the following format:
-        `filename`-`filename_key`-`width`x`height`.ext
-        """
-        try:
-            image_name, ext = filename.rsplit('.', 1)
-        except ValueError:
-            image_name = filename
-            ext = 'jpg'
-        return "%(image_name)s-%(filename_key)s-%(width)dx%(height)d.%(ext)s" % ({
-            'image_name':image_name,
-            'filename_key':filename_key,
-            'width':width,
-            'height':height,
-            'ext':ext
-        })
-
-    def get_resized_path(self, path_to_image, width, height, filename_key, for_url=False):
-        """
-        Returns the 'resized' path of `path_to_image`
-        """
-        if not path_to_image:
-            filename = SIZEDIMAGEFIELD_PLACEHOLDER_FILENAME
-            containing_folder = 'GLOBAL-PLACEHOLDER'
-        else:
-            containing_folder, filename = os.path.split(path_to_image)
-
-        resized_filename = self.get_resized_filename(filename, width, height, filename_key)
-
-        joined_path = os.path.join(*[
-            SIZEDIMAGEFIELD_DIRECTORY_NAME,
-            containing_folder,
-            resized_filename
-        ])
-
-        if for_url:
-            path_to_return = self.storage.url(joined_path)
-        else:
-            path_to_return = joined_path
-        # Removing spaces so this path is memcached key friendly
-        return path_to_return.replace(' ', '')
-
     def process_image(self, image, return_image=False):
         raise NotImplementedError('Subclasses MUST provide a `process_image` method.')
 
@@ -149,7 +105,7 @@ class SizedImage(dict):
         `filename_key`: A string that will be used in the sized image filename to signify
         what operation was done to it. Examples: 'crop' or 'scale'
         """
-        resized_image_path = self.get_resized_path(
+        resized_image_path = get_resized_path(
             path_to_image=path_to_image,
             width=width,
             height=height,
@@ -199,7 +155,6 @@ class CroppedImage(SizedImage):
         self.crop_centerpoint = crop_centerpoint
         super(CroppedImage, self).__init__(path_to_image, storage)
 
-    @property
     def crop_centerpoint_as_str(self):
         return "%s__%s" % (
             str(self.crop_centerpoint[0]).replace('.', '-'),
@@ -209,7 +164,7 @@ class CroppedImage(SizedImage):
     def get_filename_key(self):
         return "%s-c%s" % (
             self.filename_key,
-            self.crop_centerpoint_as_str
+            self.crop_centerpoint_as_str()
         )
 
     def process_image(self, image, width, height):
