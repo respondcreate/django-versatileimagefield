@@ -32,12 +32,23 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
     </div>
     <div class="sizedimage-mod preview">
         <label class="sizedimagefield-label">%(centerpoint_label)s</label>
-        %(image_preview)s
+        <div class="image-wrap outer">
+            <div class="point-stage" id="%(point_stage_id)s" data-image_preview_id="%(image_preview_id)s">
+                <div class="centerpoint-point" id="%(centerpoint_id)s"></div>
+            </div>
+            <div class="image-wrap inner">
+                %(image_preview)s
+            </div>
+        </div>
     </div>
     <div class="sizedimage-mod new-upload">
         <label class="sizedimagefield-label">%(input_text)s</label>
         %(input)s
     </div>"""
+
+    def get_hidden_field_id(self, name):
+        i = name.rindex('_')
+        return "id_%s_%d" % (name[:i], int(name[i+1:])+1)
 
     def image_preview_id(self, name):
         """
@@ -45,13 +56,30 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
         """
         return name + '_imagepreview'
 
-    def image_preview(self, image_preview_id, value):
+    def get_centerpoint_id(self, name):
         """
         Given the name of the image preview tag, return the HTML id for it.
         """
-        return '<img src="%(sized_url)s" id="%(image_preview_id)s" class="sizedimage-preview"/>' % {
-            'sized_url':value.scale['300x100'],
-            'image_preview_id':image_preview_id
+        return name + '_centerpoint'
+
+    def get_point_stage_id(self, name):
+        return name + '_point-stage'
+
+    def get_point_id(self, name):
+        return name + '_point-id'
+
+    def image_preview(self, name, value):
+        """
+        Given the name of the image preview tag, return the HTML id for it.
+        """
+        return """
+        <img src="%(sized_url)s" id="%(image_preview_id)s" data-hidden_field_id="%(hidden_field_id)s" data-point_stage_id="%(point_stage_id)s" data-centerpoint_id="%(centerpoint_id)s" class="sizedimage-preview"/>
+        """ % {
+            'sized_url':value.scale['300x300'],
+            'image_preview_id':self.image_preview_id(name),
+            'hidden_field_id':self.get_hidden_field_id(name),
+            'point_stage_id': self.get_point_stage_id(name),
+            'centerpoint_id':self.get_centerpoint_id(name)
         }
 
     def render(self, name, value, attrs=None):
@@ -70,8 +98,15 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
                                                    force_text(value))
             if value.field.centerpoint_field:
                 template = self.template_with_initial_and_imagepreview
-                image_preview_id = self.image_preview_id(name)
-                image_preview = self.image_preview(image_preview_id, value)
+                point_stage_id = self.get_point_stage_id(name)
+                centerpoint_id = self.get_centerpoint_id(name)
+                substitutions['point_stage_id'] = point_stage_id
+                substitutions['centerpoint_id'] = centerpoint_id
+                substitutions['image_preview_id'] = self.image_preview_id(name)
+                image_preview = self.image_preview(
+                    name,
+                    value
+                )
                 substitutions['image_preview'] = image_preview
             else:
                 template = self.template_with_initial

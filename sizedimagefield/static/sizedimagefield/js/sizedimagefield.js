@@ -1,19 +1,34 @@
-$(function () {
-    $('img.sizedimage-preview').click(function (e) {
-        // Creating a canvas when the image is clicked
-        if (!this.canvas) {
-            this.canvas = $('<canvas/>').css({
-                width: this.width + 'px',
-                height: this.height + 'px'
-            })[0];
-            this.canvas.getContext('2d').drawImage(this, 0, 0, this.width, this.height);
-        }
-        // Figuring out where on the X/Y grid was clicked where the
-        // max values for X/Y are 1 and min values are 0
-        var x_coord = parseFloat(event.offsetX / this.width).toFixed(2);
-        var y_coord = parseFloat(event.offsetY / this.height).toFixed(2);
-        var containing_div = $(this).parents('div.sizedimagefield');
-        var hidden_input = containing_div.children('input.centerpoint-input');
-        hidden_input.val(x_coord + 'x' + y_coord);
-    });
-});
+function generateCenterpointWidget(jQuery){
+    // Find all images with the class 'sizedimage-preview'
+    var crops = document.getElementsByClassName('sizedimage-preview')
+    // Iterate through those images
+    for (var x=0; x<crops.length; x++){(function(){
+        var crop = crops[x],
+            point_stage = document.getElementById(crop.getAttribute('data-point_stage_id')),
+            hidden_field = document.getElementById(crop.getAttribute('data-hidden_field_id')),
+            point = document.getElementById(crop.getAttribute('data-centerpoint_id')),
+            current_centerpoint = hidden_field.value.split('x')
+        // Sizing the centerpoint stage to the size the sized image
+        point_stage.width = crop.clientWidth
+        point_stage.height = crop.clientHeight
+        point_stage.style.width = crop.clientWidth + 'px'
+        point_stage.style.height = crop.clientHeight + 'px'
+        // Assigning the click handler
+        point_stage.onclick = cropClick
+        // Setting the centerpoint to the current value of `hidden_field`
+        point.style.left = ((point_stage.width * parseFloat(current_centerpoint[0])) - (point.offsetWidth / 2)) + 'px'
+        point.style.top = ((point_stage.height * parseFloat(current_centerpoint[1])) - (point.offsetHeight / 2)) + 'px'
+    })()}
+
+    function cropClick (e) {
+        var x_coord = parseFloat(e.offsetX / this.width).toFixed(2),
+            y_coord = parseFloat(e.offsetY / this.height).toFixed(2),
+            cropped_image = document.getElementById(this.getAttribute('data-image_preview_id')),
+            hidden_input = document.getElementById(cropped_image.getAttribute('data-hidden_field_id')),
+            point = document.getElementById(cropped_image.getAttribute('data-centerpoint_id')),
+            val = x_coord + 'x' + y_coord
+        hidden_input.value = val
+        point.style.top = (e.offsetY - (point.offsetWidth / 2)) + 'px'
+        point.style.left = (e.offsetX - (point.offsetHeight / 2)) + 'px'
+    }
+}
