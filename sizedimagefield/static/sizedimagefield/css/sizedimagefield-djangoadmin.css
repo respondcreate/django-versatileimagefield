@@ -20,10 +20,27 @@ div.sizedimage-mod {
     margin:15px 0;
 }
 
+div.image-wrap {
+    display:inline-block;
+}
+
+div.point-stage {
+    position:absolute;
+}
+
+div.image-wrap.outer {
+    border:4px solid #CCCCCC;
+}
+
 div.sizedimage-mod:first-child {
     margin-top:0;
 }
 
-div.sizedimage-mod.preview img {
-    border:1px solid #CCCCCC;
+div.centerpoint-point {
+    width:8px;
+    height:8px;
+    background: rgb(255, 0, 0);
+    background: rgba(255, 0, 0, .5);
+    position:absolute;
+    border:1px solid #FFFFFF;
 }

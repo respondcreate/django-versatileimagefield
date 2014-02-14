@@ -3,6 +3,7 @@ from django.forms.fields import ChoiceField, FileField, MultiValueField, CharFie
 from .widgets import (
     SizedImageCenterpointClickWidget,
     SizedImageCenterpointSelectWidget,
+    SizedImageCenterpointClickDjangoAdminWidget,
     CENTERPOINT_CHOICES
 )
 
@@ -33,3 +34,6 @@ class SizedImageCenterpointClickField(SizedImageCenterpointMixIn, MultiValueFiel
             CharField()
         )
         super(SizedImageCenterpointClickField, self).__init__(tuple(fields), *args, **kwargs)
+
+class SizedImageCenterpointClickDjangoAdminField(SizedImageCenterpointClickField):
+    widget = SizedImageCenterpointClickDjangoAdminWidget

@@ -7,8 +7,7 @@ from django.utils import six
 from django.utils.translation import ugettext_lazy as _
 
 from .files import SizedImageFieldFile, SizedImageFileDescriptor
-from .forms import SizedImageCenterpointSelectField, SizedImageCenterpointClickField
-from .widgets import SizedImageCenterpointSelectWidget
+from .forms import SizedImageCenterpointClickDjangoAdminField
 from .validators import validate_centerpoint, INVALID_CENTERPOINT_ERROR_MESSAGE
 
 if 'south' in settings.INSTALLED_APPS:
@@ -129,7 +128,7 @@ class SizedImageField(ImageField):
     def formfield(self, **kwargs):
         # This is a fairly standard way to set up some defaults
         # while letting the caller override them.
-        defaults = {'form_class': SizedImageCenterpointClickField}
+        defaults = {'form_class': SizedImageCenterpointClickDjangoAdminField}
         kwargs.update(defaults)
         return super(SizedImageField, self).formfield(**defaults)
 

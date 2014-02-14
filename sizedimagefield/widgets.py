@@ -153,9 +153,6 @@ class SizedImageCenterpointClickWidget(SizedImageCenterpointWidgetMixIn, MultiWi
         super(SizedImageCenterpointClickWidget, self).__init__(widgets, attrs)
 
     class Media:
-        css = {
-            'all': ('sizedimagefield/css/sizedimagefield.css',),
-        }
         js = (
             'sizedimagefield/js/sizedimagefield.js',
         )
@@ -164,3 +161,13 @@ class SizedImageCenterpointClickWidget(SizedImageCenterpointWidgetMixIn, MultiWi
         rendered = super(SizedImageCenterpointClickWidget, self).render(name, value, attrs)
         to_return = '<div class="sizedimagefield">' + mark_safe(rendered) + '</div>'
         return mark_safe(to_return)
+
+class SizedImageCenterpointClickDjangoAdminWidget(SizedImageCenterpointClickWidget):
+
+    class Media:
+        css = {
+            'all': ('sizedimagefield/css/sizedimagefield-djangoadmin.css',),
+        }
+        js = (
+            'sizedimagefield/js/sizedimagefield-djangoadmin.js',
+        )
