@@ -1,0 +1,16 @@
+div.image-wrap {
+    display:inline-block;
+}
+
+div.point-stage {
+    position:absolute;
+}
+
+div.centerpoint-point {
+    width:8px;
+    height:8px;
+    background: rgb(255, 0, 0);
+    background: rgba(255, 0, 0, .5);
+    position:absolute;
+    border:1px solid #FFFFFF;
+}

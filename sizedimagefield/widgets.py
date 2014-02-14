@@ -46,6 +46,13 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
         %(input)s
     </div>"""
 
+    def __init__(self, attrs=None, image_preview_template=None, clear_checkbox_template=None):
+        if image_preview_template:
+            self.template_with_initial_and_imagepreview = image_preview_template
+        if clear_checkbox_template:
+            self.template_with_clear = clear_checkbox_template
+        super(ClearableFileInputWithImagePreview, self).__init__(attrs)
+
     def get_hidden_field_id(self, name):
         i = name.rindex('_')
         return "id_%s_%d" % (name[:i], int(name[i+1:])+1)
@@ -142,10 +149,16 @@ class SizedImageCenterpointSelectWidget(SizedImageCenterpointWidgetMixIn, MultiW
 
 
 class SizedImageCenterpointClickWidget(SizedImageCenterpointWidgetMixIn, MultiWidget):
+    image_preview_template = None
+    clear_checkbox_template = None
 
-    def __init__(self, widgets=None, attrs=None):
+    def __init__(self, widgets=None, attrs=None, image_preview_template=None):
         widgets = (
-            ClearableFileInputWithImagePreview(attrs={'class':'file-chooser'}),
+            ClearableFileInputWithImagePreview(
+                attrs={'class':'file-chooser'},
+                image_preview_template=self.image_preview_template or None,
+                clear_checkbox_template=self.clear_checkbox_template or None
+            ),
             HiddenInput(
                 attrs={'class':'centerpoint-input'}
             )
@@ -153,6 +166,9 @@ class SizedImageCenterpointClickWidget(SizedImageCenterpointWidgetMixIn, MultiWi
         super(SizedImageCenterpointClickWidget, self).__init__(widgets, attrs)
 
     class Media:
+        css = {
+            'all': ('sizedimagefield/css/sizedimagefield.css',),
+        }
         js = (
             'sizedimagefield/js/sizedimagefield.js',
         )
@@ -170,4 +186,39 @@ class SizedImageCenterpointClickDjangoAdminWidget(SizedImageCenterpointClickWidg
         }
         js = (
             'sizedimagefield/js/sizedimagefield-djangoadmin.js',
+        )
+
+class SizedImageCenterpointClickBootstrap3Widget(SizedImageCenterpointClickWidget):
+    image_preview_template = """
+    <div class="form-group">
+        <label>%(initial_text)s</label>
+        %(initial)s
+    </div>
+    <div class="form-group sizedimage-mod clear">
+        %(clear_template)s
+    </div>
+    <div class="form-group sizedimage-mod preview">
+        <label>%(centerpoint_label)s</label>
+        <div class="image-wrap outer">
+            <div class="point-stage" id="%(point_stage_id)s" data-image_preview_id="%(image_preview_id)s">
+                <div class="centerpoint-point" id="%(centerpoint_id)s"></div>
+            </div>
+            <div class="image-wrap inner">
+                %(image_preview)s
+            </div>
+        </div>
+    </div>
+    <div class="form-group sizedimage-mod new-upload">
+        <label class="sizedimagefield-label">%(input_text)s</label>
+        %(input)s
+    </div>"""
+
+    clear_checkbox_template = '<label for="%(clear_checkbox_id)s" class="checkbox-inline">%(clear)s %(clear_checkbox_label)s</label>'
+
+    class Media:
+        css = {
+            'all': ('sizedimagefield/css/sizedimagefield-bootstrap3.css',),
+        }
+        js = (
+            'sizedimagefield/js/sizedimagefield-jquery.js',
         )
