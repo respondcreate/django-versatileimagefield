@@ -1,1 +1,1 @@
-jQuery(document).ready(generateCenterpointWidget);
+django.jQuery(document).ready(generateCenterpointWidget);
