@@ -1,4 +1,4 @@
-function generateCenterpointWidget(jQuery){
+function generateCenterpointWidget(){
     // Find all images with the class 'sizedimage-preview'
     var crops = document.getElementsByClassName('sizedimage-preview')
     // Iterate through those images
