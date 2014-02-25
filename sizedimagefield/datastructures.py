@@ -1,7 +1,7 @@
-import os, errno
-import StringIO
+import os, errno, StringIO
 
 from PIL import ImageOps, Image
+import numpy
 
 from django.conf import settings
 from django.core.cache import (
@@ -12,7 +12,11 @@ from django.core.cache import (
 from django.core.exceptions import ImproperlyConfigured
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
-from .utils import get_resized_filename, get_resized_path
+from .utils import (
+    get_resized_filename,
+    get_resized_path,
+    get_image_format_from_file_extension
+)
 
 QUAL = getattr(settings, 'SIZEDIMAGEFIELD_RESIZE_IMAGE_QUALITY', 70)
 
@@ -90,10 +94,38 @@ class SizedImage(dict):
         return resized_url
 
     def get_filename_key(self):
+        """
+        Returns a string that will be used to identify the resized image.
+        """
         return self.filename_key
 
-    def process_image(self, image, return_image=False):
+    def process_image(self, image, width, height, image_format):
+        """
+        Arguments:
+            * `image`: a PIL Image instance
+            * `width`: an int representing the intended width
+            * `height`: an int representing the intended height
+            * `image_format`: A valid image mime type (e.g. 'image/jpeg')
+
+        Returns a StringIO.StringIO representation of the resized image.
+
+        Subclasses MUST implement this method.
+        """
         raise NotImplementedError('Subclasses MUST provide a `process_image` method.')
+
+    def preprocess_png(self, png_image):
+        """
+        Receives a PIL Image instance of a PNG and returns a Image instance
+        with a properly processed alpha (transparency) layer that is resize ready.
+
+        Found here: http://stackoverflow.com/a/9146202/1149774
+        """
+        premult = numpy.fromstring(png_image.tobytes(), dtype=numpy.uint8)
+        alpha_layer = premult[3::4] / 255.0
+        premult[::4] *= alpha_layer
+        premult[1::4] *= alpha_layer
+        premult[2::4] *= alpha_layer
+        return Image.frombytes("RGBA", png_image.size, premult.tostring())
 
     def create_resized_image(self, path_to_image, width, height, filename_key):
         """
@@ -124,10 +156,16 @@ class SizedImage(dict):
             image_to_resize = SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE
         else:
             image_to_resize = self.storage.open(path_to_image, 'r')
-
+        file_ext = resized_image_path.rsplit('.')[-1]
+        image_format, in_memory_file_type = get_image_format_from_file_extension(file_ext)
         image = Image.open(image_to_resize)
 
-        imagefile = self.process_image(image, width, height)
+        imagefile = self.process_image(
+            image=image,
+            width=width,
+            height=height,
+            image_format=image_format
+        )
 
         image_in_memory = Image.open(
             StringIO.StringIO(
@@ -138,8 +176,8 @@ class SizedImage(dict):
         file_to_save = InMemoryUploadedFile(
                             imagefile,
                             None,
-                            'foo.jpg',
-                            'image/jpeg',
+                            'foo.%s' % file_ext,
+                            in_memory_file_type,
                             imagefile.len,
                             None
                         )
@@ -167,11 +205,22 @@ class CroppedImage(SizedImage):
             self.crop_centerpoint_as_str()
         )
 
-    def process_image(self, image, width, height):
+    def process_image(self, image, width, height, image_format):
+        """
+        Crops `image` to `width` and `height`
+        """
         imagefile = StringIO.StringIO()
-
-        if image.mode != 'RGB':
-            image = image.convert('RGB')
+        save_kwargs = {
+            'format':image_format
+        }
+        if image_format == 'GIF':
+            save_kwargs['transparency'] = image.info['transparency']
+        elif image_format == 'JPEG':
+            save_kwargs['quality'] = QUAL
+            if image.mode != 'RGB':
+                image = image.convert('RGB')
+        elif image_format == 'PNG':
+            image = self.preprocess_png(image)
 
         ImageOps.fit(
             image=image,
@@ -180,13 +229,7 @@ class CroppedImage(SizedImage):
             centering=self.crop_centerpoint
         ).save(
             imagefile,
-            format="jpeg",
-            quality=QUAL
-        )
-        image_in_memory = Image.open(
-            StringIO.StringIO(
-                imagefile.getvalue()
-            )
+            **save_kwargs
         )
 
         return imagefile
@@ -194,22 +237,29 @@ class CroppedImage(SizedImage):
 class ScaledImage(SizedImage):
     filename_key = 'scale'
 
-    def process_image(self, image, width, height):
+    def process_image(self, image, width, height, image_format):
+        """
+        Scales `image` to fit within `width` and `height`
+        """
         imagefile = StringIO.StringIO()
-
-        if image.mode != 'RGB':
-            image = image.convert('RGB')
+        save_kwargs = {
+            'format':image_format
+        }
+        if image_format == 'GIF':
+            save_kwargs['transparency'] = image.info['transparency']
+        elif image_format == 'JPEG':
+            save_kwargs['quality'] = QUAL
+            if image.mode != 'RGB':
+                image = image.convert('RGB')
+        elif image_format == 'PNG':
+            image = self.preprocess_png(image)
 
         image.thumbnail(
             (width, height),
             Image.ANTIALIAS
         )
-        # IMPORANT! When creating thumbnails the save method MUST be called separately
-        # from the thumbnail method (and not chained in at the end). Why? WHO KNOWS?!
         image.save(
             imagefile,
-            format="jpeg",
-            quality=QUAL
+            **save_kwargs
         )
-
         return imagefile
