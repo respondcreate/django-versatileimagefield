@@ -18,7 +18,7 @@ from .utils import (
     get_image_format_from_file_extension
 )
 
-QUAL = getattr(settings, 'SIZEDIMAGEFIELD_RESIZE_IMAGE_QUALITY', 70)
+QUAL = getattr(settings, 'SIZEDIMAGEFIELD_JPEG_RESIZE_QUALITY', 70)
 
 SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE = getattr(settings, 'SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE', None)
 
@@ -97,7 +97,11 @@ class SizedImage(dict):
         """
         Returns a string that will be used to identify the resized image.
         """
-        return self.filename_key
+        if not getattr(self, 'filename_key'):
+            raise AttributError('SizedImage subclasses must define a `filename_key` '
+                                'attribute or override the `get_filename_key` method.')
+        else:
+            return self.filename_key
 
     def process_image(self, image, width, height, image_format):
         """
@@ -113,19 +117,38 @@ class SizedImage(dict):
         """
         raise NotImplementedError('Subclasses MUST provide a `process_image` method.')
 
-    def preprocess_png(self, png_image):
+    def preprocess_PNG(self, image, **kwargs):
         """
-        Receives a PIL Image instance of a PNG and returns a Image instance
-        with a properly processed alpha (transparency) layer that is resize ready.
-
-        Found here: http://stackoverflow.com/a/9146202/1149774
+        Receives a PIL Image instance of a PNG and returns a 2-tuple:
+            * [0]: Image instance with a properly processed alpha (transparency) layer that
+                   is resize ready. (Found here: http://stackoverflow.com/a/9146202/1149774)
+            * [1]: Empty dict ({})
         """
-        premult = numpy.fromstring(png_image.tobytes(), dtype=numpy.uint8)
+        premult = numpy.fromstring(image.tobytes(), dtype=numpy.uint8)
         alpha_layer = premult[3::4] / 255.0
         premult[::4] *= alpha_layer
         premult[1::4] *= alpha_layer
         premult[2::4] *= alpha_layer
-        return Image.frombytes("RGBA", png_image.size, premult.tostring())
+        return (Image.frombytes("RGBA", image.size, premult.tostring()), {})
+
+    def preprocess_GIF(self, image, **kwargs):
+        """
+        Receives a PIL Image instance of a GIF and returns 2-tuple:
+            * [0]: Original Image instance (passed to `image`)
+            * [1]: Dict with a transparency key (to GIF transparency layer)
+        """
+        return (image, {'transparency': image.info['transparency']})
+
+    def preprocess_JPEG(self, image, **kwargs):
+        """
+        Receives a PIL Image instance of a JPEG and returns 2-tuple:
+            * [0]: Image instance, converted to RGB
+            * [1]: Dict with a quality key (mapped to the value of `QUAL` as
+                   defined by the `SIZEDIMAGEFIELD_JPEG_RESIZE_QUALITY` setting)
+        """
+        if image.mode != 'RGB':
+            image = image.convert('RGB')
+        return (image, {'quality': QUAL})
 
     def create_resized_image(self, path_to_image, width, height, filename_key):
         """
@@ -143,6 +166,7 @@ class SizedImage(dict):
             height=height,
             filename_key=filename_key
         )
+
         if not path_to_image:
             containing_folder, filename = os.path.split(resized_image_path)
             if not os.path.exists(containing_folder):
@@ -156,15 +180,24 @@ class SizedImage(dict):
             image_to_resize = SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE
         else:
             image_to_resize = self.storage.open(path_to_image, 'r')
+
         file_ext = resized_image_path.rsplit('.')[-1]
         image_format, in_memory_file_type = get_image_format_from_file_extension(file_ext)
         image = Image.open(image_to_resize)
+        save_kwargs = {'format':image_format}
+
+        if hasattr(self, 'preprocess_%s' % image_format):
+            image, addl_save_kwargs = getattr(self, 'preprocess_%s' % image_format)(
+                image=image
+            )
+            save_kwargs.update(addl_save_kwargs)
 
         imagefile = self.process_image(
             image=image,
             width=width,
             height=height,
-            image_format=image_format
+            image_format=image_format,
+            save_kwargs=save_kwargs
         )
 
         image_in_memory = Image.open(
@@ -205,29 +238,25 @@ class CroppedImage(SizedImage):
             self.crop_centerpoint_as_str()
         )
 
-    def process_image(self, image, width, height, image_format):
+    def process_image(self, image, width, height, image_format, save_kwargs={}):
         """
         Crops `image` to `width` and `height`
         """
         imagefile = StringIO.StringIO()
-        save_kwargs = {
-            'format':image_format
-        }
-        if image_format == 'GIF':
-            save_kwargs['transparency'] = image.info['transparency']
-        elif image_format == 'JPEG':
-            save_kwargs['quality'] = QUAL
-            if image.mode != 'RGB':
-                image = image.convert('RGB')
-        elif image_format == 'PNG':
-            image = self.preprocess_png(image)
-
-        ImageOps.fit(
+        palette = image.getpalette()
+        fit_image = ImageOps.fit(
             image=image,
             size=(width, height),
             method=Image.ANTIALIAS,
             centering=self.crop_centerpoint
-        ).save(
+        )
+
+        # Using ImageOps.fit on GIFs can introduce issues with their palette
+        # Solution derived from: http://stackoverflow.com/a/4905209/1149774
+        if image_format == 'GIF':
+            fit_image.putpalette(palette)
+
+        fit_image.save(
             imagefile,
             **save_kwargs
         )
@@ -237,23 +266,11 @@ class CroppedImage(SizedImage):
 class ScaledImage(SizedImage):
     filename_key = 'scale'
 
-    def process_image(self, image, width, height, image_format):
+    def process_image(self, image, width, height, image_format, save_kwargs={}):
         """
         Scales `image` to fit within `width` and `height`
         """
         imagefile = StringIO.StringIO()
-        save_kwargs = {
-            'format':image_format
-        }
-        if image_format == 'GIF':
-            save_kwargs['transparency'] = image.info['transparency']
-        elif image_format == 'JPEG':
-            save_kwargs['quality'] = QUAL
-            if image.mode != 'RGB':
-                image = image.convert('RGB')
-        elif image_format == 'PNG':
-            image = self.preprocess_png(image)
-
         image.thumbnail(
             (width, height),
             Image.ANTIALIAS
