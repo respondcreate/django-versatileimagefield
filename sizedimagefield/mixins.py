@@ -1,15 +1,15 @@
 from django.conf import settings
 from django.utils import six
 
-from .datastructures import (
-    CroppedImage,
-    ScaledImage
-)
+from .registry import sizedimageregistry
+from .utils import autodiscover
 from .validators import (
     validate_centerpoint,
     validate_centerpoint_tuple,
     ValidationError
 )
+# Finding SizedImage subclasses in all apps in INSTALLED_APPS
+autodiscover()
 
 class SizedImageMixIn(object):
     crop_centerpoint = (0.5, 0.5)
@@ -18,7 +18,17 @@ class SizedImageMixIn(object):
         if kwargs.get('crop_centerpoint', None):
             self.crop_centerpoint = kwargs['crop_centerpoint']
             del kwargs['crop_centerpoint']
+
         super(SizedImageMixIn, self).__init__(*args, **kwargs)
+        for attr_name, sizedimage_cls in sizedimageregistry._registry.iteritems():
+            setattr(
+                self,
+                attr_name,
+                sizedimage_cls(
+                    path_to_image=self.name,
+                    storage=self.storage
+                )
+            )
 
     def __setattr__(self, key, value):
         if key == 'crop_centerpoint':
@@ -59,18 +69,3 @@ class SizedImageMixIn(object):
             )
         else:
             return False
-
-    @property
-    def scale(self):
-        return ScaledImage(
-            path_to_image=self.name,
-            storage=self.storage
-        )
-
-    @property
-    def crop(self):
-        return CroppedImage(
-            path_to_image=self.name,
-            storage=self.storage,
-            crop_centerpoint=self.crop_centerpoint
-        )
