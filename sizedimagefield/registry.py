@@ -48,3 +48,36 @@ class SizedImageRegistry(object):
             del self._registry[attr_name]
 
 sizedimageregistry = SizedImageRegistry()
+
+def autodiscover():
+    """
+    Auto-discover INSTALLED_APPS sizedimage.py modules and fail silently when
+    not present. This forces an import on them to register any admin bits they
+    may want.
+
+    This is an almost 1-to-1 copy of how django's admin application registers models
+    """
+
+    import copy
+    from django.conf import settings
+    from django.utils.importlib import import_module
+    from django.utils.module_loading import module_has_submodule
+
+    for app in settings.INSTALLED_APPS:
+        mod = import_module(app)
+        # Attempt to import the app's sizedimage module.
+        try:
+            before_import_registry = copy.copy(sizedimageregistry._registry)
+            import_module('%s.sizedimage' % app)
+        except:
+            # Reset the sizedimageregistry to the state before the last import as
+            # this import will have to reoccur on the next request and this
+            # could raise NotRegistered and AlreadyRegistered exceptions
+            # (see django ticket #8245).
+            sizedimageregistry._registry = before_import_registry
+
+            # Decide whether to bubble up this error. If the app just
+            # doesn't have a sizedimage module, we can ignore the error
+            # attempting to import it, otherwise we want it to bubble up.
+            if module_has_submodule(mod, 'sizedimage'):
+                raise

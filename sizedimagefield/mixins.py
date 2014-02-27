@@ -1,8 +1,7 @@
 from django.conf import settings
 from django.utils import six
 
-from .registry import sizedimageregistry
-from .utils import autodiscover
+from .registry import autodiscover, sizedimageregistry
 from .validators import (
     validate_centerpoint,
     validate_centerpoint_tuple,
