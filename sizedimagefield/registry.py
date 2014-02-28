@@ -16,11 +16,11 @@ class SizedImageRegistry(object):
     with the register() method.
     """
 
-    def __init__(self, name='sizedimage_registry'):
-        self._registry = {}  # attr_name -> sizedimage_cls
+    def __init__(self, name='sizedimage_sizedimage_registry'):
+        self._sizedimage_registry = {}  # attr_name -> sizedimage_cls
         self.name = name
 
-    def register(self, attr_name, sizedimage_cls):
+    def register_sizedimage(self, attr_name, sizedimage_cls):
         """
         Registers a new SizedImage subclass (`sizedimage_cls`) to be used
         via the attribute (`attr_name`)
@@ -30,22 +30,22 @@ class SizedImageRegistry(object):
                     'Only subclasses of sizedimagefield.datastructures.SizedImage '
                     'may be registered with the SizedImageRegistry')
 
-        if attr_name in self._registry:
+        if attr_name in self._sizedimage_registry:
             raise AlreadyRegistered('A SizedImage class is already registered to the %s attribute. '
                 'If you would like to override this attribute, use the unregister method' % attr_name)
         else:
-            self._registry[attr_name] = sizedimage_cls
+            self._sizedimage_registry[attr_name] = sizedimage_cls
 
-    def unregister(self, attr_name):
+    def unregister_sizedimage(self, attr_name):
         """
         Unregisters the SizedImage subclass currently assigned to `attr_name`.
 
         If a SizedImage subclass isn't already registered to `attr_name` NotRegistered will raise.
         """
-        if attr_name not in self._registry:
+        if attr_name not in self._sizedimage_registry:
             raise NotRegistered('No SizedImage subclass is registered to %s' % attr_name)
         else:
-            del self._registry[attr_name]
+            del self._sizedimage_registry[attr_name]
 
 sizedimageregistry = SizedImageRegistry()
 
@@ -67,14 +67,14 @@ def autodiscover():
         mod = import_module(app)
         # Attempt to import the app's sizedimage module.
         try:
-            before_import_registry = copy.copy(sizedimageregistry._registry)
+            before_import_sizedimage_registry = copy.copy(sizedimageregistry._sizedimage_registry)
             import_module('%s.sizedimage' % app)
         except:
             # Reset the sizedimageregistry to the state before the last import as
             # this import will have to reoccur on the next request and this
             # could raise NotRegistered and AlreadyRegistered exceptions
             # (see django ticket #8245).
-            sizedimageregistry._registry = before_import_registry
+            sizedimageregistry._sizedimage_registry = before_import_sizedimage_registry
 
             # Decide whether to bubble up this error. If the app just
             # doesn't have a sizedimage module, we can ignore the error

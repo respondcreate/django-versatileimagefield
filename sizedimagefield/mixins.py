@@ -21,7 +21,7 @@ class SizedImageMixIn(object):
             del kwargs['crop_centerpoint']
 
         super(SizedImageMixIn, self).__init__(*args, **kwargs)
-        for attr_name, sizedimage_cls in sizedimageregistry._registry.iteritems():
+        for attr_name, sizedimage_cls in sizedimageregistry._sizedimage_registry.iteritems():
             setattr(
                 self,
                 attr_name,

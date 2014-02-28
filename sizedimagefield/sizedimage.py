@@ -67,5 +67,5 @@ class ScaledImage(SizedImage):
         )
         return imagefile
 
-sizedimageregistry.register('crop', CroppedImage)
-sizedimageregistry.register('scale', ScaledImage)
+sizedimageregistry.register_sizedimage('crop', CroppedImage)
+sizedimageregistry.register_sizedimage('scale', ScaledImage)
