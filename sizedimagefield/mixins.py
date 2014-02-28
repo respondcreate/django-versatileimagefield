@@ -7,7 +7,9 @@ from .validators import (
     validate_centerpoint_tuple,
     ValidationError
 )
-# Finding SizedImage subclasses in all apps in INSTALLED_APPS
+
+# Finding SizedImage subclasses (stored in sizedimage.py files
+# within apps on settings.INSTALLED_APPS)
 autodiscover()
 
 class SizedImageMixIn(object):

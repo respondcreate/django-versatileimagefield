@@ -8,16 +8,47 @@ from django.utils.encoding import filepath_to_uri
 
 SIZEDIMAGEFIELD_DIRECTORY_NAME = '__sized'
 
-PNG = ('PNG', 'image/png')
-GIF = ('GIF', 'image/gif')
+# PIL-supported file formats as found here:
+# https://infohost.nmt.edu/tcc/help/pubs/pil/formats.html
+# (PIL Identifier, mime type)
+BMP  = ('BMP', 'image/bmp')
+DCX  = ('DCX', 'image/dcx')
+EPS  = ('eps', 'image/eps')
+GIF  = ('GIF', 'image/gif')
 JPEG = ('JPEG', 'image/jpeg')
+PCD  = ('PCD', 'image/pcd')
+PCX  = ('PCX', 'image/pcx')
+PDF  = ('PDF', 'application/pdf')
+PNG  = ('PNG', 'image/png')
+PPM  = ('PPM', 'image/x-ppm')
+PSD  = ('PSD', 'image/psd')
+TIFF = ('TIFF', 'image/tiff')
+XBM  = ('XBM', 'image/x-xbitmap')
+XPM  = ('XPM', 'image/x-xpm')
 
-ACCEPTED_FILE_FORMATS = {
+# Mapping file extensions to PIL types/mime types
+FILE_EXTENSION_MAP = {
     'png':PNG,
     'jpe':JPEG,
     'jpeg':JPEG,
     'jpg':JPEG,
-    'gif':GIF
+    'gif':GIF,
+    'bmp':BMP,
+    'dib':BMP,
+    'dcx':DCX,
+    'eps':EPS,
+    'ps':EPS,
+    'pcd':PCD,
+    'pcx':PCX,
+    'pdf':PDF,
+    'pbm':PPM,
+    'pgm':PPM,
+    'ppm':PPM,
+    'psd':PSD,
+    'tif':TIFF,
+    'tiff':TIFF,
+    'xbm':XBM,
+    'xpm':XPM
 }
 
 def get_resized_filename(filename, width, height, filename_key):
@@ -71,7 +102,7 @@ def get_image_format_from_file_extension(file_ext):
         [1]: InMemoryUploadedFile-friendly save format (i.e. 'image/jpeg')
     image_format, in_memory_file_type
     """
-    if file_ext not in ACCEPTED_FILE_FORMATS:
+    if file_ext not in FILE_EXTENSION_MAP:
         return JPEG
     else:
-        return ACCEPTED_FILE_FORMATS[file_ext]
+        return FILE_EXTENSION_MAP[file_ext]
