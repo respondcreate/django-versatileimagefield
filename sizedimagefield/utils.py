@@ -120,6 +120,7 @@ def get_filtered_path(path_to_image, filename_key):
     filtered_filename = get_filtered_filename(filename, filename_key)
     return os.path.join(*[
         containing_folder,
+        '__filtered__',
         filtered_filename
     ])
 

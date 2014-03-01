@@ -1,7 +1,9 @@
 from django.conf import settings
 from django.utils import six
 
+from .datastructures import Filters
 from .registry import autodiscover, sizedimagefield_registry
+from .utils import get_filtered_path
 from .validators import (
     validate_centerpoint,
     validate_centerpoint_tuple,
@@ -12,12 +14,8 @@ from .validators import (
 # within apps on settings.INSTALLED_APPS)
 autodiscover()
 
-class Filters(object):
-    pass
-
 class SizedImageMixIn(object):
     crop_centerpoint = (0.5, 0.5)
-    filters = Filters()
 
     def __init__(self, *args, **kwargs):
         if kwargs.get('crop_centerpoint', None):
@@ -25,7 +23,7 @@ class SizedImageMixIn(object):
             del kwargs['crop_centerpoint']
 
         super(SizedImageMixIn, self).__init__(*args, **kwargs)
-
+        self.filters = Filters(self, sizedimagefield_registry)
         for attr_name, sizedimage_cls in sizedimagefield_registry._sizedimage_registry.iteritems():
             setattr(
                 self,
@@ -35,17 +33,6 @@ class SizedImageMixIn(object):
                     storage=self.storage
                 )
             )
-
-        for attr_name, filter_cls in sizedimagefield_registry._filter_registry.iteritems():
-            setattr(
-                self.filters,
-                attr_name,
-                filter_cls(
-                    path_to_image=self.name,
-                    storage=self.storage
-                )
-            )
-            getattr(self.filters, attr_name).add_sizedimage_attrs(sizedimagefield_registry._sizedimage_registry)
 
     def __setattr__(self, key, value):
         if key == 'crop_centerpoint':
