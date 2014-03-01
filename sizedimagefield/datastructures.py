@@ -23,6 +23,9 @@ if not USE_PLACEHOLDIT:
     SIZEDIMAGEFIELD_PLACEHOLDER_FOLDER,
     SIZEDIMAGEFIELD_PLACEHOLDER_FILENAME = os.path.split(SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE)
 
+class InvalidFilter(Exception):
+    pass
+
 class ProcessedImage(object):
 
     def __init__(self, path_to_image, storage):
@@ -292,12 +295,15 @@ class Filters(dict):
         self.sizedimagefield = sizedimagefield
         self.registry = registry
 
+    def __getattr__(self, key):
+        return self[key]
+
     def __getitem__(self, key):
         try:
             prepped_filter = dict.__getitem__(self, key)
         except KeyError:
             if key not in self.registry._filter_registry:
-                return None
+                raise InvalidFilter('`%s` is an invalid filter.' % key)
             else:
                 filtered_path = get_filtered_path(
                     path_to_image=self.sizedimagefield.name,
