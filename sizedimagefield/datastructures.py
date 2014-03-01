@@ -287,10 +287,11 @@ class FilteredImage(ProcessedImage):
 
         return saved
 
-class Filters(dict):
+class FilterLibrary(dict):
 
-    def __init__(self, sizedimagefield, registry):
-        self.sizedimagefield = sizedimagefield
+    def __init__(self, original_file_location, storage, registry):
+        self.original_file_location = original_file_location
+        self.storage = storage
         self.registry = registry
 
     def __getattr__(self, key):
@@ -304,13 +305,13 @@ class Filters(dict):
                 raise InvalidFilter('`%s` is an invalid filter.' % key)
             else:
                 filtered_path = get_filtered_path(
-                    path_to_image=self.sizedimagefield.name,
+                    path_to_image=self.original_file_location,
                     filename_key=key
                 )
                 filter_cls = self.registry._filter_registry[key]
                 prepped_filter = filter_cls(
-                    path_to_image=self.sizedimagefield.name,
-                    storage=self.sizedimagefield.storage,
+                    path_to_image=self.original_file_location,
+                    storage=self.storage,
                     filename_key=key
                 )
                 if cache.get(filtered_path):
@@ -318,9 +319,9 @@ class Filters(dict):
                     # So we `pass` to skip directly to the return statement.
                     pass
                 else:
-                    if not self.sizedimagefield.storage.exists(filtered_path):
+                    if not self.storage.exists(filtered_path):
                         image_created = prepped_filter.create_filtered_image(
-                            path_to_image=self.sizedimagefield.name,
+                            path_to_image=self.original_file_location,
                             prepared_path=filtered_path
                         )
 
@@ -332,7 +333,7 @@ class Filters(dict):
                         attr_name,
                         sizedimage_cls(
                             path_to_image=filtered_path,
-                            storage=self.sizedimagefield.storage
+                            storage=self.storage
                         )
                     )
                 self[key] = prepped_filter
