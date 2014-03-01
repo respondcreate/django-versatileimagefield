@@ -95,6 +95,34 @@ def get_resized_path(path_to_image, width, height, filename_key, base_url=None):
     # Removing spaces so this path is memcached key friendly
     return path_to_return.replace(' ', '')
 
+def get_filtered_filename(filename, filename_key):
+    """
+    Returns the 'filtered filename' (according to `filename_key`)
+    in the following format:
+    `filename`__`filename_key`__.ext
+    """
+    try:
+        image_name, ext = filename.rsplit('.', 1)
+    except ValueError:
+        image_name = filename
+        ext = 'jpg'
+    return "%(image_name)s__%(filename_key)s__.%(ext)s" % ({
+        'image_name':image_name,
+        'filename_key':filename_key,
+        'ext':ext
+    })
+
+def get_filtered_path(path_to_image, filename_key):
+    """
+    Returns the 'filtered path' of `path_to_image`
+    """
+    containing_folder, filename = os.path.split(path_to_image)
+    filtered_filename = get_filtered_filename(filename, filename_key)
+    return os.path.join(*[
+        containing_folder,
+        filtered_filename
+    ])
+
 def get_image_format_from_file_extension(file_ext):
     """
     Receives a valid image file format and returns a 2-tuple of two strings:

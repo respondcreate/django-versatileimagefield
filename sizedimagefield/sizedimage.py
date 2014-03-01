@@ -2,8 +2,8 @@ import StringIO
 
 from PIL import Image, ImageOps
 
-from .datastructures import SizedImage
-from .registry import sizedimageregistry
+from .datastructures import FilteredImage, SizedImage
+from .registry import sizedimagefield_registry
 
 class CroppedImage(SizedImage):
     filename_key = 'crop'
@@ -24,7 +24,7 @@ class CroppedImage(SizedImage):
             self.crop_centerpoint_as_str()
         )
 
-    def process_image(self, image, width, height, image_format, save_kwargs={}):
+    def process_image(self, image, image_format, width, height, save_kwargs={}):
         """
         Crops `image` to `width` and `height`
         """
@@ -52,7 +52,7 @@ class CroppedImage(SizedImage):
 class ScaledImage(SizedImage):
     filename_key = 'scale'
 
-    def process_image(self, image, width, height, image_format, save_kwargs={}):
+    def process_image(self, image, image_format, width, height, save_kwargs={}):
         """
         Scales `image` to fit within `width` and `height`
         """
@@ -67,5 +67,21 @@ class ScaledImage(SizedImage):
         )
         return imagefile
 
-sizedimageregistry.register_sizedimage('crop', CroppedImage)
-sizedimageregistry.register_sizedimage('scale', ScaledImage)
+class InvertImage(FilteredImage):
+    filename_key = 'invert'
+
+    def process_filter(self, image, image_format, save_kwargs={}):
+        """
+        Inverts an Images Colors
+        """
+        imagefile = StringIO.StringIO()
+        inv_image = ImageOps.invert(image)
+        inv_image.save(
+            imagefile,
+            **save_kwargs
+        )
+        return imagefile
+
+sizedimagefield_registry.register_sizedimage('crop', CroppedImage)
+sizedimagefield_registry.register_sizedimage('scale', ScaledImage)
+sizedimagefield_registry.register_filter('invert', InvertImage)

@@ -13,7 +13,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from .utils import (
-    get_resized_filename,
+    get_filtered_path,
     get_resized_path,
     get_image_format_from_file_extension
 )
@@ -36,15 +36,97 @@ except InvalidCacheBackendError:
 
 SIZEDIMAGEFIELD_CACHE_LENGTH = getattr(settings, 'SIZEDIMAGEFIELD_CACHE_LENGTH', 2592000)
 
-class SizedImage(dict):
+class ProcessedImage(object):
 
     def __init__(self, path_to_image, storage):
         self.path_to_image = path_to_image
         self.storage = storage
+
         if getattr(self, 'filename_key', None) is None:
             raise NotImplementedError(
-                "Subclasses MUST provide a `filename_key` attribute"
+                "%s instances MUST have a `filename_key` attribute" % self.__class__.__name__
             )
+
+    def get_filename_key(self):
+        """
+        Returns a string that will be used to identify the resized image.
+        """
+        if not getattr(self, 'filename_key'):
+            raise AttributError('SizedImage subclasses must define a `filename_key` '
+                                'attribute or override the `get_filename_key` method.')
+        else:
+            return self.filename_key
+
+    def process_image(self, image, image_format, **kwargs):
+        """
+        Arguments:
+            * `image`: a PIL Image instance
+            * `width`: an int representing the intended width
+            * `height`: an int representing the intended height
+            * `image_format`: A valid image mime type (e.g. 'image/jpeg')
+
+        Returns a StringIO.StringIO representation of the resized image.
+
+        Subclasses MUST implement this method.
+        """
+        raise NotImplementedError('Subclasses MUST provide a `process_image` method.')
+
+    def preprocess(self, image, image_format):
+        save_kwargs = {'format':image_format}
+        if hasattr(self, 'preprocess_%s' % image_format):
+            image, addl_save_kwargs = getattr(self, 'preprocess_%s' % image_format)(
+                image=image
+            )
+            save_kwargs.update(addl_save_kwargs)
+
+        return image, save_kwargs
+
+
+    def retrieve_image(self, path_to_image, prepared_path):
+        if not path_to_image:
+            containing_folder, filename = os.path.split(prepared_path)
+            if not os.path.exists(containing_folder):
+                try:
+                    os.makedirs(containing_folder)
+                except OSError as exc:
+                    if exc.errno == errno.EEXIST and os.path.isdir(path):
+                        pass
+                    else:
+                        raise Exception("Can't create directory: '%s' - This is probably due to a permissions issue." % (containing_folder))
+            image = SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE
+        else:
+            image = self.storage.open(path_to_image, 'r')
+        file_ext = prepared_path.rsplit('.')[-1]
+        image_format, mime_type = get_image_format_from_file_extension(file_ext)
+
+        return (
+            Image.open(image),
+            file_ext,
+            image_format,
+            mime_type
+        )
+
+    def save_image(self, imagefile, save_path, file_ext, mime_type):
+        image_in_memory = Image.open(
+            StringIO.StringIO(
+                imagefile.getvalue()
+            )
+        )
+
+        file_to_save = InMemoryUploadedFile(
+                            imagefile,
+                            None,
+                            'foo.%s' % file_ext,
+                            mime_type,
+                            imagefile.len,
+                            None
+                        )
+        file_to_save.seek(0)
+        self.storage.save(save_path, file_to_save)
+
+        return True
+
+class SizedImage(ProcessedImage, dict):
 
     def __setitem__(self, key, value):
         raise NotImplementedError(
@@ -93,17 +175,7 @@ class SizedImage(dict):
                 cache.set(resized_url, 1, SIZEDIMAGEFIELD_CACHE_LENGTH)
         return resized_url
 
-    def get_filename_key(self):
-        """
-        Returns a string that will be used to identify the resized image.
-        """
-        if not getattr(self, 'filename_key'):
-            raise AttributError('SizedImage subclasses must define a `filename_key` '
-                                'attribute or override the `get_filename_key` method.')
-        else:
-            return self.filename_key
-
-    def process_image(self, image, width, height, image_format):
+    def process_image(self, image, image_format, width, height, save_kwargs={}):
         """
         Arguments:
             * `image`: a PIL Image instance
@@ -167,54 +239,66 @@ class SizedImage(dict):
             filename_key=filename_key
         )
 
-        if not path_to_image:
-            containing_folder, filename = os.path.split(resized_image_path)
-            if not os.path.exists(containing_folder):
-                try:
-                    os.makedirs(containing_folder)
-                except OSError as exc:
-                    if exc.errno == errno.EEXIST and os.path.isdir(path):
-                        pass
-                    else:
-                        raise Exception("Can't create directory: '%s' - This is probably due to a permissions issue." % (containing_folder))
-            image_to_resize = SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE
-        else:
-            image_to_resize = self.storage.open(path_to_image, 'r')
+        image, file_ext, image_format, mime_type = self.retrieve_image(path_to_image, resized_image_path)
 
-        file_ext = resized_image_path.rsplit('.')[-1]
-        image_format, in_memory_file_type = get_image_format_from_file_extension(file_ext)
-        image = Image.open(image_to_resize)
-        save_kwargs = {'format':image_format}
-
-        if hasattr(self, 'preprocess_%s' % image_format):
-            image, addl_save_kwargs = getattr(self, 'preprocess_%s' % image_format)(
-                image=image
-            )
-            save_kwargs.update(addl_save_kwargs)
+        image, save_kwargs = self.preprocess(image, image_format)
 
         imagefile = self.process_image(
             image=image,
+            image_format=image_format,
             width=width,
             height=height,
-            image_format=image_format,
             save_kwargs=save_kwargs
         )
 
-        image_in_memory = Image.open(
-            StringIO.StringIO(
-                imagefile.getvalue()
-            )
+        saved = self.save_image(imagefile, resized_image_path, file_ext, mime_type)
+
+        return saved
+
+class FilteredImage(ProcessedImage):
+    name = None
+    url = None
+
+    def __init__(self, path_to_image, storage):
+        super(FilteredImage, self).__init__(path_to_image, storage)
+        filename_key = self.get_filename_key()
+        self.name = get_filtered_path(
+            path_to_image=self.path_to_image,
+            filename_key=filename_key
         )
+        self.url = self.storage.url(self.name)
+        if not self.storage.exists(self.name):
+            image_created = self.create_filtered_image(
+                path_to_image=self.path_to_image,
+                prepared_path=self.name
+            )
 
-        file_to_save = InMemoryUploadedFile(
-                            imagefile,
-                            None,
-                            'foo.%s' % file_ext,
-                            in_memory_file_type,
-                            imagefile.len,
-                            None
-                        )
-        file_to_save.seek(0)
-        self.storage.save(resized_image_path, file_to_save)
+    def add_sizedimage_attrs(self, sizedimage_registry):
+        for attr_name, sizedimage_cls in sizedimage_registry.iteritems():
+            setattr(
+                self,
+                attr_name,
+                sizedimage_cls(
+                    path_to_image=self.name,
+                    storage=self.storage
+                )
+            )
 
-        return True
+    def process_filter(self, image, image_format, save_kwargs={}):
+        raise NotImplementedError('Subclasses MUST provide a `process_filter` method.')
+
+    def create_filtered_image(self, path_to_image, prepared_path):
+        """
+        Creates a resized image.
+        `path_to_image`: The path to the image with the media directory to resize.
+        `prepared_path`:
+        """
+
+        image, file_ext, image_format, mime_type = self.retrieve_image(path_to_image, prepared_path)
+        #print image.__class__
+        image, save_kwargs = self.preprocess(image, image_format)
+        imagefile = self.process_filter(image, image_format, save_kwargs)
+        saved = self.save_image(imagefile, prepared_path, file_ext, mime_type)
+
+        return saved
+
