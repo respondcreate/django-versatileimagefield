@@ -320,8 +320,8 @@ class Filters(dict):
                             prepared_path=filtered_path
                         )
 
-                        # Setting a super-long cache for a resized image (30 Days)
-                        cache.set(self.sizedimagefield.name, 1, SIZEDIMAGEFIELD_CACHE_LENGTH)
+                    # Setting a super-long cache for a resized image (30 Days)
+                    cache.set(filtered_path, 1, SIZEDIMAGEFIELD_CACHE_LENGTH)
                 for attr_name, sizedimage_cls in self.registry._sizedimage_registry.iteritems():
                     setattr(
                         prepped_filter,
