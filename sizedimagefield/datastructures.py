@@ -6,6 +6,7 @@ import numpy
 from django.core.exceptions import ImproperlyConfigured
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
+from .exceptions import InvalidFilter
 from .settings import (
     QUAL,
     USE_PLACEHOLDIT,
@@ -22,9 +23,6 @@ from .utils import (
 if not USE_PLACEHOLDIT:
     SIZEDIMAGEFIELD_PLACEHOLDER_FOLDER,
     SIZEDIMAGEFIELD_PLACEHOLDER_FILENAME = os.path.split(SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE)
-
-class InvalidFilter(Exception):
-    pass
 
 class ProcessedImage(object):
 

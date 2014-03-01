@@ -1,13 +1,5 @@
 from .datastructures import FilteredImage, SizedImage
-
-class AlreadyRegistered(Exception):
-    pass
-
-class NotRegistered(Exception):
-    pass
-
-class InvalidSizedImageSubclass(Exception):
-    pass
+from .exceptions import AlreadyRegistered, InvalidSizedImageSubclass, NotRegistered
 
 class SizedImageFieldRegistry(object):
     """
