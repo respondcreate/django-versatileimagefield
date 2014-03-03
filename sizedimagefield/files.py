@@ -1,5 +1,4 @@
 from django.core.files.base import File
-from django.core.files.images import ImageFile
 from django.db.models.fields.files import (
     FieldFile,
     ImageFieldFile,
@@ -9,8 +8,10 @@ from django.utils import six
 
 from .mixins import SizedImageMixIn
 
+
 class SizedImageFieldFile(SizedImageMixIn, ImageFieldFile):
     pass
+
 
 class SizedImageFileDescriptor(ImageFileDescriptor):
 
@@ -33,7 +34,7 @@ class SizedImageFileDescriptor(ImageFileDescriptor):
         # instance.file`needs to ultimately return some instance of `File`,
         # probably a subclass. Additionally, this returned object needs to have
         # the SizedImageFieldFile API so that users can easily do things like
-        # instance.file.path and have that delegated to the file storage engine.
+        # instance.file.path & have that delegated to the file storage engine.
         # Easy enough if we're strict about assignment in __set__, but if you
         # peek below you can see that we're not. So depending on the current
         # value of the field we have to dynamically construct some sort of
@@ -47,9 +48,9 @@ class SizedImageFileDescriptor(ImageFileDescriptor):
         # then we simply wrap it with the appropriate attribute class according
         # to the file field. [This is FieldFile for FileFields and
         # ImageFieldFile for ImageFields and their subclasses, like this class;
-        # it's also conceivable that user subclasses might also want to subclass
-        # the attribute class]. This object understands how to convert a path to
-        # a file, and also how to handle None.
+        # it's also conceivable that user subclasses might also want to
+        # subclass the attribute class]. This object understands how to convert
+        # a path to a file, and also how to handle None.
         if file is None:
             attr = self.field.attr_class(instance, self.field, file)
             instance.__dict__[self.field.name] = attr
@@ -82,7 +83,7 @@ class SizedImageFileDescriptor(ImageFileDescriptor):
 
         # Finally, because of the (some would say boneheaded) way pickle works,
         # the underlying FieldFile might not actually itself have an associated
-        # file. So we need to reset the details of the FieldFile in those cases.
+        # file. So we need to reset the details of the FieldFile in those cases
         elif isinstance(file, FieldFile) and not hasattr(file, 'field'):
             file.instance = instance
             file.field = self.field

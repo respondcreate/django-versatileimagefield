@@ -7,7 +7,11 @@ from django.core.cache import (
 
 QUAL = getattr(settings, 'SIZEDIMAGEFIELD_JPEG_RESIZE_QUALITY', 70)
 
-SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE = getattr(settings, 'SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE', None)
+SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE = getattr(
+    settings,
+    'SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE',
+    None
+)
 
 if not SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE:
     USE_PLACEHOLDIT = True
@@ -19,4 +23,8 @@ try:
 except InvalidCacheBackendError:
     cache = default_cache
 
-SIZEDIMAGEFIELD_CACHE_LENGTH = getattr(settings, 'SIZEDIMAGEFIELD_CACHE_LENGTH', 2592000)
+SIZEDIMAGEFIELD_CACHE_LENGTH = getattr(
+    settings,
+    'SIZEDIMAGEFIELD_CACHE_LENGTH',
+    2592000
+)

@@ -1,14 +1,13 @@
 from django.conf import settings
-from django.core.exceptions import FieldError, ValidationError
+from django.core.exceptions import ValidationError
 from django.db.models import SubfieldBase
 from django.db.models.fields import CharField
 from django.db.models.fields.files import ImageField
-from django.utils import six
 from django.utils.translation import ugettext_lazy as _
 
 from .files import SizedImageFieldFile, SizedImageFileDescriptor
 from .forms import SizedImageCenterpointClickDjangoAdminField
-from .validators import validate_centerpoint, INVALID_CENTERPOINT_ERROR_MESSAGE
+from .validators import validate_centerpoint
 
 if 'south' in settings.INSTALLED_APPS:
     from south.modelsinspector import add_introspection_rules
@@ -20,15 +19,17 @@ if 'south' in settings.INSTALLED_APPS:
         ]
     )
 
+
 class SizedImageField(ImageField):
     attr_class = SizedImageFieldFile
     descriptor_class = SizedImageFileDescriptor
     description = _('Sized Image Field')
 
     def __init__(self, verbose_name=None, name=None, width_field=None,
-            height_field=None, centerpoint_field=None, **kwargs):
+                 height_field=None, centerpoint_field=None, **kwargs):
         self.centerpoint_field = centerpoint_field
-        super(SizedImageField, self).__init__(verbose_name, name, width_field, height_field, **kwargs)
+        super(SizedImageField, self).__init__(verbose_name, name, width_field,
+                                              height_field, **kwargs)
 
     def pre_save(self, model_instance, add):
         "Returns field's value just before saving."
@@ -47,13 +48,14 @@ class SizedImageField(ImageField):
         This field's centerpoint can be forced to update with force=True,
         which is how SizedImageField.pre_save calls this method.
         """
-        # Nothing to update if the field doesn't have have a centerpoint dimension field.
+        # Nothing to update if the field doesn't have have a centerpoint
+        # dimension field.
         if not self.centerpoint_field:
             return
 
-        # getattr will call the SizedImageFileDescriptor's __get__ method, which
-        # coerces the assigned value into an instance of self.attr_class
-        # (SizedImageFieldFile in this case).
+        # getattr will call the SizedImageFileDescriptor's __get__ method,
+        # which coerces the assigned value into an instance of
+        # self.attr_class(SizedImageFieldFile in this case).
         file = getattr(instance, self.attname)
 
         # Nothing to update if we have no file and not being forced to update.
@@ -61,7 +63,12 @@ class SizedImageField(ImageField):
             return
 
         centerpoint_filled = not(
-            (self.centerpoint_field and not getattr(instance, self.centerpoint_field))
+            (
+                self.centerpoint_field and not getattr(
+                    instance,
+                    self.centerpoint_field
+                )
+            )
         )
         # When the model instance centerpoint field is filled and force
         # is `False`, we are most likely loading data from the database or
@@ -121,7 +128,8 @@ class SizedImageField(ImageField):
                     to_assign = ''
                 else:
                     # This means there is a new upload so we need to unpack
-                    # the tuple and assign the first position to the field attribute
+                    # the tuple and assign the first position to the field
+                    # attribute
                     to_assign = data[0]
         super(SizedImageField, self).save_form_data(instance, to_assign)
 
@@ -131,6 +139,7 @@ class SizedImageField(ImageField):
         defaults = {'form_class': SizedImageCenterpointClickDjangoAdminField}
         kwargs.update(defaults)
         return super(SizedImageField, self).formfield(**defaults)
+
 
 class SizedImageCenterpointField(CharField):
     __metaclass__ = SubfieldBase

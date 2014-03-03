@@ -5,6 +5,7 @@ from PIL import Image, ImageOps
 from .datastructures import FilteredImage, SizedImage
 from .registry import sizedimagefield_registry
 
+
 class CroppedImage(SizedImage):
     filename_key = 'crop'
 
@@ -24,7 +25,8 @@ class CroppedImage(SizedImage):
             self.crop_centerpoint_as_str()
         )
 
-    def process_image(self, image, image_format, width, height, save_kwargs={}):
+    def process_image(self, image, image_format,
+                      width, height, save_kwargs={}):
         """
         Crops `image` to `width` and `height`
         """
@@ -49,10 +51,12 @@ class CroppedImage(SizedImage):
 
         return imagefile
 
+
 class ScaledImage(SizedImage):
     filename_key = 'scale'
 
-    def process_image(self, image, image_format, width, height, save_kwargs={}):
+    def process_image(self, image, image_format,
+                      width, height, save_kwargs={}):
         """
         Scales `image` to fit within `width` and `height`
         """
@@ -66,6 +70,7 @@ class ScaledImage(SizedImage):
             **save_kwargs
         )
         return imagefile
+
 
 class InvertImage(FilteredImage):
     filename_key = 'invert'
@@ -82,6 +87,6 @@ class InvertImage(FilteredImage):
         )
         return imagefile
 
-sizedimagefield_registry.register_sizedimage('crop', CroppedImage)
-sizedimagefield_registry.register_sizedimage('scale', ScaledImage)
+sizedimagefield_registry.register_sizer('crop', CroppedImage)
+sizedimagefield_registry.register_sizer('scale', ScaledImage)
 sizedimagefield_registry.register_filter('invert', InvertImage)

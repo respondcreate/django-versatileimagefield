@@ -1,4 +1,4 @@
-import os, StringIO
+import os
 
 from PIL import Image
 
@@ -8,10 +8,13 @@ from ..settings import (
     USE_PLACEHOLDIT,
     SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE
 )
-from ..utils import  get_image_metadata_from_file_ext
+from ..utils import get_image_metadata_from_file_ext
 
 if not USE_PLACEHOLDIT:
-    PLACEHOLDER_FOLDER, PLACEHOLDER_FILENAME = os.path.split(SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE)
+    PLACEHOLDER_FOLDER, PLACEHOLDER_FILENAME = os.path.split(
+        SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE
+    )
+
 
 class ProcessedImage(object):
 
@@ -29,28 +32,30 @@ class ProcessedImage(object):
 
         Subclasses MUST implement this method.
         """
-        raise NotImplementedError('Subclasses MUST provide a `process_image` method.')
+        raise NotImplementedError(
+            'Subclasses MUST provide a `process_image` method.'
+        )
 
     def preprocess(self, image, image_format):
         """
         An API hook for image pre-processing. Calls any image format specific
-        pre-processors (if defined). I.E. If `image_format` is 'JPEG', this method
-        will look for a method named `preprocess_JPEG`, if found `image` will be
-        passed to it.
+        pre-processors (if defined). I.E. If `image_format` is 'JPEG', this
+        method will look for a method named `preprocess_JPEG`, if found
+        `image` will be passed to it.
 
         Arguments:
             * `image`: a PIL Image instance
             * `image_format`: str, a valid PIL format (i.e. 'JPEG' or 'GIF')
         """
-        save_kwargs = {'format':image_format}
+        save_kwargs = {'format': image_format}
         if hasattr(self, 'preprocess_%s' % image_format):
-            image, addl_save_kwargs = getattr(self, 'preprocess_%s' % image_format)(
-                image=image
-            )
+            image, addl_save_kwargs = getattr(
+                self,
+                'preprocess_%s' % image_format
+            )(image=image)
             save_kwargs.update(addl_save_kwargs)
 
         return image, save_kwargs
-
 
     def retrieve_image(self, path_to_image):
         """
@@ -75,21 +80,25 @@ class ProcessedImage(object):
         )
 
     def save_image(self, imagefile, save_path, file_ext, mime_type):
-        image_in_memory = Image.open(
-            StringIO.StringIO(
-                imagefile.getvalue()
-            )
-        )
+        """
+        Saves an image to self.storage.
+
+        Arguments:
+            `imagefile`: Raw image data, typically a StringIO instance.
+            `save_path`: The path within self.storage where the image should
+                         be saved.
+            `file_ext`: The file extension of the image-to-be-saved.
+            `mime_type`: A valid image mime type (as found in
+                         sizedimagefield.utils)
+        """
 
         file_to_save = InMemoryUploadedFile(
-                            imagefile,
-                            None,
-                            'foo.%s' % file_ext,
-                            mime_type,
-                            imagefile.len,
-                            None
-                        )
+            imagefile,
+            None,
+            'foo.%s' % file_ext,
+            mime_type,
+            imagefile.len,
+            None
+        )
         file_to_save.seek(0)
         self.storage.save(save_path, file_to_save)
-
-        return True

@@ -12,57 +12,60 @@ from .settings import (
 )
 
 if not USE_PLACEHOLDIT:
-    PLACEHOLDER_FOLDER, PLACEHOLDER_FILENAME = os.path.split(SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE)
+    PLACEHOLDER_FOLDER, PLACEHOLDER_FILENAME = os.path.split(
+        SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE
+    )
 
 SIZEDIMAGEFIELD_DIRECTORY_NAME = '__sized'
 
 # PIL-supported file formats as found here:
 # https://infohost.nmt.edu/tcc/help/pubs/pil/formats.html
 # (PIL Identifier, mime type)
-BMP  = ('BMP', 'image/bmp')
-DCX  = ('DCX', 'image/dcx')
-EPS  = ('eps', 'image/eps')
-GIF  = ('GIF', 'image/gif')
+BMP = ('BMP', 'image/bmp')
+DCX = ('DCX', 'image/dcx')
+EPS = ('eps', 'image/eps')
+GIF = ('GIF', 'image/gif')
 JPEG = ('JPEG', 'image/jpeg')
-PCD  = ('PCD', 'image/pcd')
-PCX  = ('PCX', 'image/pcx')
-PDF  = ('PDF', 'application/pdf')
-PNG  = ('PNG', 'image/png')
-PPM  = ('PPM', 'image/x-ppm')
-PSD  = ('PSD', 'image/psd')
+PCD = ('PCD', 'image/pcd')
+PCX = ('PCX', 'image/pcx')
+PDF = ('PDF', 'application/pdf')
+PNG = ('PNG', 'image/png')
+PPM = ('PPM', 'image/x-ppm')
+PSD = ('PSD', 'image/psd')
 TIFF = ('TIFF', 'image/tiff')
-XBM  = ('XBM', 'image/x-xbitmap')
-XPM  = ('XPM', 'image/x-xpm')
+XBM = ('XBM', 'image/x-xbitmap')
+XPM = ('XPM', 'image/x-xpm')
 
 # Mapping file extensions to PIL types/mime types
 FILE_EXTENSION_MAP = {
-    'png':PNG,
-    'jpe':JPEG,
-    'jpeg':JPEG,
-    'jpg':JPEG,
-    'gif':GIF,
-    'bmp':BMP,
-    'dib':BMP,
-    'dcx':DCX,
-    'eps':EPS,
-    'ps':EPS,
-    'pcd':PCD,
-    'pcx':PCX,
-    'pdf':PDF,
-    'pbm':PPM,
-    'pgm':PPM,
-    'ppm':PPM,
-    'psd':PSD,
-    'tif':TIFF,
-    'tiff':TIFF,
-    'xbm':XBM,
-    'xpm':XPM
+    'png': PNG,
+    'jpe': JPEG,
+    'jpeg': JPEG,
+    'jpg': JPEG,
+    'gif': GIF,
+    'bmp': BMP,
+    'dib': BMP,
+    'dcx': DCX,
+    'eps': EPS,
+    'ps': EPS,
+    'pcd': PCD,
+    'pcx': PCX,
+    'pdf': PDF,
+    'pbm': PPM,
+    'pgm': PPM,
+    'ppm': PPM,
+    'psd': PSD,
+    'tif': TIFF,
+    'tiff': TIFF,
+    'xbm': XBM,
+    'xpm': XPM
 }
+
 
 def get_resized_filename(filename, width, height, filename_key):
     """
-    Returns the 'resized filename' (according to `width`, `height` and `filename_key`)
-    in the following format:
+    Returns the 'resized filename' (according to `width`, `height` and
+    `filename_key`) in the following format:
     `filename`-`filename_key`-`width`x`height`.ext
     """
     try:
@@ -71,14 +74,16 @@ def get_resized_filename(filename, width, height, filename_key):
         image_name = filename
         ext = 'jpg'
     return "%(image_name)s-%(filename_key)s-%(width)dx%(height)d.%(ext)s" % ({
-        'image_name':image_name,
-        'filename_key':filename_key,
-        'width':width,
-        'height':height,
-        'ext':ext
+        'image_name': image_name,
+        'filename_key': filename_key,
+        'width': width,
+        'height': height,
+        'ext': ext
     })
 
-def get_resized_path(path_to_image, width, height, filename_key, base_url=None):
+
+def get_resized_path(path_to_image, width, height,
+                     filename_key, base_url=None):
     """
     Returns the 'resized' path of `path_to_image`
     """
@@ -88,7 +93,12 @@ def get_resized_path(path_to_image, width, height, filename_key, base_url=None):
     else:
         containing_folder, filename = os.path.split(path_to_image)
 
-    resized_filename = get_resized_filename(filename, width, height, filename_key)
+    resized_filename = get_resized_filename(
+        filename,
+        width,
+        height,
+        filename_key
+    )
 
     joined_path = os.path.join(*[
         SIZEDIMAGEFIELD_DIRECTORY_NAME,
@@ -103,6 +113,7 @@ def get_resized_path(path_to_image, width, height, filename_key, base_url=None):
     # Removing spaces so this path is memcached key friendly
     return path_to_return.replace(' ', '')
 
+
 def get_filtered_filename(filename, filename_key):
     """
     Returns the 'filtered filename' (according to `filename_key`)
@@ -115,10 +126,11 @@ def get_filtered_filename(filename, filename_key):
         image_name = filename
         ext = 'jpg'
     return "%(image_name)s__%(filename_key)s__.%(ext)s" % ({
-        'image_name':image_name,
-        'filename_key':filename_key,
-        'ext':ext
+        'image_name': image_name,
+        'filename_key': filename_key,
+        'ext': ext
     })
+
 
 def get_filtered_path(path_to_image, filename_key):
     """
@@ -136,6 +148,7 @@ def get_filtered_path(path_to_image, filename_key):
         '__filtered__',
         filtered_filename
     ])
+
 
 def get_image_metadata_from_file_ext(file_ext):
     """

@@ -3,7 +3,6 @@ from django.utils import six
 
 from .datastructures import FilterLibrary
 from .registry import autodiscover, sizedimagefield_registry
-from .utils import get_filtered_path
 from .validators import (
     validate_centerpoint,
     validate_centerpoint_tuple,
@@ -14,6 +13,7 @@ from .validators import (
 # within apps on settings.INSTALLED_APPS)
 autodiscover()
 
+
 class SizedImageMixIn(object):
     crop_centerpoint = (0.5, 0.5)
 
@@ -23,8 +23,15 @@ class SizedImageMixIn(object):
             del kwargs['crop_centerpoint']
 
         super(SizedImageMixIn, self).__init__(*args, **kwargs)
-        self.filters = FilterLibrary(self.name, self.storage, sizedimagefield_registry)
-        for attr_name, sizedimage_cls in sizedimagefield_registry._sizedimage_registry.iteritems():
+        self.filters = FilterLibrary(
+            self.name,
+            self.storage,
+            sizedimagefield_registry
+        )
+        for (
+            attr_name,
+            sizedimage_cls
+        ) in sizedimagefield_registry._sizedimage_registry.iteritems():
             setattr(
                 self,
                 attr_name,
@@ -47,7 +54,7 @@ class SizedImageMixIn(object):
 
     def validate_crop_centerpoint(self, val):
         valid = True
-        while valid == True:
+        while valid is True:
             to_validate = None
             if isinstance(val, tuple):
                 to_validate = val
@@ -68,7 +75,12 @@ class SizedImageMixIn(object):
 
         if getattr(settings, 'DEBUG', True):
             raise ValidationError(
-                message="%s is in invalid centerpoint. `crop_centerpoint` must provide two coordinates, one for the x axis and one for the y where both values are between 0 and 1. You may pass it as either a two-position tuple like this: (0.5,0.5) or as a string where the two values are separated by an 'x' like this: '0.5x0.5'." % val,
+                message="%s is in invalid centerpoint. `crop_centerpoint` must"
+                        " provide two coordinates, one for the x axis and one "
+                        "for the y where both values are between 0 and 1. You "
+                        "may pass it as either a two-position tuple like this:"
+                        " (0.5,0.5) or as a string where the two values are "
+                        "separated by an 'x' like this: '0.5x0.5'." % val,
                 code='invalid_centerpoint'
             )
         else:

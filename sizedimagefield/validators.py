@@ -3,7 +3,12 @@ from ast import literal_eval
 from django.core.exceptions import ValidationError
 from django.utils import six
 
-INVALID_CENTERPOINT_ERROR_MESSAGE = "%s is in invalid centerpoint. A valid centerpoint must provide two coordinates, one for the x axis and one for the y, where both values are between 0 and 1. You may pass it as either a two-position tuple like this: (0.5,0.5) or as a string where the two values are separated by an 'x' like this: '0.5x0.5'."
+INVALID_CENTERPOINT_ERROR_MESSAGE = "%s is in invalid centerpoint. A valid "
+"centerpoint must provide two coordinates, one for the x axis and one "
+"for the y, where both values are between 0 and 1. You may pass it as "
+"either a two-position tuple like this: (0.5,0.5) or as a string where "
+"the two values are separated by an 'x' like this: '0.5x0.5'."
+
 
 def validate_centerpoint_tuple(value):
     """
@@ -16,7 +21,7 @@ def validate_centerpoint_tuple(value):
         valid = True
     else:
         valid = False
-    while valid == True:
+    while valid is True:
         if len(value) == 2 and isinstance(value, tuple):
             for x in value:
                 if x >= 0 and x <= 1:
@@ -27,6 +32,7 @@ def validate_centerpoint_tuple(value):
         else:
             valid = False
     return valid
+
 
 def validate_centerpoint(value, return_converted_tuple=False):
     """
