@@ -114,7 +114,7 @@ def autodiscover():
             before_import_filter_registry = copy.copy(
                 sizedimagefield_registry._filter_registry
             )
-            import_module('%s.sizedimage' % app)
+            import_module('%s.sizedimagefield' % app)
         except:
             # Reset the sizedimagefield_registry to the state before the last
             # import as this import will have to reoccur on the next request
@@ -126,5 +126,5 @@ def autodiscover():
             # Decide whether to bubble up this error. If the app just
             # doesn't have a sizedimage module, we can ignore the error
             # attempting to import it, otherwise we want it to bubble up.
-            if module_has_submodule(mod, 'sizedimage'):
+            if module_has_submodule(mod, 'sizedimagefield'):
                 raise
