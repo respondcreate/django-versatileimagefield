@@ -6,6 +6,14 @@ except ImportError:     # Python 2
 
 from django.utils.encoding import filepath_to_uri
 
+from .settings import (
+    USE_PLACEHOLDIT,
+    SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE
+)
+
+if not USE_PLACEHOLDIT:
+    PLACEHOLDER_FOLDER, PLACEHOLDER_FILENAME = os.path.split(SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE)
+
 SIZEDIMAGEFIELD_DIRECTORY_NAME = '__sized'
 
 # PIL-supported file formats as found here:
@@ -75,7 +83,7 @@ def get_resized_path(path_to_image, width, height, filename_key, base_url=None):
     Returns the 'resized' path of `path_to_image`
     """
     if not path_to_image:
-        filename = SIZEDIMAGEFIELD_PLACEHOLDER_FILENAME
+        filename = PLACEHOLDER_FILENAME
         containing_folder = 'GLOBAL-PLACEHOLDER'
     else:
         containing_folder, filename = os.path.split(path_to_image)
@@ -116,7 +124,12 @@ def get_filtered_path(path_to_image, filename_key):
     """
     Returns the 'filtered path' of `path_to_image`
     """
-    containing_folder, filename = os.path.split(path_to_image)
+    if not path_to_image:
+        filename = PLACEHOLDER_FILENAME
+        containing_folder = 'GLOBAL-PLACEHOLDER'
+    else:
+        containing_folder, filename = os.path.split(path_to_image)
+
     filtered_filename = get_filtered_filename(filename, filename_key)
     return os.path.join(*[
         containing_folder,
@@ -124,7 +137,7 @@ def get_filtered_path(path_to_image, filename_key):
         filtered_filename
     ])
 
-def get_image_format_from_file_extension(file_ext):
+def get_image_metadata_from_file_ext(file_ext):
     """
     Receives a valid image file format and returns a 2-tuple of two strings:
         [0]: Image format (i.e. 'jpg', 'gif' or 'png')

@@ -17,12 +17,11 @@ from .settings import (
 from .utils import (
     get_filtered_path,
     get_resized_path,
-    get_image_format_from_file_extension
+    get_image_metadata_from_file_ext
 )
 
 if not USE_PLACEHOLDIT:
-    SIZEDIMAGEFIELD_PLACEHOLDER_FOLDER,
-    SIZEDIMAGEFIELD_PLACEHOLDER_FILENAME = os.path.split(SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE)
+    PLACEHOLDER_FOLDER, PLACEHOLDER_FILENAME = os.path.split(SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE)
 
 class ProcessedImage(object):
 
@@ -34,9 +33,7 @@ class ProcessedImage(object):
         """
         Arguments:
             * `image`: a PIL Image instance
-            * `width`: an int representing the intended width
-            * `height`: an int representing the intended height
-            * `image_format`: A valid image mime type (e.g. 'image/jpeg')
+            * `image_format`: str, a valid PIL format (i.e. 'JPEG' or 'GIF')
 
         Returns a StringIO.StringIO representation of the resized image.
 
@@ -45,6 +42,16 @@ class ProcessedImage(object):
         raise NotImplementedError('Subclasses MUST provide a `process_image` method.')
 
     def preprocess(self, image, image_format):
+        """
+        An API hook for image pre-processing. Calls any image format specific
+        pre-processors (if defined). I.E. If `image_format` is 'JPEG', this method
+        will look for a method named `preprocess_JPEG`, if found `image` will be
+        passed to it.
+
+        Arguments:
+            * `image`: a PIL Image instance
+            * `image_format`: str, a valid PIL format (i.e. 'JPEG' or 'GIF')
+        """
         save_kwargs = {'format':image_format}
         if hasattr(self, 'preprocess_%s' % image_format):
             image, addl_save_kwargs = getattr(self, 'preprocess_%s' % image_format)(
@@ -55,22 +62,20 @@ class ProcessedImage(object):
         return image, save_kwargs
 
 
-    def retrieve_image(self, path_to_image, prepared_path):
+    def retrieve_image(self, path_to_image):
+        """
+        Returns a PIL Image instance stored at `path_to_image`
+
+        If `path_to_image` is None, the global Placeholder image (as specified
+        by the SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE setting) will be returned.
+        """
         if not path_to_image:
-            containing_folder, filename = os.path.split(prepared_path)
-            if not os.path.exists(containing_folder):
-                try:
-                    os.makedirs(containing_folder)
-                except OSError as exc:
-                    if exc.errno == errno.EEXIST and os.path.isdir(path):
-                        pass
-                    else:
-                        raise Exception("Can't create directory: '%s' - This is probably due to a permissions issue." % (containing_folder))
             image = SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE
+            file_ext = image.rsplit('.')[-1]
         else:
             image = self.storage.open(path_to_image, 'r')
-        file_ext = prepared_path.rsplit('.')[-1]
-        image_format, mime_type = get_image_format_from_file_extension(file_ext)
+            file_ext = path_to_image.rsplit('.')[-1]
+        image_format, mime_type = get_image_metadata_from_file_ext(file_ext)
 
         return (
             Image.open(image),
@@ -125,6 +130,7 @@ class SizedImage(ProcessedImage, dict):
         )
 
     def __getitem__(self, key):
+        """"""
         try:
             width, height = [int(i) for i in key.split('x')]
         except KeyError:
@@ -230,7 +236,7 @@ class SizedImage(ProcessedImage, dict):
             filename_key=filename_key
         )
 
-        image, file_ext, image_format, mime_type = self.retrieve_image(path_to_image, resized_image_path)
+        image, file_ext, image_format, mime_type = self.retrieve_image(path_to_image)
 
         image, save_kwargs = self.preprocess(image, image_format)
 
@@ -279,13 +285,17 @@ class FilteredImage(ProcessedImage):
         `prepared_path`:
         """
 
-        image, file_ext, image_format, mime_type = self.retrieve_image(path_to_image, prepared_path)
+        image, file_ext, image_format, mime_type = self.retrieve_image(path_to_image)
         #print image.__class__
         image, save_kwargs = self.preprocess(image, image_format)
         imagefile = self.process_filter(image, image_format, save_kwargs)
         saved = self.save_image(imagefile, prepared_path, file_ext, mime_type)
 
         return saved
+
+class DummyFilter(object):
+    name = ''
+    url = ''
 
 class FilterLibrary(dict):
 
@@ -304,29 +314,34 @@ class FilterLibrary(dict):
             if key not in self.registry._filter_registry:
                 raise InvalidFilter('`%s` is an invalid filter.' % key)
             else:
-                filtered_path = get_filtered_path(
-                    path_to_image=self.original_file_location,
-                    filename_key=key
-                )
-                filter_cls = self.registry._filter_registry[key]
-                prepped_filter = filter_cls(
-                    path_to_image=self.original_file_location,
-                    storage=self.storage,
-                    filename_key=key
-                )
-                if cache.get(filtered_path):
-                    # The sized path exists in the cache so the image already exists.
-                    # So we `pass` to skip directly to the return statement.
-                    pass
+                if not self.original_file_location and USE_PLACEHOLDIT:
+                    filtered_path = None
+                    prepped_filter = DummyFilter()
                 else:
-                    if not self.storage.exists(filtered_path):
-                        image_created = prepped_filter.create_filtered_image(
-                            path_to_image=self.original_file_location,
-                            prepared_path=filtered_path
-                        )
+                    filtered_path = get_filtered_path(
+                        path_to_image=self.original_file_location,
+                        filename_key=key
+                    )
+                    filter_cls = self.registry._filter_registry[key]
+                    prepped_filter = filter_cls(
+                        path_to_image=self.original_file_location,
+                        storage=self.storage,
+                        filename_key=key
+                    )
+                    if cache.get(filtered_path):
+                        # The sized path exists in the cache so the image already exists.
+                        # So we `pass` to skip directly to the return statement.
+                        pass
+                    else:
+                        if not self.storage.exists(filtered_path):
+                            image_created = prepped_filter.create_filtered_image(
+                                path_to_image=self.original_file_location,
+                                prepared_path=filtered_path
+                            )
 
-                    # Setting a super-long cache for a resized image (30 Days)
-                    cache.set(filtered_path, 1, SIZEDIMAGEFIELD_CACHE_LENGTH)
+                        # Setting a super-long cache for a resized image (30 Days)
+                        cache.set(filtered_path, 1, SIZEDIMAGEFIELD_CACHE_LENGTH)
+
                 for attr_name, sizedimage_cls in self.registry._sizedimage_registry.iteritems():
                     setattr(
                         prepped_filter,
