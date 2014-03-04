@@ -17,6 +17,21 @@ if not USE_PLACEHOLDIT:
 
 
 class ProcessedImage(object):
+    """
+    A base class for processing/saving different renditions of an image.
+
+    Constructor arguments:
+        * `path_to_image`: A path to a file within `storage`
+        * `storage`: A django storage class
+
+    Subclasses must define the `process_image` method. see
+    sizedimagefield.datastructures.filteredimage.FilteredImage and
+    sizedimagefield.datastructures.sizedimage.SizedImage
+    for examples.
+
+    Includes a preprocessing API based on image format/file type. See
+    the `preprocess` method for more specific information.
+    """
 
     def __init__(self, path_to_image, storage):
         self.path_to_image = path_to_image
@@ -46,6 +61,12 @@ class ProcessedImage(object):
         Arguments:
             * `image`: a PIL Image instance
             * `image_format`: str, a valid PIL format (i.e. 'JPEG' or 'GIF')
+
+        Subclasses should return a 2-tuple:
+            * [0]: A PIL Image instance.
+            * [1]: A dictionary of additional keyword arguments to be used
+                   when the instance is saved. If no additional keyword
+                   arguments, return an empty dict ({}).
         """
         save_kwargs = {'format': image_format}
         if hasattr(self, 'preprocess_%s' % image_format):

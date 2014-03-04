@@ -15,6 +15,10 @@ autodiscover()
 
 
 class SizedImageMixIn(object):
+    """
+    A mix-in that provides the filtering/sizing API and crop centering
+    support for django.db.models.fields.files.ImageField
+    """
     crop_centerpoint = (0.5, 0.5)
 
     def __init__(self, *args, **kwargs):

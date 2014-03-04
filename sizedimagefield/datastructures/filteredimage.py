@@ -14,7 +14,17 @@ class InvalidFilter(Exception):
 
 class FilteredImage(ProcessedImage):
     """
+    A ProcessedImage subclass that applies a filter to an image.
 
+    Constructor arguments:
+        * `path_to_image`: The path within `storage` of the image
+                           to filter.
+        * `storage`: A django storage class.
+        * `filename_key`: A string that is included in the filtered
+                          filename to identify it. This should be short
+                          and descriptive (i.e. 'grayscale' or 'invert')
+
+    Subclasses must implement a process_filter method.
     """
     name = None
     url = None
@@ -28,14 +38,24 @@ class FilteredImage(ProcessedImage):
         self.url = self.storage.url(self.name)
 
     def process_filter(self, image, image_format, save_kwargs={}):
+        """
+        The API hook for subclasses to implement image filtering.
+
+        Arguments:
+            * `image`: A PIL Image instance.
+            * `image_format`: A valid PIL file identifier (i.e. 'JPEG'
+                              'PNG', 'GIF' etc)
+            * `save_kwargs`: Any additional save keyword arguments that
+                             will be used by self.save_image
+        """
         raise NotImplementedError(
             'Subclasses MUST provide a `process_filter` method.')
 
     def create_filtered_image(self, path_to_image, prepared_path):
         """
         Creates a resized image.
-        `path_to_image`: The path to the image with the media directory to
-                         resize.
+        `path_to_image`: The path to the image with the media directory
+                         to resize.
         `prepared_path`: The path on disk to save the filtered image
         """
 
@@ -50,8 +70,8 @@ class FilteredImage(ProcessedImage):
 class DummyFilter(object):
     """
     A 'dummy' version of FilteredImage which is only used if
-    .settings.USE_PLACEHOLDIT is True (i.e. if
-        django.conf.settings.SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE is unset)
+    .settings.USE_PLACEHOLDIT is True (i.e. if the
+    SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE is unset)
     """
     name = ''
     url = ''
@@ -79,8 +99,8 @@ class FilterLibrary(dict):
         Returns a FilteredImage instance built from the FilteredImage subclass
         associated with self.registry[key]
 
-        It no FilteredImage subclass is associated with self.registry[key],
-        InvalidFilter raise.
+        If no FilteredImage subclass is associated with self.registry[key],
+        InvalidFilter will raise.
         """
         try:
             # FilteredImage instances are not built until they're accessed for
@@ -126,7 +146,8 @@ class FilterLibrary(dict):
                                 prepared_path=filtered_path
                             )
 
-                        # Setting a super-long cache for a resized image
+                        # Setting a super-long cache for the newly created
+                        # image
                         cache.set(
                             filtered_path,
                             1,
@@ -135,7 +156,7 @@ class FilterLibrary(dict):
 
                 # 'Bolting' all image sizers within
                 # `self.registry._sizedimage_registry` onto
-                # he prepped_filter instance
+                # the prepped_filter instance
                 for (
                         attr_name, sizedimage_cls
                 ) in self.registry._sizedimage_registry.iteritems():

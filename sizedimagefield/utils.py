@@ -1,7 +1,7 @@
 import os
 try:
     from urllib.parse import urljoin
-except ImportError:     # Python 2
+except ImportError:  # Python 2
     from urlparse import urljoin
 
 from django.utils.encoding import filepath_to_uri
@@ -143,11 +143,13 @@ def get_filtered_path(path_to_image, filename_key):
         containing_folder, filename = os.path.split(path_to_image)
 
     filtered_filename = get_filtered_filename(filename, filename_key)
-    return os.path.join(*[
+    path_to_return = os.path.join(*[
         containing_folder,
         '__filtered__',
         filtered_filename
     ])
+    # Removing spaces so this path is memcached key friendly
+    return path_to_return.replace(' ', '')
 
 
 def get_image_metadata_from_file_ext(file_ext):

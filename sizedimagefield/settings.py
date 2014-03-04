@@ -26,5 +26,5 @@ except InvalidCacheBackendError:
 SIZEDIMAGEFIELD_CACHE_LENGTH = getattr(
     settings,
     'SIZEDIMAGEFIELD_CACHE_LENGTH',
-    2592000
+    2592000  # 30 earth days
 )

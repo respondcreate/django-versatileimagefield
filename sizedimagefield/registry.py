@@ -15,9 +15,11 @@ class NotRegistered(Exception):
 
 class SizedImageFieldRegistry(object):
     """
-    A SizedImageFieldRegistry object allows new SizedImage subclasses to be
-    dynamically added to all SizedImageFileField instances. New SizedImage
-    subclasses are registered with the register() method.
+    A SizedImageFieldRegistry object allows new SizedImage and FilteredImage
+    subclasses to be dynamically added to all SizedImageFileField instances
+    at runtime. New SizedImage subclasses are registered with the
+    register_sizer method. New ProcessedImage subclasses are registered
+    with the register_filter method.
     """
 
     def __init__(self, name='sizedimage_sizedimage_registry'):
@@ -99,11 +101,11 @@ sizedimagefield_registry = SizedImageFieldRegistry()
 def autodiscover():
     """
     Auto-discover INSTALLED_APPS sizedimage.py modules and fail silently when
-    not present. This forces an import on them to register any admin bits they
-    may want.
+    not present. This forces an import on them to register any sizedimagefield
+    bits they may want.
 
-    This is an almost 1-to-1 copy of how django's admin application registers
-    models
+    This is a near 1-to-1 copy of how django's admin application registers
+    models.
     """
 
     import copy
