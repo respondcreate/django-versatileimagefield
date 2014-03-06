@@ -9,10 +9,6 @@ from .registry import sizedimagefield_registry
 class CroppedImage(SizedImage):
     filename_key = 'crop'
 
-    def __init__(self, path_to_image, storage, crop_centerpoint=(0.5, 0.5)):
-        self.crop_centerpoint = crop_centerpoint
-        super(CroppedImage, self).__init__(path_to_image, storage)
-
     def crop_centerpoint_as_str(self):
         return "%s__%s" % (
             str(self.crop_centerpoint[0]).replace('.', '-'),

@@ -156,7 +156,9 @@ class SizedImageCenterpointField(CharField):
             except ValidationError:
                 raise
             else:
-                kwargs['default'] = self.get_prep_value(value=valid_centerpoint)
+                kwargs['default'] = self.get_prep_value(
+                    value=valid_centerpoint
+                )
 
         super(SizedImageCenterpointField, self).__init__(*args, **kwargs)
         self.validators.append(validate_centerpoint)

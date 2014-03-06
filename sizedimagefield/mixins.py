@@ -19,18 +19,37 @@ class SizedImageMixIn(object):
     A mix-in that provides the filtering/sizing API and crop centering
     support for django.db.models.fields.files.ImageField
     """
-    crop_centerpoint = (0.5, 0.5)
 
     def __init__(self, *args, **kwargs):
-        if kwargs.get('crop_centerpoint', None):
-            self.crop_centerpoint = kwargs['crop_centerpoint']
-            del kwargs['crop_centerpoint']
-
         super(SizedImageMixIn, self).__init__(*args, **kwargs)
+        # Setting initial centerpoint
+        if self.field.centerpoint_field:
+            instance_centerpoint_value = getattr(
+                self.instance,
+                self.field.centerpoint_field,
+                (0.5, 0.5)
+            )
+            self.crop_centerpoint = instance_centerpoint_value
+        else:
+            self.crop_centerpoint = (0.5, 0.5)
+
+    @property
+    def crop_centerpoint(self):
+        return self._centerpoint_value
+
+    @crop_centerpoint.setter
+    def crop_centerpoint(self, value):
+        centerpoint = self.validate_crop_centerpoint(value)
+        if centerpoint is not False:
+            self._centerpoint_value = centerpoint
+            self.build_filters_and_sizers(centerpoint)
+
+    def build_filters_and_sizers(self, centerpoint_value):
         self.filters = FilterLibrary(
             self.name,
             self.storage,
-            sizedimagefield_registry
+            sizedimagefield_registry,
+            centerpoint_value
         )
         for (
             attr_name,
@@ -41,20 +60,10 @@ class SizedImageMixIn(object):
                 attr_name,
                 sizedimage_cls(
                     path_to_image=self.name,
-                    storage=self.storage
+                    storage=self.storage,
+                    crop_centerpoint=centerpoint_value
                 )
             )
-
-    def __setattr__(self, key, value):
-        if key == 'crop_centerpoint':
-            if not value:
-                return self.crop_centerpoint
-            else:
-                center_point = self.validate_crop_centerpoint(value)
-                if center_point is not False:
-                    super(SizedImageMixIn, self).__setattr__(key, center_point)
-        else:
-            super(SizedImageMixIn, self).__setattr__(key, value)
 
     def validate_crop_centerpoint(self, val):
         valid = True
@@ -79,12 +88,14 @@ class SizedImageMixIn(object):
 
         if getattr(settings, 'DEBUG', True):
             raise ValidationError(
-                message="%s is in invalid centerpoint. `crop_centerpoint` must"
-                        " provide two coordinates, one for the x axis and one "
-                        "for the y where both values are between 0 and 1. You "
-                        "may pass it as either a two-position tuple like this:"
-                        " (0.5,0.5) or as a string where the two values are "
-                        "separated by an 'x' like this: '0.5x0.5'." % val,
+                message="`%s` is in invalid centerpoint. `crop_centerpoint` "
+                        "must provide two coordinates, one for the x axis and "
+                        "one for the y where both values are between 0 and 1. "
+                        "You may pass it as either a two-position tuple like "
+                        "this: (0.5, 0.5) or as a string where the two values"
+                        "are separated by an 'x' like this: '0.5x0.5'." % str(
+                            val
+                        ),
                 code='invalid_centerpoint'
             )
         else:

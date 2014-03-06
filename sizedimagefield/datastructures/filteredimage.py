@@ -86,10 +86,12 @@ class FilterLibrary(dict):
     sizedimageregistry (via sizedimageregistry.register_sizer)
     """
 
-    def __init__(self, original_file_location, storage, registry):
+    def __init__(self, original_file_location,
+                 storage, registry, crop_centerpoint):
         self.original_file_location = original_file_location
         self.storage = storage
         self.registry = registry
+        self.crop_centerpoint = crop_centerpoint
 
     def __getattr__(self, key):
         return self[key]
@@ -165,7 +167,8 @@ class FilterLibrary(dict):
                         attr_name,
                         sizedimage_cls(
                             path_to_image=filtered_path,
-                            storage=self.storage
+                            storage=self.storage,
+                            crop_centerpoint=self.crop_centerpoint
                         )
                     )
                 # Assigning `prepped_filter` to `key` so future access

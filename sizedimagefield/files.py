@@ -56,7 +56,6 @@ class SizedImageFileDescriptor(ImageFileDescriptor):
             instance.__dict__[self.field.name] = attr
 
         elif isinstance(file, six.string_types):
-
             attr = self.field.attr_class(
                 instance=instance,
                 field=self.field,

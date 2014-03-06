@@ -25,7 +25,7 @@ class SizedImage(ProcessedImage, dict):
     examples.
     """
 
-    def __init__(self, path_to_image, storage):
+    def __init__(self, path_to_image, storage, crop_centerpoint=None):
 
         if getattr(self, 'filename_key', None) is None:
             raise NotImplementedError(
@@ -33,6 +33,7 @@ class SizedImage(ProcessedImage, dict):
                 " attribute" % self.__class__.__name__
             )
         super(SizedImage, self).__init__(path_to_image, storage)
+        self.crop_centerpoint = crop_centerpoint
 
     def get_filename_key(self):
         """
