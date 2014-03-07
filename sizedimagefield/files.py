@@ -19,10 +19,10 @@ class SizedImageFileDescriptor(ImageFileDescriptor):
         previous_file = instance.__dict__.get(self.field.name)
         super(SizedImageFileDescriptor, self).__set__(instance, value)
 
-        # Updating centerpoint_field on attribute set
+        # Updating ppoi_field on attribute set
         if previous_file is not None:
             self.field.update_dimension_fields(instance, force=True)
-            self.field.update_centerpoint_field(instance, force=True)
+            self.field.update_ppoi_field(instance, force=True)
 
     def __get__(self, instance=None, owner=None):
         if instance is None:
@@ -61,12 +61,12 @@ class SizedImageFileDescriptor(ImageFileDescriptor):
                 field=self.field,
                 name=file
             )
-            # Check if this field has a centerpoint_field assigned
-            if attr.field.centerpoint_field:
-                # Pulling the current value of the centerpoint_field...
-                centerpoint = instance.__dict__[attr.field.centerpoint_field]
+            # Check if this field has a ppoi_field assigned
+            if attr.field.ppoi_field:
+                # Pulling the current value of the ppoi_field...
+                ppoi = instance.__dict__[attr.field.ppoi_field]
                 # ...and assigning it to SizedImageField instance
-                attr.crop_centerpoint = centerpoint
+                attr.ppoi = ppoi
 
             instance.__dict__[self.field.name] = attr
 
@@ -88,9 +88,9 @@ class SizedImageFileDescriptor(ImageFileDescriptor):
             file.field = self.field
             file.storage = self.field.storage
 
-            if file.field.centerpoint_field:
-                centerpoint = instance.__dict__[file.field.centerpoint_field]
-                file.crop_centerpoint = centerpoint
+            if file.field.ppoi_field:
+                ppoi = instance.__dict__[file.field.ppoi_field]
+                file.ppoi = ppoi
 
         # That was fun, wasn't it?
         return instance.__dict__[self.field.name]

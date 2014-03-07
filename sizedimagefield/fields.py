@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from .files import SizedImageFieldFile, SizedImageFileDescriptor
 from .forms import SizedImageCenterpointClickDjangoAdminField
-from .validators import validate_centerpoint
+from .validators import validate_ppoi
 
 if 'south' in settings.INSTALLED_APPS:
     from south.modelsinspector import add_introspection_rules
@@ -15,7 +15,7 @@ if 'south' in settings.INSTALLED_APPS:
         [],
         [
             "^sizedimagefield\.fields\.SizedImageField",
-            "^sizedimagefield\.fields\.SizedImageCenterpointField",
+            "^sizedimagefield\.fields\.SizedImagePPOIField",
         ]
     )
 
@@ -26,31 +26,31 @@ class SizedImageField(ImageField):
     description = _('Sized Image Field')
 
     def __init__(self, verbose_name=None, name=None, width_field=None,
-                 height_field=None, centerpoint_field=None, **kwargs):
-        self.centerpoint_field = centerpoint_field
+                 height_field=None, ppoi_field=None, **kwargs):
+        self.ppoi_field = ppoi_field
         super(SizedImageField, self).__init__(verbose_name, name, width_field,
                                               height_field, **kwargs)
 
     def pre_save(self, model_instance, add):
         "Returns field's value just before saving."
         file = super(SizedImageField, self).pre_save(model_instance, add)
-        self.update_centerpoint_field(model_instance, force=True)
+        self.update_ppoi_field(model_instance, force=True)
         return file
 
-    def update_centerpoint_field(self, instance, force=False, *args, **kwargs):
+    def update_ppoi_field(self, instance, force=False, *args, **kwargs):
         """
-        Updates field's centerpoint field, if defined.
+        Updates field's ppoi field, if defined.
 
         This method is hooked up this field's pre_save method to update
-        the centerpoint immediately before the model instance (`instance`)
+        the ppoi immediately before the model instance (`instance`)
         it is associated with is saved.
 
-        This field's centerpoint can be forced to update with force=True,
+        This field's ppoi can be forced to update with force=True,
         which is how SizedImageField.pre_save calls this method.
         """
-        # Nothing to update if the field doesn't have have a centerpoint
+        # Nothing to update if the field doesn't have have a ppoi
         # dimension field.
-        if not self.centerpoint_field:
+        if not self.ppoi_field:
             return
 
         # getattr will call the SizedImageFileDescriptor's __get__ method,
@@ -62,50 +62,50 @@ class SizedImageField(ImageField):
         if not file and not force:
             return
 
-        centerpoint_filled = not(
+        ppoi_filled = not(
             (
-                self.centerpoint_field and not getattr(
+                self.ppoi_field and not getattr(
                     instance,
-                    self.centerpoint_field
+                    self.ppoi_field
                 )
             )
         )
-        # When the model instance centerpoint field is filled and force
+        # When the model instance ppoi field is filled and force
         # is `False`, we are most likely loading data from the database or
         # updating an image field that already had an image stored. In the
-        # first case, we don't want to update the centerpoint field because
+        # first case, we don't want to update the ppoi field because
         # we are already getting the value from the database. In the second
-        # case, we do want to update the centerpoint field and will skip this
+        # case, we do want to update the ppoi field and will skip this
         # return because force will be `True` since this method was called
         # from SizedImageFileDescriptor.__set__.
-        if centerpoint_filled and not force:
+        if ppoi_filled and not force:
             return
 
         # file should be an instance of SizedImageFieldFile or should be None.
         if file and not isinstance(file, tuple):
-            centerpoint = file.crop_centerpoint
+            ppoi = file.ppoi
         else:
-            # No file, so clear the centerpoint field.
-            centerpoint = None
+            # No file, so clear the ppoi field.
+            ppoi = None
 
-        # Update the centerpoint field.
-        if self.centerpoint_field:
-            setattr(instance, self.centerpoint_field, centerpoint)
+        # Update the ppoi field.
+        if self.ppoi_field:
+            setattr(instance, self.ppoi_field, ppoi)
 
     def save_form_data(self, instance, data):
         """
         Handles data sent from MultiValueField forms that set
-        crop_centerpoint values.
+        ppoi values.
 
         `instance`: The model instance that is being altered via a form
         `data`: The data sent from the form to this field which can be either:
         * `None`: This is unset data from an optional field
-        * A two-position tuple: (image_form_data, centerpoint_data)
+        * A two-position tuple: (image_form_data, ppoi_data)
             * `image_form-data` options:
                 * `None` the file for this field is unchanged
                 * `False` unassign the file form the field
-            * `centerpoint_data` data structure:
-                * `%(x_coordinate)sx%(y_coordinate)s': The centerpoint data to
+            * `ppoi_data` data structure:
+                * `%(x_coordinate)sx%(y_coordinate)s': The ppoi data to
                   assign to the unchanged file
 
         """
@@ -118,9 +118,9 @@ class SizedImageField(ImageField):
             elif isinstance(data, tuple):
                 if data[0] is None:
                     # This means the file hasn't changed but we need to
-                    # update the centerpoint
+                    # update the ppoi
                     current_field = getattr(instance, self.name)
-                    current_field.crop_centerpoint = data[1]
+                    current_field.ppoi = data[1]
                     to_assign = current_field
                 elif data[0] is False:
                     # This means the 'Clear' checkbox was checked so we
@@ -141,7 +141,7 @@ class SizedImageField(ImageField):
         return super(SizedImageField, self).formfield(**defaults)
 
 
-class SizedImageCenterpointField(CharField):
+class SizedImagePPOIField(CharField):
     __metaclass__ = SubfieldBase
 
     def __init__(self, *args, **kwargs):
@@ -149,7 +149,7 @@ class SizedImageCenterpointField(CharField):
             kwargs['default'] = '0.5x0.5'
         else:
             try:
-                valid_centerpoint = validate_centerpoint(
+                valid_ppoi = validate_ppoi(
                     kwargs['default'],
                     return_converted_tuple=True
                 )
@@ -157,16 +157,16 @@ class SizedImageCenterpointField(CharField):
                 raise
             else:
                 kwargs['default'] = self.get_prep_value(
-                    value=valid_centerpoint
+                    value=valid_ppoi
                 )
 
-        super(SizedImageCenterpointField, self).__init__(*args, **kwargs)
-        self.validators.append(validate_centerpoint)
+        super(SizedImagePPOIField, self).__init__(*args, **kwargs)
+        self.validators.append(validate_ppoi)
 
     def to_python(self, value):
         if value is None:
             value = '0.5x0.5'
-        to_return = validate_centerpoint(
+        to_return = validate_ppoi(
             value, return_converted_tuple=True
         )
         return to_return

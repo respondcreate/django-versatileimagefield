@@ -9,16 +9,16 @@ from .registry import sizedimagefield_registry
 class CroppedImage(SizedImage):
     filename_key = 'crop'
 
-    def crop_centerpoint_as_str(self):
+    def ppoi_as_str(self):
         return "%s__%s" % (
-            str(self.crop_centerpoint[0]).replace('.', '-'),
-            str(self.crop_centerpoint[1]).replace('.', '-')
+            str(self.ppoi[0]).replace('.', '-'),
+            str(self.ppoi[1]).replace('.', '-')
         )
 
     def get_filename_key(self):
         return "%s-c%s" % (
             self.filename_key,
-            self.crop_centerpoint_as_str()
+            self.ppoi_as_str()
         )
 
     def process_image(self, image, image_format,
@@ -32,7 +32,7 @@ class CroppedImage(SizedImage):
             image=image,
             size=(width, height),
             method=Image.ANTIALIAS,
-            centering=self.crop_centerpoint
+            centering=self.ppoi
         )
 
         # Using ImageOps.fit on GIFs can introduce issues with their palette

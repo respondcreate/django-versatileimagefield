@@ -6,18 +6,18 @@ function generateCenterpointWidget(){
         var crop = crops[x],
             point_stage = document.getElementById(crop.getAttribute('data-point_stage_id')),
             hidden_field = document.getElementById(crop.getAttribute('data-hidden_field_id')),
-            point = document.getElementById(crop.getAttribute('data-centerpoint_id')),
-            current_centerpoint = hidden_field.value.split('x')
-        // Sizing the centerpoint stage to the size the sized image
+            point = document.getElementById(crop.getAttribute('data-ppoi_id')),
+            current_ppoi = hidden_field.value.split('x')
+        // Sizing the ppoi stage to the size the sized image
         point_stage.width = crop.clientWidth
         point_stage.height = crop.clientHeight
         point_stage.style.width = crop.clientWidth + 'px'
         point_stage.style.height = crop.clientHeight + 'px'
         // Assigning the click handler
         point_stage.onclick = cropClick
-        // Setting the centerpoint to the current value of `hidden_field`
-        point.style.left = ((point_stage.width * parseFloat(current_centerpoint[0])) - (point.offsetWidth / 2)) + 'px'
-        point.style.top = ((point_stage.height * parseFloat(current_centerpoint[1])) - (point.offsetHeight / 2)) + 'px'
+        // Setting the ppoi to the current value of `hidden_field`
+        point.style.left = ((point_stage.width * parseFloat(current_ppoi[0])) - (point.offsetWidth / 2)) + 'px'
+        point.style.top = ((point_stage.height * parseFloat(current_ppoi[1])) - (point.offsetHeight / 2)) + 'px'
     })()}
 
     function cropClick (e) {
@@ -25,7 +25,7 @@ function generateCenterpointWidget(){
             y_coord = parseFloat(e.offsetY / this.height).toFixed(2),
             cropped_image = document.getElementById(this.getAttribute('data-image_preview_id')),
             hidden_input = document.getElementById(cropped_image.getAttribute('data-hidden_field_id')),
-            point = document.getElementById(cropped_image.getAttribute('data-centerpoint_id')),
+            point = document.getElementById(cropped_image.getAttribute('data-ppoi_id')),
             val = x_coord + 'x' + y_coord
         hidden_input.value = val
         point.style.top = (e.offsetY - (point.offsetWidth / 2)) + 'px'

@@ -3,14 +3,14 @@ from ast import literal_eval
 from django.core.exceptions import ValidationError
 from django.utils import six
 
-INVALID_CENTERPOINT_ERROR_MESSAGE = "%s is in invalid centerpoint. A valid "
-"centerpoint must provide two coordinates, one for the x axis and one "
+INVALID_CENTERPOINT_ERROR_MESSAGE = "%s is in invalid ppoi. A valid "
+"ppoi must provide two coordinates, one for the x axis and one "
 "for the y, where both values are between 0 and 1. You may pass it as "
 "either a two-position tuple like this: (0.5,0.5) or as a string where "
 "the two values are separated by an 'x' like this: '0.5x0.5'."
 
 
-def validate_centerpoint_tuple(value):
+def validate_ppoi_tuple(value):
     """
     Validates that a tuple (`value`)...
     ...has a len of exactly 2
@@ -34,7 +34,7 @@ def validate_centerpoint_tuple(value):
     return valid
 
 
-def validate_centerpoint(value, return_converted_tuple=False):
+def validate_ppoi(value, return_converted_tuple=False):
     """
     Converts, validates and optionally returns a string with formatting:
     '%(x_axis)dx%(y_axis)d' into a two position tuple.
@@ -45,11 +45,11 @@ def validate_centerpoint(value, return_converted_tuple=False):
     than 0 and less than 1.
     """
 
-    valid_centerpoint = True
+    valid_ppoi = True
     to_return = None
     if isinstance(value, tuple):
-        valid_centerpoint = validate_centerpoint_tuple(value)
-        if valid_centerpoint:
+        valid_ppoi = validate_ppoi_tuple(value)
+        if valid_ppoi:
             to_return = value
     elif isinstance(value, six.string_types):
         tup = tuple()
@@ -63,25 +63,25 @@ def validate_centerpoint(value, return_converted_tuple=False):
             try:
                 string_split = literal_eval(value)
             except ValueError:
-                valid_centerpoint = False
+                valid_ppoi = False
             else:
                 tup = string_split
         else:
             tup = tuple(string_split)
 
-        valid_centerpoint = validate_centerpoint_tuple(tup)
+        valid_ppoi = validate_ppoi_tuple(tup)
 
-        if valid_centerpoint:
+        if valid_ppoi:
             to_return = tup
     else:
-        valid_centerpoint = False
-    if not valid_centerpoint:
+        valid_ppoi = False
+    if not valid_ppoi:
         raise ValidationError(
             message=INVALID_CENTERPOINT_ERROR_MESSAGE % str(value),
-            code='invalid_centerpoint'
+            code='invalid_ppoi'
         )
     else:
         if to_return and return_converted_tuple is True:
             return to_return
 
-__all__ = ['validate_centerpoint_tuple', 'validate_centerpoint']
+__all__ = ['validate_ppoi_tuple', 'validate_ppoi']

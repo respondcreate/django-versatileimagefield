@@ -4,8 +4,8 @@ from django.utils import six
 from .datastructures import FilterLibrary
 from .registry import autodiscover, sizedimagefield_registry
 from .validators import (
-    validate_centerpoint,
-    validate_centerpoint_tuple,
+    validate_ppoi,
+    validate_ppoi_tuple,
     ValidationError
 )
 
@@ -22,34 +22,34 @@ class SizedImageMixIn(object):
 
     def __init__(self, *args, **kwargs):
         super(SizedImageMixIn, self).__init__(*args, **kwargs)
-        # Setting initial centerpoint
-        if self.field.centerpoint_field:
-            instance_centerpoint_value = getattr(
+        # Setting initial ppoi
+        if self.field.ppoi_field:
+            instance_ppoi_value = getattr(
                 self.instance,
-                self.field.centerpoint_field,
+                self.field.ppoi_field,
                 (0.5, 0.5)
             )
-            self.crop_centerpoint = instance_centerpoint_value
+            self.ppoi = instance_ppoi_value
         else:
-            self.crop_centerpoint = (0.5, 0.5)
+            self.ppoi = (0.5, 0.5)
 
     @property
-    def crop_centerpoint(self):
-        return self._centerpoint_value
+    def ppoi(self):
+        return self._ppoi_value
 
-    @crop_centerpoint.setter
-    def crop_centerpoint(self, value):
-        centerpoint = self.validate_crop_centerpoint(value)
-        if centerpoint is not False:
-            self._centerpoint_value = centerpoint
-            self.build_filters_and_sizers(centerpoint)
+    @ppoi.setter
+    def ppoi(self, value):
+        ppoi = self.validate_ppoi(value)
+        if ppoi is not False:
+            self._ppoi_value = ppoi
+            self.build_filters_and_sizers(ppoi)
 
-    def build_filters_and_sizers(self, centerpoint_value):
+    def build_filters_and_sizers(self, ppoi_value):
         self.filters = FilterLibrary(
             self.name,
             self.storage,
             sizedimagefield_registry,
-            centerpoint_value
+            ppoi_value
         )
         for (
             attr_name,
@@ -61,11 +61,11 @@ class SizedImageMixIn(object):
                 sizedimage_cls(
                     path_to_image=self.name,
                     storage=self.storage,
-                    crop_centerpoint=centerpoint_value
+                    ppoi=ppoi_value
                 )
             )
 
-    def validate_crop_centerpoint(self, val):
+    def validate_ppoi(self, val):
         valid = True
         while valid is True:
             to_validate = None
@@ -73,7 +73,7 @@ class SizedImageMixIn(object):
                 to_validate = val
             elif isinstance(val, six.string_types):
                 try:
-                    to_validate = validate_centerpoint(
+                    to_validate = validate_ppoi(
                         val,
                         return_converted_tuple=True
                     )
@@ -82,13 +82,13 @@ class SizedImageMixIn(object):
             else:
                 valid = False
 
-            if to_validate and validate_centerpoint_tuple(to_validate):
+            if to_validate and validate_ppoi_tuple(to_validate):
                 return to_validate
             break
 
         if getattr(settings, 'DEBUG', True):
             raise ValidationError(
-                message="`%s` is in invalid centerpoint. `crop_centerpoint` "
+                message="`%s` is in invalid ppoi. `ppoi` "
                         "must provide two coordinates, one for the x axis and "
                         "one for the y where both values are between 0 and 1. "
                         "You may pass it as either a two-position tuple like "
@@ -96,7 +96,7 @@ class SizedImageMixIn(object):
                         "are separated by an 'x' like this: '0.5x0.5'." % str(
                             val
                         ),
-                code='invalid_centerpoint'
+                code='invalid_ppoi'
             )
         else:
             return False

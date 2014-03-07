@@ -53,6 +53,8 @@ class ProcessedImage(object):
 
     def preprocess(self, image, image_format):
         """
+        Preprocesses an image.
+
         An API hook for image pre-processing. Calls any image format specific
         pre-processors (if defined). I.E. If `image_format` is 'JPEG', this
         method will look for a method named `preprocess_JPEG`, if found

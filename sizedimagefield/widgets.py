@@ -21,7 +21,7 @@ CENTERPOINT_CHOICES = (
 
 
 class ClearableFileInputWithImagePreview(ClearableFileInput):
-    centerpoint_label = ugettext_lazy('Select Centerpoint')
+    ppoi_label = ugettext_lazy('Select Centerpoint')
     template_with_clear = '%(clear)s <label class="sizedimagefield-label" for="%(clear_checkbox_id)s">%(clear_checkbox_label)s</label>'
     template_with_initial_and_imagepreview = """
     <div class="sizedimage-mod initial">
@@ -32,10 +32,10 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
         %(clear_template)s
     </div>
     <div class="sizedimage-mod preview">
-        <label class="sizedimagefield-label">%(centerpoint_label)s</label>
+        <label class="sizedimagefield-label">%(ppoi_label)s</label>
         <div class="image-wrap outer">
             <div class="point-stage" id="%(point_stage_id)s" data-image_preview_id="%(image_preview_id)s">
-                <div class="centerpoint-point" id="%(centerpoint_id)s"></div>
+                <div class="ppoi-point" id="%(ppoi_id)s"></div>
             </div>
             <div class="image-wrap inner">
                 %(image_preview)s
@@ -65,11 +65,11 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
         """
         return name + '_imagepreview'
 
-    def get_centerpoint_id(self, name):
+    def get_ppoi_id(self, name):
         """
         Given the name of the image preview tag, return the HTML id for it.
         """
-        return name + '_centerpoint'
+        return name + '_ppoi'
 
     def get_point_stage_id(self, name):
         return name + '_point-stage'
@@ -82,13 +82,13 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
         Given the name of the image preview tag, return the HTML id for it.
         """
         return """
-        <img src="%(sized_url)s" id="%(image_preview_id)s" data-hidden_field_id="%(hidden_field_id)s" data-point_stage_id="%(point_stage_id)s" data-centerpoint_id="%(centerpoint_id)s" class="sizedimage-preview"/>
+        <img src="%(sized_url)s" id="%(image_preview_id)s" data-hidden_field_id="%(hidden_field_id)s" data-point_stage_id="%(point_stage_id)s" data-ppoi_id="%(ppoi_id)s" class="sizedimage-preview"/>
         """ % {
             'sized_url': value.scale['300x300'],
             'image_preview_id': self.image_preview_id(name),
             'hidden_field_id': self.get_hidden_field_id(name),
             'point_stage_id': self.get_point_stage_id(name),
-            'centerpoint_id': self.get_centerpoint_id(name)
+            'ppoi_id': self.get_ppoi_id(name)
         }
 
     def render(self, name, value, attrs=None):
@@ -97,7 +97,7 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
             'input_text': self.input_text,
             'clear_template': '',
             'clear_checkbox_label': self.clear_checkbox_label,
-            'centerpoint_label': self.centerpoint_label
+            'ppoi_label': self.ppoi_label
         }
         template = '%(input)s'
         substitutions['input'] = super(FileInput, self).render(
@@ -109,12 +109,12 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
             substitutions['initial'] = format_html('<a href="{0}">{1}</a>',
                                                    value.url,
                                                    force_text(value))
-            if value.field.centerpoint_field:
+            if value.field.ppoi_field:
                 template = self.template_with_initial_and_imagepreview
                 point_stage_id = self.get_point_stage_id(name)
-                centerpoint_id = self.get_centerpoint_id(name)
+                ppoi_id = self.get_ppoi_id(name)
                 substitutions['point_stage_id'] = point_stage_id
-                substitutions['centerpoint_id'] = centerpoint_id
+                substitutions['ppoi_id'] = ppoi_id
                 substitutions['image_preview_id'] = self.image_preview_id(name)
                 image_preview = self.image_preview(
                     name,
@@ -144,7 +144,7 @@ class SizedImageCenterpointWidgetMixIn(object):
         if value:
             return [
                 value,
-                u'x'.join(unicode(num) for num in value.crop_centerpoint)
+                u'x'.join(unicode(num) for num in value.ppoi)
             ]
         return [None, None]
 
@@ -176,7 +176,7 @@ class SizedImageCenterpointClickWidget(SizedImageCenterpointWidgetMixIn,
                 clear_checkbox_template=self.clear_checkbox_template or None
             ),
             HiddenInput(
-                attrs={'class': 'centerpoint-input'}
+                attrs={'class': 'ppoi-input'}
             )
         )
         super(SizedImageCenterpointClickWidget, self).__init__(widgets, attrs)
@@ -222,10 +222,10 @@ class SizedImageCenterpointClickBootstrap3Widget(
         %(clear_template)s
     </div>
     <div class="form-group sizedimage-mod preview">
-        <label>%(centerpoint_label)s</label>
+        <label>%(ppoi_label)s</label>
         <div class="image-wrap outer">
             <div class="point-stage" id="%(point_stage_id)s" data-image_preview_id="%(image_preview_id)s">
-                <div class="centerpoint-point" id="%(centerpoint_id)s"></div>
+                <div class="ppoi-point" id="%(ppoi_id)s"></div>
             </div>
             <div class="image-wrap inner">
                 %(image_preview)s
