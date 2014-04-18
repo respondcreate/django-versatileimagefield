@@ -159,6 +159,8 @@ class SizedImagePPOIField(CharField):
                 kwargs['default'] = self.get_prep_value(
                     value=valid_ppoi
                 )
+        if 'max_length' not in kwargs:
+            kwargs['max_length'] = 20
 
         super(SizedImagePPOIField, self).__init__(*args, **kwargs)
         self.validators.append(validate_ppoi)
