@@ -100,7 +100,7 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
             'ppoi_label': self.ppoi_label
         }
         template = '%(input)s'
-        substitutions['input'] = super(FileInput, self).render(
+        substitutions['input'] = super(ClearableFileInput, self).render(
             name,
             value,
             attrs
@@ -149,7 +149,7 @@ class SizedImageCenterpointWidgetMixIn(object):
         return [None, None]
 
 
-class SizedImageCenterpointSelectWidget(SizedImageCenterpointWidgetMixIn,
+class VersatileImagePPOISelectWidget(SizedImageCenterpointWidgetMixIn,
                                         MultiWidget):
 
     def __init__(self, widgets=None, attrs=None):
@@ -160,10 +160,10 @@ class SizedImageCenterpointSelectWidget(SizedImageCenterpointWidgetMixIn,
                 choices=CENTERPOINT_CHOICES
             )
         ]
-        super(SizedImageCenterpointSelectWidget, self).__init__(widgets, attrs)
+        super(VersatileImagePPOISelectWidget, self).__init__(widgets, attrs)
 
 
-class SizedImageCenterpointClickWidget(SizedImageCenterpointWidgetMixIn,
+class VersatileImagePPOIClickWidget(SizedImageCenterpointWidgetMixIn,
                                        MultiWidget):
     image_preview_template = None
     clear_checkbox_template = None
@@ -179,7 +179,7 @@ class SizedImageCenterpointClickWidget(SizedImageCenterpointWidgetMixIn,
                 attrs={'class': 'ppoi-input'}
             )
         )
-        super(SizedImageCenterpointClickWidget, self).__init__(widgets, attrs)
+        super(VersatileImagePPOIClickWidget, self).__init__(widgets, attrs)
 
     class Media:
         css = {
@@ -190,7 +190,7 @@ class SizedImageCenterpointClickWidget(SizedImageCenterpointWidgetMixIn,
         )
 
     def render(self, name, value, attrs=None):
-        rendered = super(SizedImageCenterpointClickWidget, self).render(
+        rendered = super(VersatileImagePPOIClickWidget, self).render(
             name,
             value,
             attrs
@@ -200,7 +200,7 @@ class SizedImageCenterpointClickWidget(SizedImageCenterpointWidgetMixIn,
 
 
 class SizedImageCenterpointClickDjangoAdminWidget(
-        SizedImageCenterpointClickWidget):
+        VersatileImagePPOIClickWidget):
 
     class Media:
         css = {
@@ -212,7 +212,7 @@ class SizedImageCenterpointClickDjangoAdminWidget(
 
 
 class SizedImageCenterpointClickBootstrap3Widget(
-        SizedImageCenterpointClickWidget):
+        VersatileImagePPOIClickWidget):
     image_preview_template = """
     <div class="form-group">
         <label>%(initial_text)s</label>

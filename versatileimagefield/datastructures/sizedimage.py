@@ -1,6 +1,3 @@
-from PIL import Image
-import numpy
-
 from ..settings import (
     QUAL,
     USE_PLACEHOLDIT,
@@ -118,21 +115,6 @@ class SizedImage(ProcessedImage, dict):
         """
         raise NotImplementedError(
             'Subclasses MUST provide a `process_image` method.')
-
-    def preprocess_PNG(self, image, **kwargs):
-        """
-        Receives a PIL Image instance of a PNG and returns a 2-tuple:
-            * [0]: Image instance with a properly processed alpha
-                   (transparency) layer that is resize ready.
-                   (Found here: http://stackoverflow.com/a/9146202/1149774)
-            * [1]: Empty dict ({})
-        """
-        premult = numpy.fromstring(image.tobytes(), dtype=numpy.uint8)
-        alpha_layer = premult[3::4] / 255.0
-        premult[::4] *= alpha_layer
-        premult[1::4] *= alpha_layer
-        premult[2::4] *= alpha_layer
-        return (Image.frombytes("RGBA", image.size, premult.tostring()), {})
 
     def preprocess_GIF(self, image, **kwargs):
         """

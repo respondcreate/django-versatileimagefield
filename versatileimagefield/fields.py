@@ -28,8 +28,9 @@ class VersatileImageField(ImageField):
     def __init__(self, verbose_name=None, name=None, width_field=None,
                  height_field=None, ppoi_field=None, **kwargs):
         self.ppoi_field = ppoi_field
-        super(VersatileImageField, self).__init__(verbose_name, name, width_field,
-                                              height_field, **kwargs)
+        super(VersatileImageField, self).__init__(
+            verbose_name, name, width_field, height_field, **kwargs
+        )
 
     def pre_save(self, model_instance, add):
         "Returns field's value just before saving."
@@ -120,7 +121,8 @@ class VersatileImageField(ImageField):
                     # This means the file hasn't changed but we need to
                     # update the ppoi
                     current_field = getattr(instance, self.name)
-                    current_field.ppoi = data[1]
+                    if data[1]:
+                        current_field.ppoi = data[1]
                     to_assign = current_field
                 elif data[0] is False:
                     # This means the 'Clear' checkbox was checked so we
