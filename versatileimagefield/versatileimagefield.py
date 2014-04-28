@@ -3,7 +3,7 @@ import StringIO
 from PIL import Image, ImageOps
 
 from .datastructures import FilteredImage, SizedImage
-from .registry import sizedimagefield_registry
+from .registry import versatileimagefield_registry
 
 
 class CroppedImage(SizedImage):
@@ -83,6 +83,6 @@ class InvertImage(FilteredImage):
         )
         return imagefile
 
-sizedimagefield_registry.register_sizer('crop', CroppedImage)
-sizedimagefield_registry.register_sizer('scale', ScaledImage)
-sizedimagefield_registry.register_filter('invert', InvertImage)
+versatileimagefield_registry.register_sizer('crop', CroppedImage)
+versatileimagefield_registry.register_sizer('scale', ScaledImage)
+versatileimagefield_registry.register_filter('invert', InvertImage)

@@ -25,8 +25,8 @@ class ProcessedImage(object):
         * `storage`: A django storage class
 
     Subclasses must define the `process_image` method. see
-    sizedimagefield.datastructures.filteredimage.FilteredImage and
-    sizedimagefield.datastructures.sizedimage.SizedImage
+    versatileimagefield.datastructures.filteredimage.FilteredImage and
+    versatileimagefield.datastructures.sizedimage.SizedImage
     for examples.
 
     Includes a preprocessing API based on image format/file type. See
@@ -112,7 +112,7 @@ class ProcessedImage(object):
                          be saved.
             `file_ext`: The file extension of the image-to-be-saved.
             `mime_type`: A valid image mime type (as found in
-                         sizedimagefield.utils)
+                         versatileimagefield.utils)
         """
 
         file_to_save = InMemoryUploadedFile(

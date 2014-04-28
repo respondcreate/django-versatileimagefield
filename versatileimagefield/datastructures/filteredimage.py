@@ -80,7 +80,7 @@ class DummyFilter(object):
 class FilterLibrary(dict):
     """
     Exposes all filters registered with the sizedimageregistry
-    (via sizedimageregistry.register_filter) to each SizedImageField.
+    (via sizedimageregistry.register_filter) to each VersatileImageField.
 
     Each filter also has access to each 'sizer' registered with
     sizedimageregistry (via sizedimageregistry.register_sizer)

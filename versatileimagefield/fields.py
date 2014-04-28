@@ -5,7 +5,7 @@ from django.db.models.fields import CharField
 from django.db.models.fields.files import ImageField
 from django.utils.translation import ugettext_lazy as _
 
-from .files import SizedImageFieldFile, SizedImageFileDescriptor
+from .files import VersatileImageFieldFile, VersatileImageFileDescriptor
 from .forms import SizedImageCenterpointClickDjangoAdminField
 from .validators import validate_ppoi
 
@@ -14,26 +14,26 @@ if 'south' in settings.INSTALLED_APPS:
     add_introspection_rules(
         [],
         [
-            "^sizedimagefield\.fields\.SizedImageField",
-            "^sizedimagefield\.fields\.SizedImagePPOIField",
+            "^versatileimagefield\.fields\.VersatileImageField",
+            "^versatileimagefield\.fields\.PPOIField",
         ]
     )
 
 
-class SizedImageField(ImageField):
-    attr_class = SizedImageFieldFile
-    descriptor_class = SizedImageFileDescriptor
-    description = _('Sized Image Field')
+class VersatileImageField(ImageField):
+    attr_class = VersatileImageFieldFile
+    descriptor_class = VersatileImageFileDescriptor
+    description = _('Versatile Image Field')
 
     def __init__(self, verbose_name=None, name=None, width_field=None,
                  height_field=None, ppoi_field=None, **kwargs):
         self.ppoi_field = ppoi_field
-        super(SizedImageField, self).__init__(verbose_name, name, width_field,
+        super(VersatileImageField, self).__init__(verbose_name, name, width_field,
                                               height_field, **kwargs)
 
     def pre_save(self, model_instance, add):
         "Returns field's value just before saving."
-        file = super(SizedImageField, self).pre_save(model_instance, add)
+        file = super(VersatileImageField, self).pre_save(model_instance, add)
         self.update_ppoi_field(model_instance, force=True)
         return file
 
@@ -46,16 +46,16 @@ class SizedImageField(ImageField):
         it is associated with is saved.
 
         This field's ppoi can be forced to update with force=True,
-        which is how SizedImageField.pre_save calls this method.
+        which is how VersatileImageField.pre_save calls this method.
         """
         # Nothing to update if the field doesn't have have a ppoi
         # dimension field.
         if not self.ppoi_field:
             return
 
-        # getattr will call the SizedImageFileDescriptor's __get__ method,
+        # getattr will call the VersatileImageFileDescriptor's __get__ method,
         # which coerces the assigned value into an instance of
-        # self.attr_class(SizedImageFieldFile in this case).
+        # self.attr_class(VersatileImageFieldFile in this case).
         file = getattr(instance, self.attname)
 
         # Nothing to update if we have no file and not being forced to update.
@@ -77,11 +77,11 @@ class SizedImageField(ImageField):
         # we are already getting the value from the database. In the second
         # case, we do want to update the ppoi field and will skip this
         # return because force will be `True` since this method was called
-        # from SizedImageFileDescriptor.__set__.
+        # from VersatileImageFileDescriptor.__set__.
         if ppoi_filled and not force:
             return
 
-        # file should be an instance of SizedImageFieldFile or should be None.
+        # file should be an instance of VersatileImageFieldFile or should be None.
         if file and not isinstance(file, tuple):
             ppoi = file.ppoi
         else:
@@ -131,17 +131,17 @@ class SizedImageField(ImageField):
                     # the tuple and assign the first position to the field
                     # attribute
                     to_assign = data[0]
-        super(SizedImageField, self).save_form_data(instance, to_assign)
+        super(VersatileImageField, self).save_form_data(instance, to_assign)
 
     def formfield(self, **kwargs):
         # This is a fairly standard way to set up some defaults
         # while letting the caller override them.
         defaults = {'form_class': SizedImageCenterpointClickDjangoAdminField}
         kwargs.update(defaults)
-        return super(SizedImageField, self).formfield(**defaults)
+        return super(VersatileImageField, self).formfield(**defaults)
 
 
-class SizedImagePPOIField(CharField):
+class PPOIField(CharField):
     __metaclass__ = SubfieldBase
 
     def __init__(self, *args, **kwargs):
@@ -162,7 +162,7 @@ class SizedImagePPOIField(CharField):
         if 'max_length' not in kwargs:
             kwargs['max_length'] = 20
 
-        super(SizedImagePPOIField, self).__init__(*args, **kwargs)
+        super(PPOIField, self).__init__(*args, **kwargs)
         self.validators.append(validate_ppoi)
 
     def to_python(self, value):
@@ -180,4 +180,4 @@ class SizedImagePPOIField(CharField):
             for_db = value
         return for_db
 
-__all__ = ['SizedImageField']
+__all__ = ['VersatileImageField']

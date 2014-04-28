@@ -22,17 +22,17 @@ CENTERPOINT_CHOICES = (
 
 class ClearableFileInputWithImagePreview(ClearableFileInput):
     ppoi_label = ugettext_lazy('Select Centerpoint')
-    template_with_clear = '%(clear)s <label class="sizedimagefield-label" for="%(clear_checkbox_id)s">%(clear_checkbox_label)s</label>'
+    template_with_clear = '%(clear)s <label class="versatileimagefield-label" for="%(clear_checkbox_id)s">%(clear_checkbox_label)s</label>'
     template_with_initial_and_imagepreview = """
     <div class="sizedimage-mod initial">
-        <label class="sizedimagefield-label">%(initial_text)s</label>
+        <label class="versatileimagefield-label">%(initial_text)s</label>
         %(initial)s
     </div>
     <div class="sizedimage-mod clear">
         %(clear_template)s
     </div>
     <div class="sizedimage-mod preview">
-        <label class="sizedimagefield-label">%(ppoi_label)s</label>
+        <label class="versatileimagefield-label">%(ppoi_label)s</label>
         <div class="image-wrap outer">
             <div class="point-stage" id="%(point_stage_id)s" data-image_preview_id="%(image_preview_id)s">
                 <div class="ppoi-point" id="%(ppoi_id)s"></div>
@@ -43,7 +43,7 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
         </div>
     </div>
     <div class="sizedimage-mod new-upload">
-        <label class="sizedimagefield-label">%(input_text)s</label>
+        <label class="versatileimagefield-label">%(input_text)s</label>
         %(input)s
     </div>"""
 
@@ -183,10 +183,10 @@ class SizedImageCenterpointClickWidget(SizedImageCenterpointWidgetMixIn,
 
     class Media:
         css = {
-            'all': ('sizedimagefield/css/sizedimagefield.css',),
+            'all': ('versatileimagefield/css/versatileimagefield.css',),
         }
         js = (
-            'sizedimagefield/js/sizedimagefield.js',
+            'versatileimagefield/js/versatileimagefield.js',
         )
 
     def render(self, name, value, attrs=None):
@@ -195,7 +195,7 @@ class SizedImageCenterpointClickWidget(SizedImageCenterpointWidgetMixIn,
             value,
             attrs
         )
-        to_return = '<div class="sizedimagefield">' + mark_safe(rendered) + '</div>'
+        to_return = '<div class="versatileimagefield">' + mark_safe(rendered) + '</div>'
         return mark_safe(to_return)
 
 
@@ -204,10 +204,10 @@ class SizedImageCenterpointClickDjangoAdminWidget(
 
     class Media:
         css = {
-            'all': ('sizedimagefield/css/sizedimagefield-djangoadmin.css',),
+            'all': ('versatileimagefield/css/versatileimagefield-djangoadmin.css',),
         }
         js = (
-            'sizedimagefield/js/sizedimagefield-djangoadmin.js',
+            'versatileimagefield/js/versatileimagefield-djangoadmin.js',
         )
 
 
@@ -233,7 +233,7 @@ class SizedImageCenterpointClickBootstrap3Widget(
         </div>
     </div>
     <div class="form-group sizedimage-mod new-upload">
-        <label class="sizedimagefield-label">%(input_text)s</label>
+        <label class="versatileimagefield-label">%(input_text)s</label>
         %(input)s
     </div>"""
 
@@ -241,8 +241,8 @@ class SizedImageCenterpointClickBootstrap3Widget(
 
     class Media:
         css = {
-            'all': ('sizedimagefield/css/sizedimagefield-bootstrap3.css',),
+            'all': ('versatileimagefield/css/versatileimagefield-bootstrap3.css',),
         }
         js = (
-            'sizedimagefield/js/sizedimagefield-jquery.js',
+            'versatileimagefield/js/versatileimagefield-jquery.js',
         )

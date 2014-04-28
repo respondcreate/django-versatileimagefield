@@ -13,16 +13,16 @@ class NotRegistered(Exception):
     pass
 
 
-class SizedImageFieldRegistry(object):
+class VersatileImageFieldRegistry(object):
     """
-    A SizedImageFieldRegistry object allows new SizedImage and FilteredImage
+    A VersatileImageFieldRegistry object allows new SizedImage & FilteredImage
     subclasses to be dynamically added to all SizedImageFileField instances
     at runtime. New SizedImage subclasses are registered with the
     register_sizer method. New ProcessedImage subclasses are registered
     with the register_filter method.
     """
 
-    def __init__(self, name='sizedimage_sizedimage_registry'):
+    def __init__(self, name='versatileimage_registry'):
         self._sizedimage_registry = {}  # attr_name -> sizedimage_cls
         self._filter_registry = {}  # attr_name -> filter_cls
         self.name = name
@@ -34,7 +34,7 @@ class SizedImageFieldRegistry(object):
         """
         if not issubclass(sizedimage_cls, SizedImage):
             raise InvalidSizedImageSubclass(
-                'Only subclasses of sizedimagefield.datastructures.SizedImage '
+                'Only subclasses of versatileimagefield.datastructures.SizedImage '
                 'may be registered with register_sizer'
             )
 
@@ -69,7 +69,7 @@ class SizedImageFieldRegistry(object):
         if not issubclass(filterimage_cls, FilteredImage):
             raise InvalidSizedImageSubclass(
                 'Only subclasses of FilteredImage may be registered as filters'
-                'with SizedImageFieldRegistry')
+                'with VersatileImageFieldRegistry')
 
         if attr_name in self._filter_registry:
             raise AlreadyRegistered(
@@ -95,13 +95,13 @@ class SizedImageFieldRegistry(object):
         else:
             del self._filter_registry[attr_name]
 
-sizedimagefield_registry = SizedImageFieldRegistry()
+versatileimagefield_registry = VersatileImageFieldRegistry()
 
 
 def autodiscover():
     """
     Auto-discover INSTALLED_APPS sizedimage.py modules and fail silently when
-    not present. This forces an import on them to register any sizedimagefield
+    not present. This forces an import on them to register any versatileimagefield
     bits they may want.
 
     This is a near 1-to-1 copy of how django's admin application registers
@@ -118,22 +118,22 @@ def autodiscover():
         # Attempt to import the app's sizedimage module.
         try:
             before_import_sizedimage_registry = copy.copy(
-                sizedimagefield_registry._sizedimage_registry
+                versatileimagefield_registry._sizedimage_registry
             )
             before_import_filter_registry = copy.copy(
-                sizedimagefield_registry._filter_registry
+                versatileimagefield_registry._filter_registry
             )
-            import_module('%s.sizedimagefield' % app)
+            import_module('%s.versatileimagefield' % app)
         except:
-            # Reset the sizedimagefield_registry to the state before the last
+            # Reset the versatileimagefield_registry to the state before the last
             # import as this import will have to reoccur on the next request
             # and this could raise NotRegistered and AlreadyRegistered
             # exceptions (see django ticket #8245).
-            sizedimagefield_registry._sizedimage_registry = before_import_sizedimage_registry
-            sizedimagefield_registry._filter_registry = before_import_filter_registry
+            versatileimagefield_registry._sizedimage_registry = before_import_sizedimage_registry
+            versatileimagefield_registry._filter_registry = before_import_filter_registry
 
             # Decide whether to bubble up this error. If the app just
             # doesn't have a sizedimage module, we can ignore the error
             # attempting to import it, otherwise we want it to bubble up.
-            if module_has_submodule(mod, 'sizedimagefield'):
+            if module_has_submodule(mod, 'versatileimagefield'):
                 raise

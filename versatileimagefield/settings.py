@@ -19,7 +19,7 @@ else:
     USE_PLACEHOLDIT = False
 
 try:
-    cache = get_cache('sizedimagefield_cache')
+    cache = get_cache('versatileimagefield_cache')
 except InvalidCacheBackendError:
     cache = default_cache
 

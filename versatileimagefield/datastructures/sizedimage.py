@@ -20,8 +20,8 @@ class SizedImage(ProcessedImage, dict):
     A dict subclass that exposes an image sizing API via key access.
     Subclasses must implement a `process_image` method.
 
-    See sizedimagefield.sizedimagefield.CroppedImage and
-    sizedimagefield.sizedimagefield.ScaledImage for subclass
+    See versatileimagefield.versatileimagefield.CroppedImage and
+    versatileimagefield.versatileimagefield.ScaledImage for subclass
     examples.
     """
 

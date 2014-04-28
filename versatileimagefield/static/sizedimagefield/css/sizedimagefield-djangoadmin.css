@@ -1,10 +1,10 @@
-div.sizedimagefield {
+div.versatileimagefield {
     float:left;
     clear:right;
     display:block;
 }
 
-label.sizedimagefield-label  {
+label.versatileimagefield-label  {
     display:block;
     float:left;
     clear:right;
@@ -12,7 +12,7 @@ label.sizedimagefield-label  {
     font-size:1em;
 }
 
-label.sizedimagefield-label:after {
+label.versatileimagefield-label:after {
     content:": ";
 }
 

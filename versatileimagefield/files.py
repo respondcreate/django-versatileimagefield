@@ -6,18 +6,18 @@ from django.db.models.fields.files import (
 )
 from django.utils import six
 
-from .mixins import SizedImageMixIn
+from .mixins import VersatileImageMixIn
 
 
-class SizedImageFieldFile(SizedImageMixIn, ImageFieldFile):
+class VersatileImageFieldFile(VersatileImageMixIn, ImageFieldFile):
     pass
 
 
-class SizedImageFileDescriptor(ImageFileDescriptor):
+class VersatileImageFileDescriptor(ImageFileDescriptor):
 
     def __set__(self, instance, value):
         previous_file = instance.__dict__.get(self.field.name)
-        super(SizedImageFileDescriptor, self).__set__(instance, value)
+        super(VersatileImageFileDescriptor, self).__set__(instance, value)
 
         # Updating ppoi_field on attribute set
         if previous_file is not None:
@@ -33,7 +33,7 @@ class SizedImageFileDescriptor(ImageFileDescriptor):
         # This is slightly complicated, so worth an explanation.
         # instance.file`needs to ultimately return some instance of `File`,
         # probably a subclass. Additionally, this returned object needs to have
-        # the SizedImageFieldFile API so that users can easily do things like
+        # the VersatileImageFieldFile API so that users can easily do things like
         # instance.file.path & have that delegated to the file storage engine.
         # Easy enough if we're strict about assignment in __set__, but if you
         # peek below you can see that we're not. So depending on the current
@@ -65,7 +65,7 @@ class SizedImageFileDescriptor(ImageFileDescriptor):
             if attr.field.ppoi_field:
                 # Pulling the current value of the ppoi_field...
                 ppoi = instance.__dict__[attr.field.ppoi_field]
-                # ...and assigning it to SizedImageField instance
+                # ...and assigning it to VersatileImageField instance
                 attr.ppoi = ppoi
 
             instance.__dict__[self.field.name] = attr

@@ -2,7 +2,7 @@ from django.conf import settings
 from django.utils import six
 
 from .datastructures import FilterLibrary
-from .registry import autodiscover, sizedimagefield_registry
+from .registry import autodiscover, versatileimagefield_registry
 from .validators import (
     validate_ppoi,
     validate_ppoi_tuple,
@@ -14,14 +14,14 @@ from .validators import (
 autodiscover()
 
 
-class SizedImageMixIn(object):
+class VersatileImageMixIn(object):
     """
     A mix-in that provides the filtering/sizing API and crop centering
     support for django.db.models.fields.files.ImageField
     """
 
     def __init__(self, *args, **kwargs):
-        super(SizedImageMixIn, self).__init__(*args, **kwargs)
+        super(VersatileImageMixIn, self).__init__(*args, **kwargs)
         # Setting initial ppoi
         if self.field.ppoi_field:
             instance_ppoi_value = getattr(
@@ -48,13 +48,13 @@ class SizedImageMixIn(object):
         self.filters = FilterLibrary(
             self.name,
             self.storage,
-            sizedimagefield_registry,
+            versatileimagefield_registry,
             ppoi_value
         )
         for (
             attr_name,
             sizedimage_cls
-        ) in sizedimagefield_registry._sizedimage_registry.iteritems():
+        ) in versatileimagefield_registry._sizedimage_registry.iteritems():
             setattr(
                 self,
                 attr_name,
