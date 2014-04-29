@@ -25,7 +25,6 @@ class VersatileImageForFormImageField(ImageField):
         Ensures `data` is opened so django.forms.fields.ImageField
         validation runs correctly
         """
-        print data
         if data:
             data.open()
         return super(VersatileImageForFormImageField, self).to_python(data)
