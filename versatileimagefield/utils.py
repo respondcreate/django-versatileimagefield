@@ -8,15 +8,15 @@ from django.utils.encoding import filepath_to_uri
 
 from .settings import (
     USE_PLACEHOLDIT,
-    VERSATILEIMAGEFIELD_PLACEHOLDER_IMAGE
+    VERSATILEIMAGEFIELD_PLACEHOLDER_IMAGE,
+    VERSATILEIMAGEFIELD_SIZED_DIRNAME,
+    VERSATILEIMAGEFIELD_FILTERED_DIRNAME
 )
 
 if not USE_PLACEHOLDIT:
     PLACEHOLDER_FOLDER, PLACEHOLDER_FILENAME = os.path.split(
         VERSATILEIMAGEFIELD_PLACEHOLDER_IMAGE
     )
-
-VERSATILEIMAGEFIELD_DIRECTORY_NAME = '__sized'
 
 # PIL-supported file formats as found here:
 # https://infohost.nmt.edu/tcc/help/pubs/pil/formats.html
@@ -101,7 +101,7 @@ def get_resized_path(path_to_image, width, height,
     )
 
     joined_path = os.path.join(*[
-        VERSATILEIMAGEFIELD_DIRECTORY_NAME,
+        VERSATILEIMAGEFIELD_SIZED_DIRNAME,
         containing_folder,
         resized_filename
     ])
@@ -145,7 +145,7 @@ def get_filtered_path(path_to_image, filename_key):
     filtered_filename = get_filtered_filename(filename, filename_key)
     path_to_return = os.path.join(*[
         containing_folder,
-        '__filtered__',
+        VERSATILEIMAGEFIELD_FILTERED_DIRNAME,
         filtered_filename
     ])
     # Removing spaces so this path is memcached key friendly
