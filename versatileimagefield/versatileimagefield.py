@@ -48,8 +48,8 @@ class CroppedImage(SizedImage):
         return imagefile
 
 
-class ScaledImage(SizedImage):
-    filename_key = 'scale'
+class ThumbnailImage(SizedImage):
+    filename_key = 'thumbnail'
 
     def process_image(self, image, image_format,
                       width, height, save_kwargs={}):
@@ -84,5 +84,5 @@ class InvertImage(FilteredImage):
         return imagefile
 
 versatileimagefield_registry.register_sizer('crop', CroppedImage)
-versatileimagefield_registry.register_sizer('scale', ScaledImage)
+versatileimagefield_registry.register_sizer('thumbnail', ThumbnailImage)
 versatileimagefield_registry.register_filter('invert', InvertImage)
