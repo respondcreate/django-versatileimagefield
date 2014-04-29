@@ -6,13 +6,13 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from ..settings import (
     USE_PLACEHOLDIT,
-    SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE
+    VERSATILEIMAGEFIELD_PLACEHOLDER_IMAGE
 )
 from ..utils import get_image_metadata_from_file_ext
 
 if not USE_PLACEHOLDIT:
     PLACEHOLDER_FOLDER, PLACEHOLDER_FILENAME = os.path.split(
-        SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE
+        VERSATILEIMAGEFIELD_PLACEHOLDER_IMAGE
     )
 
 
@@ -85,10 +85,10 @@ class ProcessedImage(object):
         Returns a PIL Image instance stored at `path_to_image`
 
         If `path_to_image` is None, the global Placeholder image (as specified
-        by the SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE setting) will be returned.
+        by the VERSATILEIMAGEFIELD_PLACEHOLDER_IMAGE setting) will be returned.
         """
         if not path_to_image:
-            image = SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE
+            image = VERSATILEIMAGEFIELD_PLACEHOLDER_IMAGE
             file_ext = image.rsplit('.')[-1]
         else:
             image = self.storage.open(path_to_image, 'r')

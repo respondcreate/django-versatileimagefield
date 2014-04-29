@@ -8,15 +8,15 @@ from django.utils.encoding import filepath_to_uri
 
 from .settings import (
     USE_PLACEHOLDIT,
-    SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE
+    VERSATILEIMAGEFIELD_PLACEHOLDER_IMAGE
 )
 
 if not USE_PLACEHOLDIT:
     PLACEHOLDER_FOLDER, PLACEHOLDER_FILENAME = os.path.split(
-        SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE
+        VERSATILEIMAGEFIELD_PLACEHOLDER_IMAGE
     )
 
-SIZEDIMAGEFIELD_DIRECTORY_NAME = '__sized'
+VERSATILEIMAGEFIELD_DIRECTORY_NAME = '__sized'
 
 # PIL-supported file formats as found here:
 # https://infohost.nmt.edu/tcc/help/pubs/pil/formats.html
@@ -101,7 +101,7 @@ def get_resized_path(path_to_image, width, height,
     )
 
     joined_path = os.path.join(*[
-        SIZEDIMAGEFIELD_DIRECTORY_NAME,
+        VERSATILEIMAGEFIELD_DIRECTORY_NAME,
         containing_folder,
         resized_filename
     ])

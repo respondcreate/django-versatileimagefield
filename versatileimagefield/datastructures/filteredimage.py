@@ -1,7 +1,7 @@
 from ..settings import (
     USE_PLACEHOLDIT,
     cache,
-    SIZEDIMAGEFIELD_CACHE_LENGTH
+    VERSATILEIMAGEFIELD_CACHE_LENGTH
 )
 from ..utils import get_filtered_path
 
@@ -71,7 +71,7 @@ class DummyFilter(object):
     """
     A 'dummy' version of FilteredImage which is only used if
     .settings.USE_PLACEHOLDIT is True (i.e. if the
-    SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE is unset)
+    VERSATILEIMAGEFIELD_PLACEHOLDER_IMAGE is unset)
     """
     name = ''
     url = ''
@@ -120,7 +120,7 @@ class FilterLibrary(dict):
                 # Handling 'empty' fields.
                 if not self.original_file_location and USE_PLACEHOLDIT:
                     # If USE_PLACEHOLDIT is True (i.e.
-                    # settings.SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE is unset)
+                    # settings.VERSATILEIMAGEFIELD_PLACEHOLDER_IMAGE is unset)
                     # use DummyFilter (so sized renditions can still return
                     # valid http://placehold.it URLs).
                     filtered_path = None
@@ -153,7 +153,7 @@ class FilterLibrary(dict):
                         cache.set(
                             filtered_path,
                             1,
-                            SIZEDIMAGEFIELD_CACHE_LENGTH
+                            VERSATILEIMAGEFIELD_CACHE_LENGTH
                         )
 
                 # 'Bolting' all image sizers within

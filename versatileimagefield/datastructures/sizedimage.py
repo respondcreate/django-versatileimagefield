@@ -2,7 +2,7 @@ from ..settings import (
     QUAL,
     USE_PLACEHOLDIT,
     cache,
-    SIZEDIMAGEFIELD_CACHE_LENGTH
+    VERSATILEIMAGEFIELD_CACHE_LENGTH
 )
 from ..utils import get_resized_path
 from .base import ProcessedImage
@@ -18,7 +18,7 @@ class SizedImage(ProcessedImage, dict):
     Subclasses must implement a `process_image` method.
 
     See versatileimagefield.versatileimagefield.CroppedImage and
-    versatileimagefield.versatileimagefield.ScaledImage for subclass
+    versatileimagefield.versatileimagefield.ThumbnailImage for subclass
     examples.
     """
 
@@ -96,7 +96,7 @@ class SizedImage(ProcessedImage, dict):
                         filename_key=self.get_filename_key()
                     )
                 # Setting a super-long cache for a resized image (30 Days)
-                cache.set(resized_url, 1, SIZEDIMAGEFIELD_CACHE_LENGTH)
+                cache.set(resized_url, 1, VERSATILEIMAGEFIELD_CACHE_LENGTH)
         return resized_url
 
     def process_image(self, image, image_format,
@@ -129,7 +129,7 @@ class SizedImage(ProcessedImage, dict):
         Receives a PIL Image instance of a JPEG and returns 2-tuple:
             * [0]: Image instance, converted to RGB
             * [1]: Dict with a quality key (mapped to the value of `QUAL` as
-                   defined by the `SIZEDIMAGEFIELD_JPEG_RESIZE_QUALITY`
+                   defined by the `VERSATILEIMAGEFIELD_JPEG_RESIZE_QUALITY`
                    setting)
         """
         if image.mode != 'RGB':
@@ -141,7 +141,7 @@ class SizedImage(ProcessedImage, dict):
         Creates a resized image.
         `path_to_image`: The path to the image with the media directory to
                          resize. If `None`, the
-                         SIZEDIMAGEFIELD_PLACEHOLDER_IMAGE will be used.
+                         VERSATILEIMAGEFIELD_PLACEHOLDER_IMAGE will be used.
         `width`: Width of resized image (int)
         `height`: Desired height of resized image (int)
         `filename_key`: A string that will be used in the sized image filename
