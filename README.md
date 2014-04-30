@@ -177,7 +177,7 @@ If you want to open the created thumbnail image as an image file directly in the
 
 #### crop ####
 
-If you wanted create an image cropped to a specific size, use the 'crop' Sizer:
+If you wanted create an image cropped to a specific size, use the `crop` Sizer:
 
 ```python
 # Retrieving the URL to a 400px wide by 400px tall crop of the image
@@ -188,11 +188,11 @@ u'/media/__sized__/images/testimagemodel/test-image-crop-c0-5__0-5-400x400.jpg'
 > ### NOTE ###
 > The `crop` Sizer will first scale an image down to its longest side (via the same mechanism used by the `thumbnail` Sizer) and then crop/trim inwards, centered on the **Primary Point of Interest** (PPOI, for short). For more info about what PPOI is and how it's used see the _Specifying a Primary Point of Interest (PPOI)_ heading below.
 
-Each Sizer registered to the Sizer registry is available as an attribute on each `VersatileImageField` and is a `dict` subclass that accepts keys comprised of two integers, representing width and height respectively, separated by an 'x'. If you send a malformed key to a Sizer, a `MalformedSizedImageKey` exception will raise.
+Each Sizer registered to the Sizer registry is available as an attribute on each `VersatileImageField` and is a `dict` subclass that accepts keys comprised of two integers – representing width and height, respectively – separated by an 'x'. If you send a malformed/invalid key to a Sizer, a `MalformedSizedImageKey` exception will raise.
 
 #### How Sized Image Files are Named/Stored ####
 
-All Sizers subclass from `versatileimagefield.datastructures.sizedimage.SizedImage` which provides a `get_filename_key()` method which returns a unique-to-size-specified string that is included in the filename of each image it creates. The `thumbnail` Sizer simply combines `'thumbnail'` with the size key passed (i.e. `'400x400'` ) while the `crop` Sizer combines `'crop'`, the field's PPOI value (as a string) and the size key passed; all Sizer keys begin and end with dashes `'-'` for readability.
+All Sizers subclass from `versatileimagefield.datastructures.sizedimage.SizedImage` which provides a `get_filename_key()` method which returns a unique-to-size-specified string that is included in the filename of each image it creates. The `thumbnail` Sizer simply combines `'thumbnail'` with the size key passed (i.e. `'400x400'` ) while the `crop` Sizer combines `'crop'`, the field's PPOI value (as a string) and the size key passed; all Sizer 'filename keys' begin and end with dashes `'-'` for readability.
 
 All images created by a Sizer are stored within the field's `storage` class in a top-level folder named `'__sized__'`, maintaining the same descendant folder structure as the original image. If you'd like to change the name of this folder to something other than `'__sized__'`, adjust the value of `VERSATILEIMAGEFIELD_SETTINGS['sized_directory_name']` within your settings file.
 
@@ -219,10 +219,10 @@ u'images/testimagemodel/__filtered__/test-image__invert__.jpg'
 u'/media/images/testimagemodel/__filtered__/test-image__invert__.jpg'
 ```
 
-As you can see, there's a 'filters' attribute available on each `VersatileImageField` which contains all filters currently registered to the Filter registry (more on that in a minute).
+As you can see, there's a `filters` attribute available on each `VersatileImageField` which contains all filters currently registered to the Filter registry.
 
 > #### NOTE ####
-> `django-versatileimagefield` ships with only a single Filter – 'invert' – which inverts the colors of an image.
+> `django-versatileimagefield` ships with a single Filter – `invert` – which inverts the colors of an image.
 
 What makes Filters extra-useful is that they have access to all registered Sizers:
 
@@ -236,7 +236,7 @@ u'/media/images/testimagemodel/__filtered__/test-image__invert__-c0-5__0-5-400x4
 ```
 
 > #### When Filtered Images Are Created ####
-> Filtered images are created the first time they are directly accessed (by either calling their `name`/`url` attributes or by directly accessing a Sizer). Once created, a reference is stored in the cache for each created image which makes for speedy subsequent retrievals.
+> Filtered images are created the first time they are directly accessed (by either calling their `name`/`url` attributes or by directly accessing a Sizer attached to it). Once created, a reference is stored in the cache for each created image which makes for speedy subsequent retrievals.
 
 #### How Filtered Image Files are Named/Stored ####
 
@@ -264,13 +264,13 @@ Template usage is straight forward and easy since both attributes and dictionary
 ```
 
 > ### NOTE ###
-> Using the `url` attribute within templates is optional. Why? All Sizers return an instance of `versatileimagefield.datastructures.sizedimage.SizedImageInstance` which provide the sized image's URL via the `__unicode__()` method (which django's templating engine uses when it is asked to render class instances directly).
+> Using the `url` attribute within templates is optional. Why? All Sizers return an instance of `versatileimagefield.datastructures.sizedimage.SizedImageInstance` which provides the sized image's URL via the `__unicode__()` method (which django's templating engine looks for when it is asked to render class instances directly).
 
 ## Specifying a Primary Point of Interest (PPOI) ##
 
-The `crop` Sizer is SUPER useful for creating images at a specific size/aspect-ratio however, sometimes you want the 'crop centerpoint' to be somewhere other than the center of a particular image. In fact, the initial inspiration for `django-versatileimagefield` came as a result of tackling this very problem.
+The `crop` Sizer is super-useful for creating images at a specific size/aspect-ratio however, sometimes you want the 'crop centerpoint' to be somewhere other than the center of a particular image. In fact, the initial inspiration for `django-versatileimagefield` came as a result of tackling this very problem.
 
-PIL's [`ImageOps.fit`](http://pillow.readthedocs.org/en/latest/reference/ImageOps.html#PIL.ImageOps.fit) method (by [Kevin Cazabon](http://www.cazabon.com/)) is what powers the 'crop' Sizer and it takes an optional keyword argument, `centering`, which expects a 2-tuple comprised of floats which are less than 0 and greater than 1. These two values together form a cartesian-like coordinate system that dictates where to center the crop: `(0, 0)` will crop to the top left corner, `(0.5, 0.5)` will crop to the center and `(1, 1)` will crop to the bottom right corner.
+PIL's [`ImageOps.fit`](http://pillow.readthedocs.org/en/latest/reference/ImageOps.html#PIL.ImageOps.fit) method (by [Kevin Cazabon](http://www.cazabon.com/)) is what powers the `crop` Sizer and it takes an optional keyword argument, `centering`, which expects a 2-tuple comprised of floats which are less than 0 and greater than 1. These two values together form a cartesian-like coordinate system that dictates where to center the crop (examples: `(0, 0)` will crop to the top left corner, `(0.5, 0.5)` will crop to the center and `(1, 1)` will crop to the bottom right corner).
 
 ### The PPOIField ###
 
@@ -314,21 +314,21 @@ class ImageExampleModel(models.Model):
         verbose_name_plural = 'Image Examples'
 ```
 
-As you can see, you'll need to add a new PPOIField field to your model and then include the name of that field in the `VersatileImageField`'s `ppoi_field` keyword argument. That's it!
+As you can see, you'll need to add a new `PPOIField` field to your model and then include the name of that field in the `VersatileImageField`'s `ppoi_field` keyword argument. That's it!
 
 > #### NOTE ####
 > `PPOIField` is fully-compatible with [`south`](http://south.readthedocs.org/en/latest/index.html) so migrate to your heart's content!
 
 #### How PPOI is Stored in the Database ####
 
-The Primary Point of Interest is stored in the database as a string with the x and y coordinates limited to two decimal places and separated by an 'x', e.g. `'0.5x0.5'` or `0.62x0.28`.
+The **Primary Point of Interest** is stored in the database as a string with the x and y coordinates limited to two decimal places and separated by an 'x', like `'0.5x0.5'` or `0.62x0.28`, for instance.
 
 ### Setting your PPOI ###
 
 You should always set an image's PPOI directly on a `VersatileImageField` (as opposed to directly on a `PPOIField` attribute).
 
 > #### NOTE ####
-> On save, `VersatileImageField` will ensure its currently-assigned PPOI value is 'sent' to the `PPOIField` associated with it (if any).
+> On save, `VersatileImageField` will ensure its currently-assigned PPOI value is 'sent' to the `PPOIField` associated with it (if any) prior to writing to the database.
 
 #### Via The Shell ####
 
@@ -343,19 +343,19 @@ You should always set an image's PPOI directly on a `VersatileImageField` (as op
 >>> example.image.ppoi
 (0.5, 0.5)
 # Creating a cropped image
->>> example.image.crop['400x400']
+>>> example.image.crop['400x400'].url
 u'/media/__sized__/images/testimagemodel/test-image-crop-c0-5__0-5-400x400.jpg'
 # Changing the PPOI value
 >>> example.image.ppoi = (1, 1)
 # Creating a new cropped image with the new PPOI value
->>> example.image.crop['400x400']
+>>> example.image.crop['400x400'].url
 u'/media/__sized__/images/testimagemodel/test-image-crop-c1__1-400x400.jpg'
 # PPOI values can be set as either a tuple or a string
 >>> example.image.ppoi = '0.1x0.55'
 >>> example.image.ppoi
 (0.1, 0.55)
 >>> example.image.ppoi = (0.75, 0.25)
->>> example.image.crop['400x400']
+>>> example.image.crop['400x400'].url
 u'/media/__sized__/images/testimagemodel/test-image-crop-c0-75__0-25-400x400.jpg'
 # u'0.75x0.25' is written to the database in the 'ppoi' column associated with
 # our example model
