@@ -8,8 +8,25 @@ from ..utils import get_resized_path
 from .base import ProcessedImage
 
 
-class SizedImageDictKeyError(Exception):
+class MalformedSizedImageKey(Exception):
     pass
+
+
+class SizedImageInstance(object):
+    """
+    A simple class for returning paths-on-storage and URLs
+    associated with images created by SizedImage
+    """
+
+    def __init__(self, name, url):
+        self.name = name
+        self.url = url
+
+    def __str__(self):
+        return self.url
+
+    def __unicode__(self):
+        return self.__str__()
 
 
 class SizedImage(ProcessedImage, dict):
@@ -61,7 +78,7 @@ class SizedImage(ProcessedImage, dict):
         try:
             width, height = [int(i) for i in key.split('x')]
         except KeyError:
-            raise SizedImageDictKeyError(
+            raise MalformedSizedImageKey(
                 "%s keys must be in the following format: "
                 "'`width`x`height`' where both `width` and `height` are "
                 "integers." % self.__class__.__name__
@@ -70,34 +87,28 @@ class SizedImage(ProcessedImage, dict):
         if not self.path_to_image and USE_PLACEHOLDIT:
             resized_url = "http://placehold.it/%dx%d" % (width, height)
         else:
-            resized_url = get_resized_path(
+            resized_storage_path, resized_url = get_resized_path(
                 path_to_image=self.path_to_image,
                 width=width,
                 height=height,
                 filename_key=self.get_filename_key(),
-                base_url=self.storage.base_url
+                storage=self.storage
             )
             if cache.get(resized_url):
                 # The sized path exists in the cache so the image already
                 # exists. So we `pass` to skip directly to the return statement
                 pass
             else:
-                resized_image_path = get_resized_path(
-                    path_to_image=self.path_to_image,
-                    width=width,
-                    height=height,
-                    filename_key=self.get_filename_key()
-                )
-                if not self.storage.exists(resized_image_path):
+                if not self.storage.exists(resized_storage_path):
                     self.create_resized_image(
                         path_to_image=self.path_to_image,
+                        save_path_on_storage=resized_storage_path,
                         width=width,
-                        height=height,
-                        filename_key=self.get_filename_key()
+                        height=height
                     )
                 # Setting a super-long cache for a resized image (30 Days)
                 cache.set(resized_url, 1, VERSATILEIMAGEFIELD_CACHE_LENGTH)
-        return resized_url
+        return SizedImageInstance(resized_storage_path, resized_url)
 
     def process_image(self, image, image_format,
                       width, height, save_kwargs={}):
@@ -136,25 +147,20 @@ class SizedImage(ProcessedImage, dict):
             image = image.convert('RGB')
         return (image, {'quality': QUAL})
 
-    def create_resized_image(self, path_to_image, width, height, filename_key):
+    def create_resized_image(self, path_to_image, save_path_on_storage,
+                             width, height):
         """
         Creates a resized image.
         `path_to_image`: The path to the image with the media directory to
                          resize. If `None`, the
                          VERSATILEIMAGEFIELD_PLACEHOLDER_IMAGE will be used.
+        `save_path_on_storage`: Where on self.storage to save the resized image
         `width`: Width of resized image (int)
         `height`: Desired height of resized image (int)
         `filename_key`: A string that will be used in the sized image filename
                         to signify what operation was done to it.
                         Examples: 'crop' or 'scale'
         """
-        resized_image_path = get_resized_path(
-            path_to_image=path_to_image,
-            width=width,
-            height=height,
-            filename_key=filename_key
-        )
-
         image, file_ext, image_format, mime_type = self.retrieve_image(
             path_to_image
         )
@@ -168,5 +174,4 @@ class SizedImage(ProcessedImage, dict):
             height=height,
             save_kwargs=save_kwargs
         )
-
-        self.save_image(imagefile, resized_image_path, file_ext, mime_type)
+        self.save_image(imagefile, save_path_on_storage, file_ext, mime_type)

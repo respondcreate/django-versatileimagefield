@@ -1,10 +1,4 @@
 import os
-try:
-    from urllib.parse import urljoin
-except ImportError:  # Python 2
-    from urlparse import urljoin
-
-from django.utils.encoding import filepath_to_uri
 
 from .settings import (
     USE_PLACEHOLDIT,
@@ -83,9 +77,11 @@ def get_resized_filename(filename, width, height, filename_key):
 
 
 def get_resized_path(path_to_image, width, height,
-                     filename_key, base_url=None):
+                     filename_key, storage):
     """
-    Returns the 'resized' path of `path_to_image`
+    Returns a 2-tuple to `path_to_image` location on `storage` (position 0)
+    and it's web-accessible URL (position 1) as dictated by `width`, `height`
+    and `filename_key`
     """
     if not path_to_image:
         filename = PLACEHOLDER_FILENAME
@@ -104,14 +100,12 @@ def get_resized_path(path_to_image, width, height,
         VERSATILEIMAGEFIELD_SIZED_DIRNAME,
         containing_folder,
         resized_filename
-    ])
+    ]).replace(' ', '')  # Removing spaces so this path is memcached friendly
 
-    if base_url:
-        path_to_return = urljoin(base_url, filepath_to_uri(joined_path))
-    else:
-        path_to_return = joined_path
-    # Removing spaces so this path is memcached key friendly
-    return path_to_return.replace(' ', '')
+    return (
+        joined_path,
+        storage.url(joined_path)
+    )
 
 
 def get_filtered_filename(filename, filename_key):
