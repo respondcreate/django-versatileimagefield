@@ -2,7 +2,7 @@
 
 ## About ##
 
-A drop-in replacement for django's ImageField that provides an easily-extendable sizing and filters framework for your images.
+A drop-in replacement for django's ImageField that provides a flexible, intuitive and easily-extensible interface for quickly creating renditions of the images assigned to it.
 
 ### Current Version ###
 
@@ -43,8 +43,8 @@ VERSATILEIMAGEFIELD_SETTINGS = {
      # should be stored in the cache. Defaults to `2592000` (30 days)
     'cache_length': 2592000,
     # The name of the cache you'd like `django-versatileimagefield` to use.
-    # Defaults to 'versatileimagefield_cache'. If no cache exists to the name
-    # provided, the 'default' cache will be used.
+    # Defaults to 'versatileimagefield_cache'. If no cache exists with the name
+    # provided, the 'default' cache will be used instead.
     'cache_name': 'versatileimagefield_cache',
     # The save quality of modified JPEG images. More info here:
     # http://pillow.readthedocs.org/en/latest/handbook/image-file-formats.html#jpeg
@@ -55,7 +55,7 @@ VERSATILEIMAGEFIELD_SETTINGS = {
     # If 'global_placeholder_image' is unset, the excellent, free-to-use
     # http://placehold.it service will be used instead.
     'global_placeholder_image': '/path/to/an-image.png',
-    # The name of the top-level folder within your storage to save all
+    # The name of the top-level folder within storage classes to save all
     # sized images. Defaults to '__sized__'
     'sized_directory_name': '__sized__',
     # The name of the directory to save all filtered images within.
@@ -66,11 +66,11 @@ VERSATILEIMAGEFIELD_SETTINGS = {
 
 ## Overview ##
 
-`django-versatileimagefield` gives you a simple interface for creating new images from a single image.
+The centerpiece of `django-versatileimagefield` is its `VersatileImageField` which provides a simple, flexible interface for creating new images from the image you assign to it.
 
 ### Model Example ###
 
-It works just like django's `ImageField` and can be used as a drop-in replacement. Here's a simple model that uses django's `ImageField`:
+`VersatileImageField` extends django's `ImageField` and can be used as a drop-in replacement for it. Here's a simple example model that depicts a typical usage of django's `ImageField`:
 
 ```python
 # models.py with `ImageField`
@@ -88,10 +88,12 @@ class ImageExampleModel(models.Model):
         height_field='height'
     )
     height = models.PositiveIntegerField(
+        'Image Height',
         blank=True,
         null=True
     )
     width = models.PositiveIntegerField(
+        'Image Width',
         blank=True,
         null=True
     )
@@ -121,10 +123,12 @@ class ImageExampleModel(models.Model):
         height_field='height'
     )
     height = models.PositiveIntegerField(
+        'Image Height',
         blank=True,
         null=True
     )
     width = models.PositiveIntegerField(
+        'Image Width',
         blank=True,
         null=True
     )
@@ -139,48 +143,58 @@ class ImageExampleModel(models.Model):
 
 ## Sizers & Filters ##
 
-Where VersatileImageField shines is in its ability to create new images on the fly via the 'Sizer/Filter' framework.
+Where `VersatileImageField` shines is in its ability to create new images on the fly via its Sizer & Filter framework.
 
 ### Sizers ###
 
-The Sizer framework gives you a way to create images with sizes different from the one you uploaded to the field. `VersatileImageField` ships with two sizers, `thumbnail` and `crop`.
+The Sizer framework gives you a way to create new images of differing sizes from the one assigned to the field. `VersatileImageField` ships with two Sizers, `thumbnail` and `crop`.
 
 #### thumbnail ####
 
-Let's say you wanted to create a thumbnail of an image that would fit within a 400px by 400px bounding box:
+Here's how you would create a thumbnail image that would fit within a 400px by 400px bounding box with `VersatileImageField`:
 
 ```python
+# Importing our example Model
 >>> from someapp.models import ImageExampleModel
+# Retrieving a model instance
 >>> example = ImageExampleModel.objects.all()[0]
+# Displaying the image currently assigned to the field
 >>> example.image.name
 u'images/testimagemodel/test-image.jpg'
->>> example.image.thumbnail['400x400']
+# Retrieving the path on the field's storage class to a 400px wide by 400px tall
+# constrained thumbnail of the image
+>>> example.image.thumbnail['400x400'].name
+# Retrieving the URL to the 400px wide by 400px tall thumbnail
+>>> example.image.thumbnail['400x400'].url
 u'/media/__sized__/images/testimagemodel/test-image-thumbnail-400x400.jpg'
+```
+
+If you want to open the created thumbnail image as an image file directly in the shell:
+
+```python
+>>> thumbnail_image = example.image.field.storage.open(example.image.thumbnail['400x400'].name)
 ```
 
 #### crop ####
 
-If you wanted make an image cropped to a specific size, use the 'crop' sizer:
+If you wanted create an image cropped to a specific size, use the 'crop' Sizer:
 
 ```python
->>> from someapp.models import ImageExampleModel
->>> example = ImageExampleModel.objects.all()[0]
->>> example.image.name
-u'images/testimagemodel/test-image.jpg'
->>> example.image.crop['400x400']
+# Retrieving the URL to a 400px wide by 400px tall crop of the image
+>>> example.image.crop['400x400'].url
 u'/media/__sized__/images/testimagemodel/test-image-crop-c0-5__0-5-400x400.jpg'
 ```
 
 > ### NOTE ###
-> The `crop` sizer will scale an image down to its longest side and then crop inwards, centered on the **primary point of interest** (ppoi). For more info about PPOI see the _Specifying a Primary Point of Interest (PPOI)_ heading below.
+> The `crop` Sizer will first scale an image down to its longest side (via the same mechanism used by the `thumbnail` Sizer) and then crop/trim inwards, centered on the **Primary Point of Interest** (PPOI, for short). For more info about what PPOI is and how it's used see the _Specifying a Primary Point of Interest (PPOI)_ heading below.
 
-As you can see, `VersatileImageField` has two extra attributes – 'thumbnail' and 'crop' – which are just `dict` subclasses that expect keys comprised of two integers, representing width and height respectively, separated by an 'x'.
+Each Sizer registered to the Sizer registry is available as an attribute on each `VersatileImageField` and is a `dict` subclass that accepts keys comprised of two integers, representing width and height respectively, separated by an 'x'. If you send a malformed key to a Sizer, a `MalformedSizedImageKey` exception will raise.
 
-#### How Sized Files are Named/Stored ####
+#### How Sized Image Files are Named/Stored ####
 
-All Sizers subclass from `versatileimagefield.datastructures.sizedimage.SizedImage` which provides a get_filename_key method that provides a unique-to-size-specified string which is included in the filename of each image it creates. The `thumbnail` sizer simply combines '-thumbnail-' with the size key passed (i.e. '400x400' ) while the `crop` sizer combines '-crop-', the field's ppoi value as a string and the size key.
+All Sizers subclass from `versatileimagefield.datastructures.sizedimage.SizedImage` which provides a `get_filename_key()` method which returns a unique-to-size-specified string that is included in the filename of each image it creates. The `thumbnail` Sizer simply combines `'thumbnail'` with the size key passed (i.e. `'400x400'` ) while the `crop` Sizer combines `'crop'`, the field's PPOI value (as a string) and the size key passed; all Sizer keys begin and end with dashes `'-'` for readability.
 
-All images created by a Sizer are stored within the field's `storage` class in a top-level folder named '__sized__', maintaining the same folder structure as the original image. If you'd like to change the name of this folder to something other than '__sized__', adjust the value of VERSATILEIMAGEFIELD_SETTINGS['sized_directory_name'] within your settings file.
+All images created by a Sizer are stored within the field's `storage` class in a top-level folder named `'__sized__'`, maintaining the same descendant folder structure as the original image. If you'd like to change the name of this folder to something other than `'__sized__'`, adjust the value of `VERSATILEIMAGEFIELD_SETTINGS['sized_directory_name']` within your settings file.
 
 Sizers are quick and easy to write, for more information about creating your own, see the 'Writing Custom Sizers' section below.
 
@@ -189,31 +203,46 @@ Sizers are quick and easy to write, for more information about creating your own
 Filters are similar to Sizers in that they create new images but they differ in a few key ways. An example by way of our `TestImageModel` model:
 
 ```python
+# Importing our example Model
 >>> from someapp.models import ImageExampleModel
+# Retrieving a model instance
 >>> example = ImageExampleModel.objects.all()[0]
+# Returning the path-on-storage to the image currently assigned to the field
 >>> example.image.name
 u'images/testimagemodel/test-image.jpg'
+# Displaying the path (within the field's storage class) to an image
+# with an inverted color pallete from that of the original image
 >>> example.image.filters.invert.name
+# Displaying the URL to the inverted image
 u'images/testimagemodel/__filtered__/test-image__invert__.jpg'
 >>> example.image.filters.invert.url
+u'/media/images/testimagemodel/__filtered__/test-image__invert__.jpg'
 ```
 
-As you can see, there's a 'filters' attribute available on the image field which contains all filters currently registered to the Filter registry (more on that in a minute).
+As you can see, there's a 'filters' attribute available on each `VersatileImageField` which contains all filters currently registered to the Filter registry (more on that in a minute).
 
 > #### NOTE ####
 > `django-versatileimagefield` ships with only a single Filter – 'invert' – which inverts the colors of an image.
 
-What makes Filters extra-useful is that they have access to all Sizers:
+What makes Filters extra-useful is that they have access to all registered Sizers:
 
 ```python
->>> example.image.filters.invert.thumbnail['400x400']
+# Creating a thumbnail of a filtered image
+>>> example.image.filters.invert.thumbnail['400x400'].url
 u'/media/images/testimagemodel/__filtered__/test-image__invert__-thumbnail-400x400.jpg'
->>> example.image.filters.invert.crop['400x400']
+# Creating a crop from a filtered image
+>>> example.image.filters.invert.crop['400x400'].url
 u'/media/images/testimagemodel/__filtered__/test-image__invert__-c0-5__0-5-400x400.jpg'
 ```
 
 > #### When Filtered Images Are Created ####
-> Images are created by a Filter when that filter is accessed for the first time on each `VersatileImageField`. Once created, a reference is stored in the cache for speedy subsequent retrievals.
+> Filtered images are created the first time they are directly accessed (by either calling their `name`/`url` attributes or by directly accessing a Sizer). Once created, a reference is stored in the cache for each created image which makes for speedy subsequent retrievals.
+
+#### How Filtered Image Files are Named/Stored ####
+
+All Filters subclass from `versatileimagefield.datastructures.filteredimage.FilteredImage` which provides a `get_filename_key()` method that returns a unique-to-filter-specified string which is then surrounded by double underscores and appended to the filename of each image it creates.
+
+All images created by a Filtered are stored within a folder named `__filtered__` that sits in the same directory as the original image. If you'd like to change the name of this folder to something other than '__filtered__', adjust the value of `VERSATILEIMAGEFIELD_SETTINGS['filtered_directory_name']` within your settings file.
 
 Filters are quick and easy to write, for more information about creating your own, see the 'Writing Custom Filters' section below.
 
@@ -234,15 +263,18 @@ Template usage is straight forward and easy since both attributes and dictionary
 <img src="{{ image.filters.invert.crop.400x400 }}" />
 ```
 
+> ### NOTE ###
+> Using the `url` attribute within templates is optional. Why? All Sizers return an instance of `versatileimagefield.datastructures.sizedimage.SizedImageInstance` which provide the sized image's URL via the `__unicode__()` method (which django's templating engine uses when it is asked to render class instances directly).
+
 ## Specifying a Primary Point of Interest (PPOI) ##
 
-The 'crop' Sizer is SUPER useful for creating images at a specific size/aspect-ratio however, sometimes you want the 'crop centerpoint' to be somewhere other than the center of a particular image. In fact, the initial inspiration for `django-versatileimagefield` came as a result of tackling this very problem.
+The `crop` Sizer is SUPER useful for creating images at a specific size/aspect-ratio however, sometimes you want the 'crop centerpoint' to be somewhere other than the center of a particular image. In fact, the initial inspiration for `django-versatileimagefield` came as a result of tackling this very problem.
 
-PIL's [`ImageOps.fit`](http://pillow.readthedocs.org/en/latest/reference/ImageOps.html#PIL.ImageOps.fit) method (by [Kevin Cazabon](http://www.cazabon.com/)) is what powers the 'crop' Sizer and it takes an optional keyword argument, `centering`, which expects a 2-tuple comprised of floats which are `>= 0` & `<= 1`. These two values together form a cartesian-like coordinate system that dictates where to center the crop: `(0, 0)` will crop to the top left corner, `(0.5, 0.5)` will crop to the center and `(1, 1)` will crop to the bottom right corner.
+PIL's [`ImageOps.fit`](http://pillow.readthedocs.org/en/latest/reference/ImageOps.html#PIL.ImageOps.fit) method (by [Kevin Cazabon](http://www.cazabon.com/)) is what powers the 'crop' Sizer and it takes an optional keyword argument, `centering`, which expects a 2-tuple comprised of floats which are less than 0 and greater than 1. These two values together form a cartesian-like coordinate system that dictates where to center the crop: `(0, 0)` will crop to the top left corner, `(0.5, 0.5)` will crop to the center and `(1, 1)` will crop to the bottom right corner.
 
 ### The PPOIField ###
 
-Each image managed by a `VersatileImageField` can store its own, unique PPOI in the database via the `PPOIField`. Here's what it looks like in action on our example model:
+Each image managed by a `VersatileImageField` can store its own, unique PPOI in the database via the easy-to-use `PPOIField`. Here's what it looks like in action on our example model:
 
 ```python
 # models.py with `VersatileImageField`
@@ -264,14 +296,18 @@ class ImageExampleModel(models.Model):
         ppoi_field='ppoi'
     )
     height = models.PositiveIntegerField(
+        'Image Height',
         blank=True,
         null=True
     )
     width = models.PositiveIntegerField(
+        'Image Width',
         blank=True,
         null=True
     )
-    ppoi = PPOIField()
+    ppoi = PPOIField(
+        'Image PPOI'
+    )
 
     class Meta:
         verbose_name = 'Image Example'
@@ -285,37 +321,55 @@ As you can see, you'll need to add a new PPOIField field to your model and then 
 
 #### How PPOI is Stored in the Database ####
 
-The Primary Point of Interest is stored in the database as a string with the x and y coordinates limited to two decimal places and separated by an 'x', e.g. `'0.5x0.5'`.
+The Primary Point of Interest is stored in the database as a string with the x and y coordinates limited to two decimal places and separated by an 'x', e.g. `'0.5x0.5'` or `0.62x0.28`.
 
 ### Setting your PPOI ###
 
-You should always set ppoi directly on a `VersatileImageField` attribute (as opposed to on a `PPOIField` attribute).
+You should always set an image's PPOI directly on a `VersatileImageField` (as opposed to directly on a `PPOIField` attribute).
+
+> #### NOTE ####
+> On save, `VersatileImageField` will ensure its currently-assigned PPOI value is 'sent' to the `PPOIField` associated with it (if any).
 
 #### Via The Shell ####
 
 ```python
+# Importing our example Model
 >>> from someapp.models import ImageExampleModel
+# Retrieving a model instance
 >>> example = ImageExampleModel.objects.all()[0]
+# Retrieving the current PPOI value associated with the image field
+# A `VersatileImageField`'s PPOI value is ALWAYS associated with the `ppoi`
+# attribute, irregardless of what you named the `PPOIField` attribute
 >>> example.image.ppoi
 (0.5, 0.5)
+# Creating a cropped image
 >>> example.image.crop['400x400']
 u'/media/__sized__/images/testimagemodel/test-image-crop-c0-5__0-5-400x400.jpg'
+# Changing the PPOI value
 >>> example.image.ppoi = (1, 1)
+# Creating a new cropped image with the new PPOI value
 >>> example.image.crop['400x400']
 u'/media/__sized__/images/testimagemodel/test-image-crop-c1__1-400x400.jpg'
+# PPOI values can be set as either a tuple or a string
+>>> example.image.ppoi = '0.1x0.55'
+>>> example.image.ppoi
+(0.1, 0.55)
 >>> example.image.ppoi = (0.75, 0.25)
 >>> example.image.crop['400x400']
 u'/media/__sized__/images/testimagemodel/test-image-crop-c0-75__0-25-400x400.jpg'
+# u'0.75x0.25' is written to the database in the 'ppoi' column associated with
+# our example model
+>>> example.save()
 ```
 
-As you can see, changing an image's PPOI changes the filename of the cropped image.
+As you can see, changing an image's PPOI changes the filename of the cropped image. This ensures updates to a `VersatileImageField`'s PPOI value will result in unique cache entries for each unique image it creates.
 
 > ##### NOTE #####
-> Each time a field's PPOI is set it's Filters & Sizers will be immediately re-built to account for this change.
+> Each time a field's PPOI is set, its Filters & Sizers will be immediately stripped down and re-built to account for this change.
 
 #### Via The Admin ####
 
-It's pretty hard to accurately set a particular image's PPOI when working in the Python shell so `django-versatileimagefield` ships with an admin-ready formfield. Simply add an image, click 'Save and continue editing', and then click where you'd like the PPOI to be, a helpful translucent red square will show you where it is:
+It's pretty hard to accurately set a particular image's PPOI when working in the Python shell so `django-versatileimagefield` ships with an admin-ready formfield. Simply add an image, click 'Save and continue editing', and then click where you'd like the PPOI to be. A helpful translucent red square will indicate where the PPOI value is currently set to:
 
 ![django-versatileimagefield PPOI admin widget example](versatileimagefield/static/versatileimagefield/images/ppoi-admin-example.png)
 
