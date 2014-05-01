@@ -31,40 +31,26 @@ class FilteredImage(ProcessedImage):
 
     def __init__(self, path_to_image, storage, filename_key):
         super(FilteredImage, self).__init__(path_to_image, storage)
-        self.name = get_filtered_path(
+        self.name, self.url = get_filtered_path(
             path_to_image=self.path_to_image,
-            filename_key=filename_key
+            filename_key=filename_key,
+            storage=storage
         )
-        self.url = self.storage.url(self.name)
 
-    def process_filter(self, image, image_format, save_kwargs={}):
+    def create_filtered_image(self, path_to_image, save_path_on_storage):
         """
-        The API hook for subclasses to implement image filtering.
-
-        Arguments:
-            * `image`: A PIL Image instance.
-            * `image_format`: A valid PIL file identifier (i.e. 'JPEG'
-                              'PNG', 'GIF' etc)
-            * `save_kwargs`: Any additional save keyword arguments that
-                             will be used by self.save_image
-        """
-        raise NotImplementedError(
-            'Subclasses MUST provide a `process_filter` method.')
-
-    def create_filtered_image(self, path_to_image, prepared_path):
-        """
-        Creates a resized image.
+        Creates a filtered image.
         `path_to_image`: The path to the image with the media directory
                          to resize.
-        `prepared_path`: The path on disk to save the filtered image
+        `save_path_on_storage`: Where on self.storage to save the filtered image
         """
 
         image, file_ext, image_format, mime_type = self.retrieve_image(
             path_to_image
         )
         image, save_kwargs = self.preprocess(image, image_format)
-        imagefile = self.process_filter(image, image_format, save_kwargs)
-        self.save_image(imagefile, prepared_path, file_ext, mime_type)
+        imagefile = self.process_image(image, image_format, save_kwargs)
+        self.save_image(imagefile, save_path_on_storage, file_ext, mime_type)
 
 
 class DummyFilter(object):
@@ -126,9 +112,10 @@ class FilterLibrary(dict):
                     filtered_path = None
                     prepped_filter = DummyFilter()
                 else:
-                    filtered_path = get_filtered_path(
+                    filtered_path, filtered_url = get_filtered_path(
                         path_to_image=self.original_file_location,
-                        filename_key=key
+                        filename_key=key,
+                        storage=self.storage
                     )
                     filter_cls = self.registry._filter_registry[key]
                     prepped_filter = filter_cls(
@@ -136,8 +123,8 @@ class FilterLibrary(dict):
                         storage=self.storage,
                         filename_key=key
                     )
-                    if cache.get(filtered_path):
-                        # The filtered_path exists in the cache so the image
+                    if cache.get(filtered_url):
+                        # The filtered_url exists in the cache so the image
                         # already exists. So we `pass` to skip directly to the
                         # return statement.
                         pass
@@ -145,13 +132,13 @@ class FilterLibrary(dict):
                         if not self.storage.exists(filtered_path):
                             prepped_filter.create_filtered_image(
                                 path_to_image=self.original_file_location,
-                                prepared_path=filtered_path
+                                save_path_on_storage=filtered_path
                             )
 
                         # Setting a super-long cache for the newly created
                         # image
                         cache.set(
-                            filtered_path,
+                            filtered_url,
                             1,
                             VERSATILEIMAGEFIELD_CACHE_LENGTH
                         )

@@ -126,9 +126,9 @@ def get_filtered_filename(filename, filename_key):
     })
 
 
-def get_filtered_path(path_to_image, filename_key):
+def get_filtered_path(path_to_image, filename_key, storage):
     """
-    Returns the 'filtered path' of `path_to_image`
+    Returns the 'filtered path' & URL of `path_to_image`
     """
     if not path_to_image:
         filename = PLACEHOLDER_FILENAME
@@ -143,7 +143,11 @@ def get_filtered_path(path_to_image, filename_key):
         filtered_filename
     ])
     # Removing spaces so this path is memcached key friendly
-    return path_to_return.replace(' ', '')
+    path_to_return = path_to_return.replace(' ', '')
+    return (
+        path_to_return,
+        storage.url(path_to_return)
+    )
 
 
 def get_image_metadata_from_file_ext(file_ext):

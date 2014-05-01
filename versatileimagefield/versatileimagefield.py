@@ -87,12 +87,12 @@ class InvertImage(FilteredImage):
     """
     Inverts the colors of an image.
 
-    See the `process_filter()` for more specifics
+    See the `process_image()` for more specifics
     """
 
     filename_key = 'invert'
 
-    def process_filter(self, image, image_format, save_kwargs={}):
+    def process_image(self, image, image_format, save_kwargs={}):
         """
         Inverts the colors of `image`
         """

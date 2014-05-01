@@ -104,7 +104,7 @@ class ProcessedImage(object):
 
     def save_image(self, imagefile, save_path, file_ext, mime_type):
         """
-        Saves an image to self.storage.
+        Saves an image to self.storage at `save_path`.
 
         Arguments:
             `imagefile`: Raw image data, typically a StringIO instance.
