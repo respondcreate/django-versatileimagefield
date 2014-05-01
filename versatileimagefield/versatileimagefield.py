@@ -7,6 +7,11 @@ from .registry import versatileimagefield_registry
 
 
 class CroppedImage(SizedImage):
+    """
+    A SizedImage subclass that creates a 'cropped' image.
+
+    See the `process_image` method for more details.
+    """
     filename_key = 'crop'
 
     def ppoi_as_str(self):
@@ -25,6 +30,9 @@ class CroppedImage(SizedImage):
                       width, height, save_kwargs={}):
         """
         Crops `image` to `width` and `height`
+
+        Sizes an image down to its longest side and then crops inwards
+        centered on the Primary Point of Interest (as specified by `self.ppoi`)
         """
         imagefile = StringIO.StringIO()
         palette = image.getpalette()
@@ -49,12 +57,19 @@ class CroppedImage(SizedImage):
 
 
 class ThumbnailImage(SizedImage):
+    """
+    Sizes an image down to fit within a bounding box
+
+    See the `process_image()` for more information
+    """
+
     filename_key = 'thumbnail'
 
     def process_image(self, image, image_format,
                       width, height, save_kwargs={}):
         """
-        Scales `image` to fit within `width` and `height`
+        Sizes an image (`image`) down to fit within a bounding box
+        defined by `width`x`height`
         """
         imagefile = StringIO.StringIO()
         image.thumbnail(
@@ -69,11 +84,17 @@ class ThumbnailImage(SizedImage):
 
 
 class InvertImage(FilteredImage):
+    """
+    Inverts the colors of an image.
+
+    See the `process_filter()` for more specifics
+    """
+
     filename_key = 'invert'
 
     def process_filter(self, image, image_format, save_kwargs={}):
         """
-        Inverts an Images Colors
+        Inverts the colors of `image`
         """
         imagefile = StringIO.StringIO()
         inv_image = ImageOps.invert(image)
