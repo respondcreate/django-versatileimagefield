@@ -84,21 +84,21 @@ No migrations necessary!
 Want to make a thumbnail image of your original image that will fit within a 400px by 400px area? `VersatileImageField` makes it easy to serve that image in a template:
 
 ```html
-<img src="{{ object.image.thumbnail.400x400 }}" />
+<img src="{{ instance.image.thumbnail.400x400 }}" />
 ```
 
 Or retrieve the image file directly in the shell:
 
 ```python
-thumbnail_image = object.image.field.storage.open(
-    object.image.thumbnail['400x400'].name
-)
+>>> thumbnail_image = instance.image.field.storage.open(
+        instance.image.thumbnail['400x400'].name
+    )
 ```
 
 How about a cropped image instead?
 
 ```html
-<img src="{{ object.image.crop.400x400 }}" />
+<img src="{{ instance.image.crop.400x400 }}" />
 ```
 
 Cropped images will respect a **Primary Point of Interest** when they trim image data, ensuring the 'right' part of each image you create is always showing. See the [**Specifying a Primary Point of Interest (PPOI)**](#specifying-a-primary-point-of-interest-ppoi) section below for more details on how to set this value on an instance-by-instance basis.
@@ -111,17 +111,17 @@ Filters give you the ability to modify the pixel data of an image (without chang
 
 ```html
 <!-- Your image with 'regular' colors -->
-<img src="{{ object.image.url }}" />
+<img src="{{ instance.image.url }}" />
 
 <!-- Your image with inverted colors -->
-<img src="{{ object.image.filters.invert.url }}" />
+<img src="{{ instance.image.filters.invert.url }}" />
 ```
 
 Filters have access to all Sizers, too!
 
 ```html
 <!-- A thumbnail of an inverted image -->
-<img src="{{ object.image.filters.invert.thumbnail.400x400 }}" />
+<img src="{{ instance.image.filters.invert.thumbnail.400x400 }}" />
 ```
 
 > Writing `Filters` is quick and easy, see the [Writing a Custom Filter](#writing-a-custom-filter) section for more information.
@@ -387,15 +387,15 @@ Template usage is straight forward and easy since both attributes and dictionary
 
 ```html
 <!-- Sizers -->
-<img src="{{ object.image.thumbnail.400x400 }}" />
-<img src="{{ object.image.crop.400x400 }}" />
+<img src="{{ instance.image.thumbnail.400x400 }}" />
+<img src="{{ instance.image.crop.400x400 }}" />
 
 <!-- Filters -->
-<img src="{{ object.image.filters.invert.url }}" />
+<img src="{{ instance.image.filters.invert.url }}" />
 
 <!-- Filters + Sizers -->
-<img src="{{ object.image.filters.invert.thumbnail.400x400 }}" />
-<img src="{{ object.image.filters.invert.crop.400x400 }}" />
+<img src="{{ instance.image.filters.invert.thumbnail.400x400 }}" />
+<img src="{{ instance.image.filters.invert.crop.400x400 }}" />
 ```
 
 > ### NOTE ###
