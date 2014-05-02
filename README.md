@@ -140,6 +140,7 @@ $ pip install django-versatileimagefield
 
 ### Dependencies ###
 
+* `django`>=1.5.0
 * `Pillow` >= 2.4.0
 
 `django-versatileimagefield` depends on the excellent [`Pillow`](http://pillow.readthedocs.org) fork of `PIL`. If you already have PIL installed, it is recommended you uninstall it prior to installing `django-versatileimagefield`:
@@ -148,6 +149,9 @@ $ pip install django-versatileimagefield
 $ pip uninstall PIL
 $ pip install django-versatileimagefield
 ```
+
+> #### NOTE ####
+> `django-versatileimagefield` will not install `django`.
 
 ### Settings ###
 
