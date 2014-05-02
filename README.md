@@ -16,7 +16,7 @@ A drop-in replacement for django's ImageField that provides a flexible, intuitiv
   - [Dependencies](#dependencies)
   - [Settings](#settings)
 - [Model Integration](#model-integration)
-- [Sizers & Filters](#sizers-&-filters)
+- [Sizers and Filters](#sizers-and-filters)
   - [Sizers](#sizers-1)
     - [Included Sizers](#included-sizers)
       - [thumbnail](#thumbnail)
@@ -28,12 +28,13 @@ A drop-in replacement for django's ImageField that provides a flexible, intuitiv
     - [Using Sizers with Filters](#using-sizers-with-filters)
     - [How Filtered Image Files are Named/Stored](#how-filtered-image-files-are-namedstored)
   - [Using Sizers / Filters in Templates](#using-sizers--filters-in-templates)
-  - [Writing Custom Sizers & Filters](#writing-custom-sizers-&-filters)
+  - [Writing Custom Sizers and Filters](#writing-custom-sizers-and-filters)
     - [Writing a Custom Sizer](#writing-a-custom-sizer)
     - [Writing a Custom Filter](#writing-a-custom-filter)
+    - [What `process_image` should return](#what-process_image-should-return)
     - [The Preprocessing API](#the-preprocessing-api)
       - [Preprocessor Naming Convention](#preprocessor-naming-convention)
-  - [Registering Sizers & Filters](#registering-sizers-&-filters)
+  - [Registering Sizers and Filters](#registering-sizers-and-filters)
       - [Overriding an existing Sizer or Filter](#overriding-an-existing-sizer-or-filter)
         - [Unallowed Sizer & Filter Names](#unallowed-sizer-&-filter-names)
 - [Specifying a Primary Point of Interest (PPOI)](#specifying-a-primary-point-of-interest-ppoi)
@@ -42,7 +43,7 @@ A drop-in replacement for django's ImageField that provides a flexible, intuitiv
   - [Setting PPOI](#setting-ppoi)
     - [Via The Shell](#via-the-shell)
     - [Via The Admin](#via-the-admin)
-- [TODO](#todo)
+- [TODO for v0.2](#todo-for-v02)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -77,7 +78,7 @@ No migrations necessary!
 
 ### Quickly Make New Images On-The-Fly ###
 
-`VersatileImageField` gives you the ability to make new images from the one assigned to your field (without modifying the original) via its Sizers & Filters.
+`VersatileImageField` gives you the ability to make new images from the one assigned to your field (without modifying the original) via its Sizers and Filters.
 
 #### Sizers ####
 
@@ -265,7 +266,7 @@ class ImageExampleModel(models.Model):
 > ### NOTE ###
 > `VersatileImageField` is fully interchangable with [`django.db.models.ImageField`](https://docs.djangoproject.com/en/dev/ref/models/fields/#imagefield) which means you can revert back to using django's `ImageField` anytime you'd like. It's fully-compatible with [`south`](http://south.readthedocs.org/en/latest/index.html) so migrate to your heart's content!
 
-## Sizers & Filters ##
+## Sizers and Filters ##
 
 Where `VersatileImageField` shines is in its ability to create new images on the fly via its Sizer & Filter framework.
 
@@ -405,11 +406,11 @@ Template usage is straight forward and easy since both attributes and dictionary
 > ### NOTE ###
 > Using the `url` attribute on Sizers is optional in templates. Why? All Sizers return an instance of `versatileimagefield.datastructures.sizedimage.SizedImageInstance` which provides the sized image's URL via the `__unicode__()` method (which django's templating engine looks for when it is asked to render class instances directly).
 
-### Writing Custom Sizers & Filters ###
+### Writing Custom Sizers and Filters ###
 
-It's quick and easy to create new Sizers & Filters for use on your project's `VersatileImageField` fields or modify already-registered Sizers & Filters.
+It's quick and easy to create new Sizers and Filters for use on your project's `VersatileImageField` fields or modify already-registered Sizers and Filters.
 
-Both Sizers & Filters subclass from `versatileimagefield.datastructures.base.ProcessedImage` which provides a [preprocessing API]](#the-preprocessing-api) as well as all the business logic necessary to retrieve and save images.
+Both Sizers and Filters subclass from `versatileimagefield.datastructures.base.ProcessedImage` which provides a [preprocessing API]](#the-preprocessing-api) as well as all the business logic necessary to retrieve and save images.
 
 The 'meat' of each Sizer & Filter – a.k.a what actually modifies the original image – takes place within the `process_image` method which all subclasses must define (not doing so will raise a `NotImplementedError`). Sizers and Filters expect slightly different keyword arguments (Sizers required `width` and `height`, for example) see below for specifics:
 
@@ -562,20 +563,20 @@ So, if you'd want to write a PNG-specific preprocessor, your Sizer or Filter wou
 > ##### NOTE #####
 > I've only tested `VersatileImageField` with PNG, GIF and JPEG files; the list above is what PIL supports, for more information about per filetype support in PIL [visit here](https://infohost.nmt.edu/tcc/help/pubs/pil/formats.html).
 
-### Registering Sizers & Filters ###
+### Registering Sizers and Filters ###
 
 Registering Sizers and Filters is easy and straight-forward; if you've ever registered a model with django's `admin` you'll feel right at home.
 
-It is recommended you write any custom Sizers & Filters within a module named `versatileimagefield` – (i.e. `versatileimagefield.py`) that is available at the 'top level' of an app on `INSTALLED_APPS` – since this is where `django-versatileimagefield` will look for them. Here's an example:
+It is recommended you write any custom Sizers and Filters within a module named `versatileimagefield` – (i.e. `versatileimagefield.py`) that is available at the 'top level' of an app on `INSTALLED_APPS` – since this is where `django-versatileimagefield` will look for them. Here's an example:
 
 ```
 somedjangoapp/
     models.py               # Models
     admin.py                # Admin config
-    versatilimagefield.py   # Custom Sizers & Filters here
+    versatilimagefield.py   # Custom Sizers and Filters here
 ```
 
-After defining your Sizers & Filters you'll need to register them with the `versatileimagefield_registry`. Here's how the `ThumbnailSizer` is registered (see the bottom of the following code block for the relevant bit):
+After defining your Sizers and Filters you'll need to register them with the `versatileimagefield_registry`. Here's how the `ThumbnailSizer` is registered (see the bottom of the following code block for the relevant bit):
 
 ```python
 import StringIO
@@ -680,7 +681,7 @@ The order that Sizers and Filters register corresponds to their containing app's
 # settings.py
 INSTALLED_APPS = (
     'versatileimagefield',
-    'yourcustomapp'  # This app can override the default Sizers & Filters
+    'yourcustomapp'  # This app can override the default Sizers and Filters
 )
 ```
 
