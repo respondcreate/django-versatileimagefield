@@ -13,6 +13,14 @@ class NotRegistered(Exception):
     pass
 
 
+class UnallowedSizerName(Exception):
+    pass
+
+
+class UnallowedFilterName(Exception):
+    pass
+
+
 class VersatileImageFieldRegistry(object):
     """
     A VersatileImageFieldRegistry object allows new SizedImage & FilteredImage
@@ -21,6 +29,45 @@ class VersatileImageFieldRegistry(object):
     register_sizer method. New ProcessedImage subclasses are registered
     with the register_filter method.
     """
+    unallowed_sizer_names = (
+        'build_filters_and_sizers',
+        'chunks',
+        'close',
+        'closed',
+        'delete',
+        'encoding',
+        'field',
+        'file',
+        'fileno',
+        'filters',
+        'flush',
+        'height',
+        'instance',
+        'isatty',
+        'multiple_chunks',
+        'name',
+        'newlines',
+        'open',
+        'path',
+        'ppoi',
+        'read',
+        'readinto',
+        'readline',
+        'readlines',
+        'save',
+        'seek',
+        'size',
+        'softspace',
+        'storage',
+        'tell',
+        'truncate',
+        'url',
+        'validate_ppoi',
+        'width',
+        'write',
+        'writelines',
+        'xreadlines'
+    )
 
     def __init__(self, name='versatileimage_registry'):
         self._sizedimage_registry = {}  # attr_name -> sizedimage_cls
@@ -32,10 +79,22 @@ class VersatileImageFieldRegistry(object):
         Registers a new SizedImage subclass (`sizedimage_cls`) to be used
         via the attribute (`attr_name`)
         """
+        if attr_name.startswith('_') or attr_name in self.unallowed_sizer_names:
+            raise UnallowedSizerName(
+                "`%s` is an unallowed Sizer name. Sizer names cannot begin "
+                "with an underscore or be named any of the "
+                "following: %s." % (
+                    attr_name,
+                    ', '.join([
+                        name
+                        for name in self.unallowed_sizer_names
+                    ])
+                )
+            )
         if not issubclass(sizedimage_cls, SizedImage):
             raise InvalidSizedImageSubclass(
-                'Only subclasses of versatileimagefield.datastructures.SizedImage '
-                'may be registered with register_sizer'
+                'Only subclasses of versatileimagefield.datastructures.'
+                'SizedImage may be registered with register_sizer'
             )
 
         if attr_name in self._sizedimage_registry:
@@ -66,6 +125,11 @@ class VersatileImageFieldRegistry(object):
         Registers a new FilteredImage subclass (`filterimage_cls`) to be used
         via the attribute (filters.`attr_name`)
         """
+        if attr_name.startswith('_'):
+            raise UnallowedFilterName(
+                '`%s` is an unallowed Filter name. Filter names cannot begin '
+                'with an underscore.' % attr_name
+            )
         if not issubclass(filterimage_cls, FilteredImage):
             raise InvalidSizedImageSubclass(
                 'Only subclasses of FilteredImage may be registered as filters'
