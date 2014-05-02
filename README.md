@@ -381,9 +381,259 @@ It's pretty hard to accurately set a particular image's PPOI when working in the
 
 It's quick and easy to create new Sizers & Filters for use on your project's `VersatileImageField` fields or modify already-registered Sizers & Filters.
 
+Both Sizers & Filters subclass from `versatileimagefield.datastructures.base.ProcessedImage` which provides a preprocessing API (more on that in a bit) as well as all the business logic necessary to retrieve and save images.
+
+The 'meat' of each Sizer & Filter – a.k.a what actually modifies the original image – takes place within the `process_image()` method which all subclasses must define (not doing so will raise a `NotImplementedError`). Sizers and Filters expect slightly different keyword arguments (Sizers required `width` and `height` kwargs, for example) see below for specifics:
+
 ### Writing a Custom Sizer ###
+
+All Sizers should subclass `versatileimagefield.datastructures.sizedimage.SizedImage` and, at a minimum, MUST do two things:
+
+1. Define either the `filename_key` attribute or override the `get_filename_key()` method which is necessary for creating unique-to-Sizer-and-size filenames. If neither of the aforementioned is done a `NotImplementedError` exception will be raised.
+
+2. Define a `process_image` method that accepts the following arguments:
+
+    * `image`: a PIL Image instance
+    * `image_format`: A valid image mime type (e.g. 'image/jpeg'). This is provided by the `create_resized_image()` method (which calls `process_image`).
+    * `save_kwargs`: A `dict` of any keyword arguments needed during save (provided by the preprocessing API).
+    * `width`: An integer representing the width specified by the user in the size key.
+    * `height`: An integer representing the height specified by the user in the size key.
+
+For an example, let's take a look at the Sizer that powers the `thumbnail` sizer (`versatileimagefield.versatileimagefield.ThumbnailImage`):
+
+```python
+import StringIO
+
+from PIL import Image
+
+from .datastructures import SizedImage
+
+class ThumbnailImage(SizedImage):
+    """
+    Sizes an image down to fit within a bounding box
+
+    See the `process_image()` method for more information
+    """
+
+    filename_key = 'thumbnail'
+
+    def process_image(self, image, image_format, save_kwargs,
+                      width, height):
+        """
+        Returns a StringIO instance of `image` that will fit
+        within a bounding box as specified by `width`x`height`
+        """
+        imagefile = StringIO.StringIO()
+        image.thumbnail(
+            (width, height),
+            Image.ANTIALIAS
+        )
+        image.save(
+            imagefile,
+            **save_kwargs
+        )
+        return imagefile
+```
+
+### Writing a Custom Filter ###
+
+All Filters should subclass `versatileimagefield.datastructures.filteredimage.FilteredImage` and only need to define a `process_filter` method with following arguments:
+
+    * `image`: a PIL Image instance
+    * `image_format`: A valid image mime type (e.g. 'image/jpeg'). This is provided by the `create_resized_image()` method (which calls `process_image`).
+    * `save_kwargs`: A `dict` of any keyword arguments needed during save (provided by the preprocessing API).
+
+For an example, let's take a look at the Filter that powers the `invert` Filter (`versatileimagefield.versatileimagefield.InvertImage`):
+
+```python
+import StringIO
+
+from PIL import ImageOps
+
+from .datastructures import FilteredImage
+
+class InvertImage(FilteredImage):
+    """
+    Inverts the colors of an image.
+
+    See the `process_image()` for more specifics
+    """
+
+    filename_key = 'invert'
+
+    def process_image(self, image, image_format, save_kwargs={}):
+        """
+        Returns a StringIO instance of `image` with inverted colors
+        """
+        imagefile = StringIO.StringIO()
+        inv_image = ImageOps.invert(image)
+        inv_image.save(
+            imagefile,
+            **save_kwargs
+        )
+        return imagefile
+```
+
+> ### NOTE ###
+> Any `process_image` method you write should _always_ return a `StringIO` instance comprised of raw image data. The actual image file will be written to your field's storage class via the `save_image` method. Note how `save_kwargs` is passed into PIL's `Image.save` method, this ensures PIL knows how to write this data (based on mime type).
+
+### The Pre-processing API ###
+
+Both Sizers and Filters have access to a pre-processing API that provide hooks
+
+### Registering Sizers & Filters for use on `VersatileImageField` ###
+
+Registering Sizers and Filters is easy and straight-forward; if you've ever registered a model with django's `admin` app you'll feel right at home.
+
+It is recommended you write any custom Sizers & Filters within a module named `versatileimagefield` (i.e. `versatileimagefield.py`) that is available at the 'top level' of an app on `INSTALLED_APPS`. Here's an example:
+
+```
+somedjangoapp/
+    models.py               # Models
+    admin.py                # Admin config
+    versatilimagefield.py   # Custom Sizers & Filters here
+```
+
+After defining your Sizers & Filters you'll need to register them with the `versatileimagefield_registry`. Here's how the `ThumbnailSizer` is registered:
+
+```python
+import StringIO
+
+from PIL import Image
+
+from .datastructures import SizedImage
+from .registry import versatileimagefield_registry
+
+
+class ThumbnailImage(SizedImage):
+    """
+    Sizes an image down to fit within a bounding box
+
+    See the `process_image()` method for more information
+    """
+
+    filename_key = 'thumbnail'
+
+    def process_image(self, image, image_format, save_kwargs,
+                      width, height):
+        """
+        Returns a StringIO instance of `image` that will fit
+        within a bounding box as specified by `width`x`height`
+        """
+        imagefile = StringIO.StringIO()
+        image.thumbnail(
+            (width, height),
+            Image.ANTIALIAS
+        )
+        image.save(
+            imagefile,
+            **save_kwargs
+        )
+        return imagefile
+
+# Registering the ThumbnailSizer to be available on VersatileImageField
+# via the `thumbnail` attribute
+versatileimagefield_registry.register_sizer('thumbnail', ThumbnailImage)]
+```
+
+All Sizers are registered via the `versatileimagefield_registry.register_sizer` method. The first argument is the attribute you want to make the Sizer available at and the second is the SizedImage subclass.
+
+Filters are just as easy. Here's how the `InvertImage` filter is registered:
+
+```python
+import StringIO
+
+from PIL import ImageOps
+
+from .datastructures import FilteredImage
+from .registry import versatileimagefield_registry
+
+
+class InvertImage(FilteredImage):
+    """
+    Inverts the colors of an image.
+
+    See the `process_image()` for more specifics
+    """
+
+    filename_key = 'invert'
+
+    def process_image(self, image, image_format, save_kwargs={}):
+        """
+        Returns a StringIO instance of `image` with inverted colors
+        """
+        imagefile = StringIO.StringIO()
+        inv_image = ImageOps.invert(image)
+        inv_image.save(
+            imagefile,
+            **save_kwargs
+        )
+        return imagefile
+
+versatileimagefield_registry.register_filter('invert', InvertImage)
+```
+
+All Filters are registered via the `versatileimagefield_registry.register_filter` method. The first argument is the attribute you want to make the Filter available at and the second is the FilteredImage subclass.
+
+#### Overriding an existing Sizer or Filter ####
+
+If you try to register a Sizer or Filter with a name that's already in use an `AlreadyRegistered` exception will raise.
+
+> ##### NOTE #####
+> A Sizer can have the same name as a Filter (since names are only required to be unique per type) however it's not recommended.
+
+If you'd like to override an already-registered Sizer or Filter just use either the `unregister_sizer` or `unregister_filter` methods of `versatileimagefield_registry`. Here's how you could 'override' the `crop` Sizer:
+
+```python
+from versatileimagefield.registry import versatileimagefield_registry
+
+# Unregistering the 'crop' Sizer
+versatileimagefield_registry.unregister_sizer('crop')
+# Registering a custom 'crop' Sizer
+versatileimagefield_registry.register_sizer('crop', SomeCustomSizedImageCls)
+```
+
+##### Unallowed Sizer & Filter Names #####
+
+Sizer and Filter names cannot begin with an underscore as it would prevent them from being accessible within the template layer. Additionaly since Sizers are available for use directly on a `VersatileImageField`, there are some names that are unallowed; trying to register a Sizer with one of the following names will result in a `UnallowedSizerName` exception:
+
+* `build_filters_and_sizers`
+* `chunks`
+* `close`
+* `closed`
+* `delete`
+* `encoding`
+* `field`
+* `file`
+* `fileno`
+* `filters`
+* `flush`
+* `height`
+* `instance`
+* `isatty`
+* `multiple_chunks`
+* `name`
+* `newlines`
+* `open`
+* `path`
+* `ppoi`
+* `read`
+* `readinto`
+* `readline`
+* `readlines`
+* `save`
+* `seek`
+* `size`
+* `softspace`
+* `storage`
+* `tell`
+* `truncate`
+* `url`
+* `validate_ppoi`
+* `width`
+* `write`
+* `writelines`
+* `xreadlines'
 
 # TODO
 * Placeholder docs
-* Add 'Writing Custom Sizers' section to README
-* Add 'Writing Custom Filters' section to README
