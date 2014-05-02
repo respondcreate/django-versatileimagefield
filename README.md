@@ -6,42 +6,42 @@ A drop-in replacement for django's ImageField that provides a flexible, intuitiv
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
 
-  - [In A Nutshell](#in-a-nutshell)
-    - [Works Just Like django's `ImageField`](#works-just-like-djangos-imagefield)
-    - [Quickly Make New Images On-The-Fly](#quickly-make-new-images-on-the-fly)
-      - [Sizers](#sizers)
-      - [Filters](#filters)
-  - [Installation](#installation)
-    - [Current Version](#current-version)
-    - [Dependencies](#dependencies)
-    - [Settings](#settings)
-  - [Model Integration](#model-integration)
-  - [Sizers & Filters](#sizers-&-filters)
-    - [Sizers](#sizers-1)
-      - [Included Sizers](#included-sizers)
-        - [thumbnail](#thumbnail)
-        - [crop](#crop)
-      - [How Sized Image Files are Named/Stored](#how-sized-image-files-are-namedstored)
-    - [Filters](#filters-1)
-      - [Included Filters](#included-filters)
-        - [invert](#invert)
-      - [Using Sizers with Filters](#using-sizers-with-filters)
-      - [How Filtered Image Files are Named/Stored](#how-filtered-image-files-are-namedstored)
-    - [Using Sizers / Filters in Templates](#using-sizers--filters-in-templates)
-    - [Writing Custom Sizers & Filters](#writing-custom-sizers-&-filters)
-      - [Writing a Custom Sizer](#writing-a-custom-sizer)
-      - [Writing a Custom Filter](#writing-a-custom-filter)
-      - [The Preprocessing API](#the-preprocessing-api)
-        - [Preprocessor Naming Convention](#preprocessor-naming-convention)
-    - [Registering Sizers & Filters](#registering-sizers-&-filters)
-        - [Overriding an existing Sizer or Filter](#overriding-an-existing-sizer-or-filter)
-          - [Unallowed Sizer & Filter Names](#unallowed-sizer-&-filter-names)
-  - [Specifying a Primary Point of Interest (PPOI)](#specifying-a-primary-point-of-interest-ppoi)
-    - [The PPOIField](#the-ppoifield)
-      - [How PPOI is Stored in the Database](#how-ppoi-is-stored-in-the-database)
-    - [Setting PPOI](#setting-ppoi)
-      - [Via The Shell](#via-the-shell)
-      - [Via The Admin](#via-the-admin)
+- [In A Nutshell](#in-a-nutshell)
+  - [Works Just Like django's `ImageField`](#works-just-like-djangos-imagefield)
+  - [Quickly Make New Images On-The-Fly](#quickly-make-new-images-on-the-fly)
+    - [Sizers](#sizers)
+    - [Filters](#filters)
+- [Installation](#installation)
+  - [Current Version](#current-version)
+  - [Dependencies](#dependencies)
+  - [Settings](#settings)
+- [Model Integration](#model-integration)
+- [Sizers & Filters](#sizers-&-filters)
+  - [Sizers](#sizers-1)
+    - [Included Sizers](#included-sizers)
+      - [thumbnail](#thumbnail)
+      - [crop](#crop)
+    - [How Sized Image Files are Named/Stored](#how-sized-image-files-are-namedstored)
+  - [Filters](#filters-1)
+    - [Included Filters](#included-filters)
+      - [invert](#invert)
+    - [Using Sizers with Filters](#using-sizers-with-filters)
+    - [How Filtered Image Files are Named/Stored](#how-filtered-image-files-are-namedstored)
+  - [Using Sizers / Filters in Templates](#using-sizers--filters-in-templates)
+  - [Writing Custom Sizers & Filters](#writing-custom-sizers-&-filters)
+    - [Writing a Custom Sizer](#writing-a-custom-sizer)
+    - [Writing a Custom Filter](#writing-a-custom-filter)
+    - [The Preprocessing API](#the-preprocessing-api)
+      - [Preprocessor Naming Convention](#preprocessor-naming-convention)
+  - [Registering Sizers & Filters](#registering-sizers-&-filters)
+      - [Overriding an existing Sizer or Filter](#overriding-an-existing-sizer-or-filter)
+        - [Unallowed Sizer & Filter Names](#unallowed-sizer-&-filter-names)
+- [Specifying a Primary Point of Interest (PPOI)](#specifying-a-primary-point-of-interest-ppoi)
+  - [The PPOIField](#the-ppoifield)
+    - [How PPOI is Stored in the Database](#how-ppoi-is-stored-in-the-database)
+  - [Setting PPOI](#setting-ppoi)
+    - [Via The Shell](#via-the-shell)
+    - [Via The Admin](#via-the-admin)
 - [TODO](#todo)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -732,7 +732,7 @@ PIL's [`ImageOps.fit`](http://pillow.readthedocs.org/en/latest/reference/ImageOp
 
 ### The PPOIField ###
 
-Each image managed by a `VersatileImageField` can store its own, unique PPOI in the database via the easy-to-use `PPOIField`. Here's what it looks like in action on our example model:
+Each image managed by a `VersatileImageField` can store its own, unique PPOI in the database via the easy-to-use `PPOIField`. Here's how to integrate it into our example model:
 
 ```python
 # models.py with `VersatileImageField` & `PPOIField`
@@ -779,14 +779,13 @@ As you can see, you'll need to add a new `PPOIField` field to your model and the
 
 #### How PPOI is Stored in the Database ####
 
-The **Primary Point of Interest** is stored in the database as a string with the x and y coordinates limited to two decimal places and separated by an 'x' (for instance: `'0.5x0.5'` or `0.62x0.28`).
+The **Primary Point of Interest** is stored in the database as a string with the x and y coordinates limited to two decimal places and separated by an 'x' (for instance: `'0.5x0.5'` or `'0.62x0.28'`).
 
 ### Setting PPOI ###
 
-You should **always** set an image's PPOI directly on a `VersatileImageField` (as opposed to directly on a `PPOIField` attribute).
+PPOI is set via the `ppoi` attribute on a `VersatileImageField`. You should **always** set an image's PPOI here (as opposed to directly on a `PPOIField` attribute) since a `VersatileImageField` will ensure updated values are passed-down to all its attached Filters & Sizers.
 
-> #### NOTE ####
-> On save, `VersatileImageField` will ensure its currently-assigned PPOI value is 'sent' to the `PPOIField` associated with it (if any) prior to writing to the database.
+When you save a model instance, `VersatileImageField` will ensure its currently-assigned PPOI value is 'sent' to the `PPOIField` associated with it (if any) prior to writing to the database.
 
 #### Via The Shell ####
 
@@ -831,5 +830,5 @@ It's pretty hard to accurately set a particular image's PPOI when working in the
 
 ![django-versatileimagefield PPOI admin widget example](versatileimagefield/static/versatileimagefield/images/ppoi-admin-example.png)
 
-# TODO
+## TODO
 * Placeholder docs
