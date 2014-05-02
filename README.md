@@ -830,5 +830,8 @@ It's pretty hard to accurately set a particular image's PPOI when working in the
 
 ![django-versatileimagefield PPOI admin widget example](versatileimagefield/static/versatileimagefield/images/ppoi-admin-example.png)
 
-## TODO
+## TODO for v0.2
 * Placeholder docs
+* Programmatically delete images created by `VersatileImageField` (including clearing their connected cache keys)
+* Management command for auto-generating sets of images (and pre-warming the cache)
+* Templatetags for sizing/filtering static images
