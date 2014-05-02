@@ -26,13 +26,14 @@ class CroppedImage(SizedImage):
             self.ppoi_as_str()
         )
 
-    def process_image(self, image, image_format,
-                      width, height, save_kwargs={}):
+    def process_image(self, image, image_format, save_kwargs,
+                      width, height):
         """
-        Crops `image` to `width` and `height`
+        Returns a StringIO instance of `image` cropped to `width` and `height`
 
-        Sizes an image down to its longest side and then crops inwards
-        centered on the Primary Point of Interest (as specified by `self.ppoi`)
+        Cropping will first reduce an image down to its longest side
+        and then crop inwards centered on the Primary Point of Interest
+        (as specified by `self.ppoi`)
         """
         imagefile = StringIO.StringIO()
         palette = image.getpalette()
@@ -60,16 +61,16 @@ class ThumbnailImage(SizedImage):
     """
     Sizes an image down to fit within a bounding box
 
-    See the `process_image()` for more information
+    See the `process_image()` method for more information
     """
 
     filename_key = 'thumbnail'
 
-    def process_image(self, image, image_format,
-                      width, height, save_kwargs={}):
+    def process_image(self, image, image_format, save_kwargs,
+                      width, height):
         """
-        Sizes an image (`image`) down to fit within a bounding box
-        defined by `width`x`height`
+        Returns a StringIO instance of `image` that will fit
+        within a bounding box as specified by `width`x`height`
         """
         imagefile = StringIO.StringIO()
         image.thumbnail(
@@ -94,7 +95,7 @@ class InvertImage(FilteredImage):
 
     def process_image(self, image, image_format, save_kwargs={}):
         """
-        Inverts the colors of `image`
+        Returns a StringIO instance of `image` with inverted colors
         """
         imagefile = StringIO.StringIO()
         inv_image = ImageOps.invert(image)
