@@ -40,25 +40,24 @@ class SizedImage(ProcessedImage, dict):
     """
 
     def __init__(self, path_to_image, storage, ppoi=None):
-
-        if getattr(self, 'filename_key', None) is None:
-            raise NotImplementedError(
-                "%s instances MUST have a `filename_key`"
-                " attribute" % self.__class__.__name__
-            )
         super(SizedImage, self).__init__(path_to_image, storage)
         self.ppoi = ppoi
+        try:
+            key = self.get_filename_key()
+        except AttributeError:
+            raise NotImplementedError(
+                'SizedImage subclasses must define a'
+                ' `filename_key` attribute or override the '
+                '`get_filename_key` method.'
+            )
+        else:
+            del key
 
     def get_filename_key(self):
         """
         Returns a string that will be used to identify the resized image.
         """
-        if not getattr(self, 'filename_key'):
-            raise AttributeError('SizedImage subclasses must define a'
-                                 ' `filename_key` attribute or override the '
-                                 '`get_filename_key` method.')
-        else:
-            return self.filename_key
+        return self.filename_key
 
     def __setitem__(self, key, value):
         raise NotImplementedError(
@@ -110,15 +109,18 @@ class SizedImage(ProcessedImage, dict):
                 cache.set(resized_url, 1, VERSATILEIMAGEFIELD_CACHE_LENGTH)
         return SizedImageInstance(resized_storage_path, resized_url)
 
-    def process_image(self, image, image_format,
-                      width, height, save_kwargs={}):
+    def process_image(self, image, image_format, save_kwargs,
+                      width, height):
         """
         Arguments:
             * `image`: a PIL Image instance
+            * `image_format`: A valid image mime type (e.g. 'image/jpeg')
+            * `save_kwargs`: A dict of any keyword arguments needed during
+                             save that are provided by the preprocessing API.
             * `width`: value in pixels (as int) representing the intended width
             * `height`: value in pixels (as int) representing the intended
                         height
-            * `image_format`: A valid image mime type (e.g. 'image/jpeg')
+
 
         Returns a StringIO.StringIO representation of the resized image.
 
@@ -170,8 +172,8 @@ class SizedImage(ProcessedImage, dict):
         imagefile = self.process_image(
             image=image,
             image_format=image_format,
+            save_kwargs=save_kwargs,
             width=width,
-            height=height,
-            save_kwargs=save_kwargs
+            height=height
         )
         self.save_image(imagefile, save_path_on_storage, file_ext, mime_type)
