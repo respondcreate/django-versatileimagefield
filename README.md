@@ -6,45 +6,45 @@ A drop-in replacement for django's ImageField that provides a flexible, intuitiv
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
 
-  - [Current Version](#current-version)
   - [In A Nutshell](#in-a-nutshell)
     - [Works Just Like django's `ImageField`](#works-just-like-djangos-imagefield)
     - [Quickly Make New Images On-The-Fly](#quickly-make-new-images-on-the-fly)
       - [Sizers](#sizers)
       - [Filters](#filters)
   - [Installation](#installation)
+    - [Current Version](#current-version)
     - [Dependencies](#dependencies)
     - [Settings](#settings)
   - [Model Integration](#model-integration)
   - [Sizers & Filters](#sizers-&-filters)
     - [Sizers](#sizers-1)
-      - [thumbnail](#thumbnail)
-      - [crop](#crop)
+      - [Included Sizers](#included-sizers)
+        - [thumbnail](#thumbnail)
+        - [crop](#crop)
       - [How Sized Image Files are Named/Stored](#how-sized-image-files-are-namedstored)
     - [Filters](#filters-1)
+      - [Included Filters](#included-filters)
+        - [invert](#invert)
+      - [Using Sizers with Filters](#using-sizers-with-filters)
       - [How Filtered Image Files are Named/Stored](#how-filtered-image-files-are-namedstored)
     - [Using Sizers / Filters in Templates](#using-sizers--filters-in-templates)
     - [Writing Custom Sizers & Filters](#writing-custom-sizers-&-filters)
       - [Writing a Custom Sizer](#writing-a-custom-sizer)
       - [Writing a Custom Filter](#writing-a-custom-filter)
-      - [The Pre-processing API](#the-pre-processing-api)
+      - [The Preprocessing API](#the-preprocessing-api)
       - [Preprocessor Naming Convention](#preprocessor-naming-convention)
-    - [Registering Sizers & Filters for use on `VersatileImageField`](#registering-sizers-&-filters-for-use-on-versatileimagefield)
+    - [Registering Sizers & Filters](#registering-sizers-&-filters)
         - [Overriding an existing Sizer or Filter](#overriding-an-existing-sizer-or-filter)
           - [Unallowed Sizer & Filter Names](#unallowed-sizer-&-filter-names)
   - [Specifying a Primary Point of Interest (PPOI)](#specifying-a-primary-point-of-interest-ppoi)
     - [The PPOIField](#the-ppoifield)
       - [How PPOI is Stored in the Database](#how-ppoi-is-stored-in-the-database)
-    - [Setting your PPOI](#setting-your-ppoi)
+    - [Setting PPOI](#setting-ppoi)
       - [Via The Shell](#via-the-shell)
       - [Via The Admin](#via-the-admin)
 - [TODO](#todo)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-### Current Version ###
-
-0.1
 
 ## In A Nutshell ##
 
@@ -127,6 +127,10 @@ Filters have access to all Sizers, too!
 > Writing `Filters` is quick and easy, see the [Writing a Custom Filter](#writing-a-custom-filter) section for more information.
 
 ## Installation ##
+
+### Current Version ###
+
+0.1
 
 Installation is easy with [pip](https://pypi.python.org/pypi/pip):
 
@@ -267,7 +271,9 @@ The Sizer framework gives you a way to create new images of differing sizes from
 
 Each Sizer registered to the Sizer registry is available as an attribute on each `VersatileImageField`. Sizers are `dict` subclasses that only accept precisely formatted keys comprised of two integers – representing width and height, respectively – separated by an 'x' (i.e. `['400x400']'). If you send a malformed/invalid key to a Sizer, a `MalformedSizedImageKey` exception will raise.
 
-#### thumbnail ####
+#### Included Sizers ####
+
+##### thumbnail #####
 
 Here's how you would create a thumbnail image that would be constrained to fit within a 400px by 400px area:
 
@@ -296,7 +302,7 @@ If you want to open the created thumbnail image as an image file directly in the
 )
 ```
 
-#### crop ####
+##### crop #####
 
 If you wanted create an image cropped to a specific size, use the `crop` Sizer:
 
@@ -321,7 +327,13 @@ Sizers are quick and easy to write, for more information about how it's done, se
 
 ### Filters ###
 
-Filters are similar to Sizers in that they create new images but they differ in that they don't modify the size or aspect ratio. An example by way of our `TestImageModel` model:
+Filters are similar to Sizers in that they create new images but they differ in that they don't modify the size or aspect ratio.
+
+#### Included Filters ####
+
+##### invert #####
+
+The `invert` filter will invert the color palette of an image:
 
 ```python
 # Importing our example Model
@@ -344,6 +356,8 @@ As you can see, there's a `filters` attribute available on each `VersatileImageF
 
 > #### NOTE ####
 > `django-versatileimagefield` ships with a single Filter – `invert` – which inverts the colors of an image.
+
+#### Using Sizers with Filters ####
 
 What makes Filters extra-useful is that they have access to all registered Sizers:
 
@@ -487,7 +501,7 @@ class InvertImage(FilteredImage):
 > #### IMPORTANT ####
 > Any `process_image` method you write should _always_ return a `StringIO` instance comprised of raw image data. The actual image file will be written to your field's storage class via the `save_image` method. Note how `save_kwargs` is passed into PIL's `Image.save` method, this ensures PIL knows how to write this data (based on mime type or any other per-filetype specific options provided by the pre-processing).
 
-#### The Pre-processing API ####
+#### The Preprocessing API ####
 
 Both Sizers and Filters have access to a pre-processing API that provide hooks for doing any per-mime-type processing. This allows your Sizers and Filters to do one thing for JPEGs and another for GIFs, for instance. One example of this is in how Sizers 'know' how to preserve transparency for GIFs or save JPEGs as RGB (at the user-defined quality):
 
@@ -543,7 +557,7 @@ So, if you'd want to write a PNG-specific preprocessor, your Sizer or Filter wou
 > ##### NOTE #####
 > I've only tested `VersatileImageField` with PNG, GIF and JPEG files; the list above is what PIL supports, for more information about per filetype support in PIL [visit here](https://infohost.nmt.edu/tcc/help/pubs/pil/formats.html).
 
-### Registering Sizers & Filters for use on `VersatileImageField` ###
+### Registering Sizers & Filters ###
 
 Registering Sizers and Filters is easy and straight-forward; if you've ever registered a model with django's `admin` you'll feel right at home.
 
@@ -767,7 +781,7 @@ As you can see, you'll need to add a new `PPOIField` field to your model and the
 
 The **Primary Point of Interest** is stored in the database as a string with the x and y coordinates limited to two decimal places and separated by an 'x' (for instance: `'0.5x0.5'` or `0.62x0.28`).
 
-### Setting your PPOI ###
+### Setting PPOI ###
 
 You should **always** set an image's PPOI directly on a `VersatileImageField` (as opposed to directly on a `PPOIField` attribute).
 
