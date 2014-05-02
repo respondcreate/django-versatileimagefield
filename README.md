@@ -33,7 +33,7 @@ class ImageExampleModel(models.Model):
 
 No migrations necessary!
 
-### Makes New Images Quickly, On-The-Fly, Wherever You Need Them ###
+### Quickly Make New Images On-The-Fly ###
 
 `VersatileImageField` gives you the ability to make new images from the one assigned to your field (without modifying the original) via its Sizers & Filters.
 
@@ -96,7 +96,7 @@ $ pip install django-versatileimagefield
 
 * `Pillow` >= 2.4.0
 
-`django-versatileimagefield` depends on the excellent [`Pillow`](http://pillow.readthedocs.org) library. If you already have PIL installed, it is recommended you uninstall PIL prior to installing `django-versatileimagefield`:
+`django-versatileimagefield` depends on the excellent [`Pillow`](http://pillow.readthedocs.org) fork of `PIL`. If you already have PIL installed, it is recommended you uninstall it prior to installing `django-versatileimagefield`:
 
 ```bash
 $ pip uninstall PIL
@@ -225,6 +225,8 @@ Where `VersatileImageField` shines is in its ability to create new images on the
 
 The Sizer framework gives you a way to create new images of differing sizes from the one assigned to the field. `VersatileImageField` ships with two Sizers, `thumbnail` and `crop`.
 
+Each Sizer registered to the Sizer registry is available as an attribute on each `VersatileImageField`. Sizers are `dict` subclasses that only accept precisely formatted keys comprised of two integers – representing width and height, respectively – separated by an 'x' (i.e. `['400x400']'). If you send a malformed/invalid key to a Sizer, a `MalformedSizedImageKey` exception will raise.
+
 #### thumbnail ####
 
 Here's how you would create a thumbnail image that would be constrained to fit within a 400px by 400px area:
@@ -264,14 +266,11 @@ If you wanted create an image cropped to a specific size, use the `crop` Sizer:
 u'/media/__sized__/images/testimagemodel/test-image-crop-c0-5__0-5-400x400.jpg'
 ```
 
-> ### NOTE ###
-> The `crop` Sizer will first scale an image down to its longest side and then crop/trim inwards, centered on the **Primary Point of Interest** (PPOI, for short). For more info about what PPOI is and how it's used see the _Specifying a Primary Point of Interest (PPOI)_ heading below.
-
-Each Sizer registered to the Sizer registry is a `dict` subclass and available as an attribute on each `VersatileImageField` that takes keys comprised of two integers – representing width and height, respectively – separated by an 'x'. If you send a malformed/invalid key to a Sizer, a `MalformedSizedImageKey` exception will raise.
+The `crop` Sizer will first scale an image down to its longest side and then crop/trim inwards, centered on the **Primary Point of Interest** (PPOI, for short). For more info about what PPOI is and how it's used see the _Specifying a Primary Point of Interest (PPOI)_ heading below.
 
 #### How Sized Image Files are Named/Stored ####
 
-All Sizers subclass from `versatileimagefield.datastructures.sizedimage.SizedImage` which returns a unique-to-size-specified string – via its `get_filename_key()` method – that is included in the filename of each image it creates.
+All Sizers subclass from `versatileimagefield.datastructures.sizedimage.SizedImage` which uses a unique-to-size-specified string – provided via its `get_filename_key()` method – that is included in the filename of each image it creates.
 
 > ##### NOTE #####
 > The `thumbnail` Sizer simply combines `'thumbnail'` with the size key passed (i.e. `'400x400'` ) while the `crop` Sizer combines `'crop'`, the field's PPOI value (as a string) and the size key passed; all Sizer 'filename keys' begin and end with dashes `'-'` for readability.
@@ -318,11 +317,11 @@ u'/media/images/testimagemodel/__filtered__/test-image__invert__-c0-5__0-5-400x4
 ```
 
 > #### When Filtered Images Are Created ####
-> Filtered images are created the first time they are directly accessed (by either evaluating their `name`/`url` attributes or by directly accessing a Sizer attached to it). Once created, a reference is stored in the cache for each created image which makes for speedy subsequent retrievals.
+> Filtered images are created the first time they are directly accessed (by either evaluating their `name`/`url` attributes or by accessing a Sizer attached to it). Once created, a reference is stored in the cache for each created image which makes for speedy subsequent retrievals.
 
 #### How Filtered Image Files are Named/Stored ####
 
-All Filters subclass from `versatileimagefield.datastructures.filteredimage.FilteredImage` which provides a `get_filename_key()` method that returns a unique-to-filter-specified string which is then surrounded by double underscores and appended to the filename of each image it creates.
+All Filters subclass from `versatileimagefield.datastructures.filteredimage.FilteredImage` which provides a `get_filename_key()` method that returns a unique-to-filter-specified string , surrounded by double underscores, which is appended to the filename of each image it creates.
 
 All images created by a Filter are stored within a folder named `__filtered__` that sits in the same directory as the original image. If you'd like to change the name of this folder to something other than '__filtered__', adjust the value of `VERSATILEIMAGEFIELD_SETTINGS['filtered_directory_name']` within your settings file.
 
@@ -334,15 +333,15 @@ Template usage is straight forward and easy since both attributes and dictionary
 
 ```html
 <!-- Sizers -->
-<img src="{{ image.thumbnail.400x400 }}" />
-<img src="{{ image.crop.400x400 }}" />
+<img src="{{ object.image.thumbnail.400x400 }}" />
+<img src="{{ object.image.crop.400x400 }}" />
 
 <!-- Filters -->
-<img src="{{ image.filters.invert.url }}" />
+<img src="{{ object.image.filters.invert.url }}" />
 
 <!-- Filters + Sizers -->
-<img src="{{ image.filters.invert.thumbnail.400x400 }}" />
-<img src="{{ image.filters.invert.crop.400x400 }}" />
+<img src="{{ object.image.filters.invert.thumbnail.400x400 }}" />
+<img src="{{ object.image.filters.invert.crop.400x400 }}" />
 ```
 
 > ### NOTE ###
@@ -353,6 +352,9 @@ Template usage is straight forward and easy since both attributes and dictionary
 The `crop` Sizer is super-useful for creating images at a specific size/aspect-ratio however, sometimes you want the 'crop centerpoint' to be somewhere other than the center of a particular image. In fact, the initial inspiration for `django-versatileimagefield` came as a result of tackling this very problem.
 
 PIL's [`ImageOps.fit`](http://pillow.readthedocs.org/en/latest/reference/ImageOps.html#PIL.ImageOps.fit) method (by [Kevin Cazabon](http://www.cazabon.com/)) is what powers the image manipulation of `crop` Sizer and it takes an optional keyword argument, `centering`, which expects a 2-tuple comprised of floats which are less than 0 and greater than 1. These two values together form a cartesian-like coordinate system that dictates where to center the crop (examples: `(0, 0)` will crop to the top left corner, `(0.5, 0.5)` will crop to the center and `(1, 1)` will crop to the bottom right corner).
+
+> ### NOTE ###
+> At present, only the `crop` Sizer leverages PPOI to while creating images but a `VersatileImageField` makes its PPOI value available to ALL its attached Filters and Sizers. Get creative!
 
 ### The PPOIField ###
 
@@ -407,7 +409,7 @@ The **Primary Point of Interest** is stored in the database as a string with the
 
 ### Setting your PPOI ###
 
-You should always set an image's PPOI directly on a `VersatileImageField` (as opposed to directly on a `PPOIField` attribute).
+You should **always** set an image's PPOI directly on a `VersatileImageField` (as opposed to directly on a `PPOIField` attribute).
 
 > #### NOTE ####
 > On save, `VersatileImageField` will ensure its currently-assigned PPOI value is 'sent' to the `PPOIField` associated with it (if any) prior to writing to the database.
@@ -459,7 +461,7 @@ It's pretty hard to accurately set a particular image's PPOI when working in the
 
 It's quick and easy to create new Sizers & Filters for use on your project's `VersatileImageField` fields or modify already-registered Sizers & Filters.
 
-Both Sizers & Filters subclass from `versatileimagefield.datastructures.base.ProcessedImage` which provides a preprocessing API (more on that in a bit) as well as all the business logic necessary to retrieve and save images.
+Both Sizers & Filters subclass from `versatileimagefield.datastructures.base.ProcessedImage` which provides a pre-processing API (more on that in a bit) as well as all the business logic necessary to retrieve and save images.
 
 The 'meat' of each Sizer & Filter – a.k.a what actually modifies the original image – takes place within the `process_image` method which all subclasses must define (not doing so will raise a `NotImplementedError`). Sizers and Filters expect slightly different keyword arguments (Sizers required `width` and `height` kwargs, for example) see below for specifics:
 
@@ -473,7 +475,7 @@ All Sizers should subclass `versatileimagefield.datastructures.sizedimage.SizedI
 
     * `image`: a PIL Image instance
     * `image_format`: A valid image mime type (e.g. 'image/jpeg'). This is provided by the `create_resized_image` method (which calls `process_image`).
-    * `save_kwargs`: A `dict` of any keyword arguments needed during save (provided by the preprocessing API).
+    * `save_kwargs`: A `dict` of any keyword arguments needed by PIL's `Image.save` method (initially provided by the pre-processing API).
     * `width`: An integer representing the width specified by the user in the size key.
     * `height`: An integer representing the height specified by the user in the size key.
 
@@ -519,9 +521,9 @@ All Filters should subclass `versatileimagefield.datastructures.filteredimage.Fi
 
 * `image`: a PIL Image instance
 * `image_format`: A valid image mime type (e.g. 'image/jpeg'). This is provided by the `create_resized_image()` method (which calls `process_image`).
-* `save_kwargs`: A `dict` of any keyword arguments needed during save (provided by the preprocessing API).
+* `save_kwargs`: A `dict` of any keyword arguments needed by PIL's `Image.save` method (initially provided by the pre-processing API).
 
-For an example, let's take a look at the Filter that powers the `invert` Filter (`versatileimagefield.versatileimagefield.InvertImage`):
+For an example, let's take a look at the `invert` Filter (`versatileimagefield.versatileimagefield.InvertImage`):
 
 ```python
 import StringIO
@@ -553,16 +555,16 @@ class InvertImage(FilteredImage):
 ```
 
 > ### IMPORTANT ###
-> Any `process_image` method you write should _always_ return a `StringIO` instance comprised of raw image data. The actual image file will be written to your field's storage class via the `save_image` method. Note how `save_kwargs` is passed into PIL's `Image.save` method, this ensures PIL knows how to write this data (based on mime type).
+> Any `process_image` method you write should _always_ return a `StringIO` instance comprised of raw image data. The actual image file will be written to your field's storage class via the `save_image` method. Note how `save_kwargs` is passed into PIL's `Image.save` method, this ensures PIL knows how to write this data (based on mime type or any other per-filetype specific options provided by the pre-processing).
 
 ### The Pre-processing API ###
 
-Both Sizers and Filters have access to a pre-processing API that provide hooks for doing any per-mime-type processing. This allows your Sizers and Filters to do one thing for JPEGs and another for GIFs, for instance. One example of this is in how Sizers 'know' how to preserve transparency for GIFs and save JPEGs as RGB with at the user-specific quality:
+Both Sizers and Filters have access to a pre-processing API that provide hooks for doing any per-mime-type processing. This allows your Sizers and Filters to do one thing for JPEGs and another for GIFs, for instance. One example of this is in how Sizers 'know' how to preserve transparency for GIFs or save JPEGs as RGB (at the user-defined quality):
 
 ```python
 # versatileimagefield/datastructures/sizedimage.py
 class SizedImage(ProcessedImage, dict):
-    ...
+    "..."
 
     def preprocess_GIF(self, image, **kwargs):
         """
@@ -585,11 +587,11 @@ class SizedImage(ProcessedImage, dict):
         return (image, {'quality': QUAL})
 ```
 
-All pre-processors should accept one required argument `image` (A PIL Image instance) and `**kwargs` (for easy future) and return a 2-tuple of the image and a dict of any additional keyword arguments to pass along to PIL's `Image.save` method.
+All pre-processors should accept one required argument `image` (A PIL Image instance) and `**kwargs` (for easy extension by subclasses) and return a 2-tuple of the image and a dict of any additional keyword arguments to pass along to PIL's `Image.save` method.
 
 #### Preprocessor Naming Convention ####
 
-Preprocessors follow a simple naming convention: `preprocess_FILETYPE`. Here's a list of all currently-supported file types:
+In order for preprocessor methods to run, they need to be named correctly via this simple naming convention: `preprocess_FILETYPE`. Here's a list of all currently-supported file types:
 
 * BMP
 * DCX
@@ -624,7 +626,7 @@ somedjangoapp/
     versatilimagefield.py   # Custom Sizers & Filters here
 ```
 
-After defining your Sizers & Filters you'll need to register them with the `versatileimagefield_registry`. Here's how the `ThumbnailSizer` is registered:
+After defining your Sizers & Filters you'll need to register them with the `versatileimagefield_registry`. Here's how the `ThumbnailSizer` is registered (see the bottom of the code block for the relevant bit):
 
 ```python
 import StringIO
@@ -668,7 +670,7 @@ versatileimagefield_registry.register_sizer('thumbnail', ThumbnailImage)]
 
 All Sizers are registered via the `versatileimagefield_registry.register_sizer` method. The first argument is the attribute you want to make the Sizer available at and the second is the SizedImage subclass.
 
-Filters are just as easy. Here's how the `InvertImage` filter is registered:
+Filters are just as easy. Here's how the `InvertImage` filter is registered (see the bottom of this code block for the relevant bit):
 
 ```python
 import StringIO
@@ -707,7 +709,7 @@ All Filters are registered via the `versatileimagefield_registry.register_filter
 
 #### Overriding an existing Sizer or Filter ####
 
-If you try to register a Sizer or Filter with a name that's already in use, an `AlreadyRegistered` exception will raise.
+If you try to register a Sizer or Filter with an attribute name that's already in use (like `crop` or `thumbnail` or `invert`), an `AlreadyRegistered` exception will raise.
 
 > ##### NOTE #####
 > A Sizer can have the same name as a Filter (since names are only required to be unique per type) however it's not recommended.
@@ -723,9 +725,19 @@ versatileimagefield_registry.unregister_sizer('crop')
 versatileimagefield_registry.register_sizer('crop', SomeCustomSizedImageCls)
 ```
 
+The order that Sizers and Filters register corresponds to their containing app's position on `INSTALLED_APPS`. This means that if you want to override one of the default Sizers or Filters your app needs to be included after `'versatileimagefield'`:
+
+```python
+# settings.py
+INSTALLED_APPS = (
+    'versatileimagefield',
+    'yourcustomapp'  # This app can override the default Sizers & Filters
+)
+```
+
 ##### Unallowed Sizer & Filter Names #####
 
-Sizer and Filter names cannot begin with an underscore as it would prevent them from being accessible within the template layer. Additionally, since Sizers are available for use directly on a `VersatileImageField`, there are some names that are unallowed; trying to register a Sizer with one of the following names will result in a `UnallowedSizerName` exception:
+Sizer and Filter names cannot begin with an underscore as it would prevent them from being accessible within the template layer. Additionally, since Sizers are available for use directly on a `VersatileImageField`, there are some Sizer names that are unallowed; trying to register a Sizer with one of the following names will result in a `UnallowedSizerName` exception:
 
 * `build_filters_and_sizers`
 * `chunks`
