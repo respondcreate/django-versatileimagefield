@@ -1,5 +1,8 @@
 # Compiled source #
 ###################
+build/
+dist/
+*.egg-info/
 *.pyc
 
 # Packages #
