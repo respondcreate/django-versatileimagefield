@@ -1,10 +1,12 @@
 # django-versatileimagefield #
 
+A drop-in replacement for django's ImageField that provides a flexible, intuitive and easily-extensible interface for quickly creating new images from the one assigned to your field.
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
 
-    - [Current Version](#current-version)
+  - [Current Version](#current-version)
   - [In A Nutshell](#in-a-nutshell)
     - [Works Just Like django's `ImageField`](#works-just-like-djangos-imagefield)
     - [Quickly Make New Images On-The-Fly](#quickly-make-new-images-on-the-fly)
