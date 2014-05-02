@@ -99,7 +99,7 @@ class VersatileImageFieldRegistry(object):
 
         if attr_name in self._sizedimage_registry:
             raise AlreadyRegistered(
-                'A SizedImage class is already registered to the %s attribute,'
+                'A SizedImage class is already registered to the `%s` attribute. '
                 'If you would like to override this attribute, use the '
                 'unregister method' % attr_name
             )
@@ -137,7 +137,7 @@ class VersatileImageFieldRegistry(object):
 
         if attr_name in self._filter_registry:
             raise AlreadyRegistered(
-                'A ProcessedImageMixIn class is already registered to the %s '
+                'A ProcessedImageMixIn class is already registered to the `%s` '
                 'attribute. If you would like to override this attribute, use '
                 'the unregister method' % attr_name
             )
