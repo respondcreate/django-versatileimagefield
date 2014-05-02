@@ -566,7 +566,7 @@ So, if you'd want to write a PNG-specific preprocessor, your Sizer or Filter wou
 
 Registering Sizers and Filters is easy and straight-forward; if you've ever registered a model with django's `admin` you'll feel right at home.
 
-It is recommended you write any custom Sizers & Filters within a module named `versatileimagefield` (i.e. `versatileimagefield.py`) that is available at the 'top level' of an app on `INSTALLED_APPS`. Here's an example:
+It is recommended you write any custom Sizers & Filters within a module named `versatileimagefield` – (i.e. `versatileimagefield.py`) that is available at the 'top level' of an app on `INSTALLED_APPS` – since this is where `django-versatileimagefield` will look for them. Here's an example:
 
 ```
 somedjangoapp/
@@ -575,7 +575,7 @@ somedjangoapp/
     versatilimagefield.py   # Custom Sizers & Filters here
 ```
 
-After defining your Sizers & Filters you'll need to register them with the `versatileimagefield_registry`. Here's how the `ThumbnailSizer` is registered (see the bottom of the code block for the relevant bit):
+After defining your Sizers & Filters you'll need to register them with the `versatileimagefield_registry`. Here's how the `ThumbnailSizer` is registered (see the bottom of the following code block for the relevant bit):
 
 ```python
 import StringIO
@@ -619,7 +619,7 @@ versatileimagefield_registry.register_sizer('thumbnail', ThumbnailImage)]
 
 All Sizers are registered via the `versatileimagefield_registry.register_sizer` method. The first argument is the attribute you want to make the Sizer available at and the second is the SizedImage subclass.
 
-Filters are just as easy. Here's how the `InvertImage` filter is registered (see the bottom of this code block for the relevant bit):
+Filters are just as easy. Here's how the `InvertImage` filter is registered (see the bottom of the following code block for the relevant bit):
 
 ```python
 import StringIO
@@ -730,7 +730,13 @@ Sizer and Filter names cannot begin with an underscore as it would prevent them 
 
 The `crop` Sizer is super-useful for creating images at a specific size/aspect-ratio however, sometimes you want the 'crop centerpoint' to be somewhere other than the center of a particular image. In fact, the initial inspiration for `django-versatileimagefield` came as a result of tackling this very problem.
 
-PIL's [`ImageOps.fit`](http://pillow.readthedocs.org/en/latest/reference/ImageOps.html#PIL.ImageOps.fit) method (by [Kevin Cazabon](http://www.cazabon.com/)) is what powers the image manipulation of `crop` Sizer and it takes an optional keyword argument, `centering`, which expects a 2-tuple comprised of floats which are less than 0 and greater than 1. These two values together form a cartesian-like coordinate system that dictates where to center the crop (examples: `(0, 0)` will crop to the top left corner, `(0.5, 0.5)` will crop to the center and `(1, 1)` will crop to the bottom right corner).
+PIL's [`ImageOps.fit`](http://pillow.readthedocs.org/en/latest/reference/ImageOps.html#PIL.ImageOps.fit) method (by [Kevin Cazabon](http://www.cazabon.com/)) is what powers the image manipulation of the `crop` Sizer and it takes an optional keyword argument, `centering`, which expects a 2-tuple comprised of floats which are less than 0 and greater than 1. These two values together form a cartesian coordinate system that dictates where to center the crop:
+
+* `(0, 0)` = Top Left
+* `(0, 1)` = Top Right
+* `(0.5, 0.5)` = Absolute Center
+* `(1, 0)` = Bottom Left
+* `(1, 1)` = Bottom Right
 
 > ### NOTE ###
 > At present, only the `crop` Sizer changes how it creates images based on PPOI but a `VersatileImageField` makes its PPOI value available to ALL its attached Filters and Sizers. Get creative!
