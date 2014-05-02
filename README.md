@@ -32,7 +32,7 @@ A drop-in replacement for django's ImageField that provides a flexible, intuitiv
       - [Writing a Custom Sizer](#writing-a-custom-sizer)
       - [Writing a Custom Filter](#writing-a-custom-filter)
       - [The Preprocessing API](#the-preprocessing-api)
-      - [Preprocessor Naming Convention](#preprocessor-naming-convention)
+        - [Preprocessor Naming Convention](#preprocessor-naming-convention)
     - [Registering Sizers & Filters](#registering-sizers-&-filters)
         - [Overriding an existing Sizer or Filter](#overriding-an-existing-sizer-or-filter)
           - [Unallowed Sizer & Filter Names](#unallowed-sizer-&-filter-names)
@@ -533,7 +533,7 @@ class SizedImage(ProcessedImage, dict):
 
 All pre-processors should accept one required argument `image` (A PIL Image instance) and `**kwargs` (for easy extension by subclasses) and return a 2-tuple of the image and a dict of any additional keyword arguments to pass along to PIL's `Image.save` method.
 
-#### Preprocessor Naming Convention ####
+##### Preprocessor Naming Convention #####
 
 In order for preprocessor methods to run, they need to be named correctly via this simple naming convention: `preprocess_FILETYPE`. Here's a list of all currently-supported file types:
 
