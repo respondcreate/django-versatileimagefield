@@ -5,6 +5,10 @@ dist/
 *.egg-info/
 *.pyc
 
+# Compiled docs #
+###############
+docs/_build/
+
 # Packages #
 ############
 *.7z
