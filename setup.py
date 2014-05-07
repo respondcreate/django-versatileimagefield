@@ -5,7 +5,7 @@ from setuptools import find_packages
 setup(
     name='django-versatileimagefield',
     packages=find_packages(),
-    version='0.1',
+    version='0.1.1',
     author=u'Jonathan Ellenberger',
     author_email='jonathan_ellenberger@wgbh.org',
     url='http://github.com/WGBH/django-versatileimagefield/',
@@ -14,7 +14,7 @@ setup(
                 "a flexible, intuitive and easily-extensible interface for "
                 "quickly creating new images from the one assigned to your "
                 "field.",
-    long_description=open('README.md').read(),
+    long_description=open('README.rst').read(),
     zip_safe=False,
     install_requires=[
         'Pillow>=2.4.0',
@@ -23,7 +23,6 @@ setup(
         'versatileimagefield': [
             'static/versatileimagefield/css/*.css',
             'static/versatileimagefield/js/*.js',
-            'static/versatileimagefield/images/*.png'
         ]
     },
     classifiers=[
@@ -31,6 +30,9 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.6',
+        'Programming Language :: Python :: 2.7',
         'Topic :: Multimedia :: Graphics :: Presentation'
     ]
 )
