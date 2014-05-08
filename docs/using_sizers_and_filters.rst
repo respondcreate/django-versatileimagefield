@@ -16,7 +16,7 @@ Each Sizer registered to the Sizer registry is available as an attribute
 on each ``VersatileImageField``. Sizers are ``dict`` subclasses that
 only accept precisely formatted keys comprised of two integers –
 representing width and height, respectively – separated by an 'x' (i.e.
-``['400x400']'``). If you send a malformed/invalid key to a Sizer, a
+``['400x400']``). If you send a malformed/invalid key to a Sizer, a
 ``MalformedSizedImageKey`` exception will raise.
 
 Included Sizers
@@ -97,7 +97,7 @@ settings file.
 
 Sizers are quick and easy to write, for more information about how it's
 done, see the :ref:`Writing a Custom Sizer <writing-a-custom-sizer>`
-section below.
+section.
 
 Filters
 =======
@@ -146,10 +146,10 @@ registered Sizers:
 
     # Creating a thumbnail of a filtered image
     >>> example.image.filters.invert.thumbnail['400x400'].url
-    u'/media/images/testimagemodel/__filtered__/test-image__invert__-thumbnail-400x400.jpg'
+    u'/media/__sized__/images/testimagemodel/__filtered__/test-image__invert__-thumbnail-400x400.jpg'
     # Creating a crop from a filtered image
     >>> example.image.filters.invert.crop['400x400'].url
-    u'/media/images/testimagemodel/__filtered__/test-image__invert__-c0-5__0-5-400x400.jpg'
+    u'/media/__sized__/images/testimagemodel/__filtered__/test-image__invert__-c0-5__0-5-400x400.jpg'
 
 .. note:: Filtered images are created the first time they are directly
     accessed (by either evaluating their ``name``/``url`` attributes or
@@ -176,7 +176,7 @@ settings file.
 
 Filters are quick and easy to write, for more information about creating
 your own, see the :ref:`Writing a Custom Filter <writing-a-custom-filter>`
-section below.
+section.
 
 Using Sizers / Filters in Templates
 ===================================

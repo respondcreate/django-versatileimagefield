@@ -11,10 +11,10 @@ A drop-in replacement for django's ImageField that provides a flexible,
 intuitive and easily-extensible interface for quickly creating new
 images from the one assigned to your field.
 
-Current Version
+Current Release
 ===============
 
-0.1
+0.1.1
 
 In A Nutshell
 =============

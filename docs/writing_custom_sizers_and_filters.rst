@@ -51,6 +51,7 @@ minimum, MUST do two things:
 For an example, let's take a look at the ``thumbnail`` Sizer (``versatileimagefield.versatileimagefield.ThumbnailImage``):
 
 .. code-block:: python
+    :emphasize-lines: 14,16-31
 
     import StringIO
 
@@ -107,6 +108,7 @@ For an example, let's take a look at the ``invert`` Filter
 (``versatileimagefield.versatileimagefield.InvertImage``):
 
 .. code-block:: python
+    :emphasize-lines: 14-24
 
     import StringIO
 
@@ -120,8 +122,6 @@ For an example, let's take a look at the ``invert`` Filter
 
         See the `process_image()` for more specifics
         """
-
-        filename_key = 'invert'
 
         def process_image(self, image, image_format, save_kwargs={}):
             """
@@ -155,7 +155,7 @@ provided by the :ref:`preprocessing API <preprocessing-api>`).
 The Pre-processing API
 ======================
 
-Both Sizers and Filters have access to a pre-processing API that provide
+Both Sizers and Filters have access to a pre-processing API that provides
 hooks for doing any per-mime-type processing. This allows your Sizers
 and Filters to do one thing for JPEGs and another for GIFs, for
 instance. One example of this is in how Sizers 'know' how to preserve
@@ -246,13 +246,12 @@ Here's an example:
 
 After defining your Sizers and Filters you'll need to register them with
 the ``versatileimagefield_registry``. Here's how the ``ThumbnailSizer``
-is registered (see the highlighted section at bottom of the following code block for the
-relevant bit):
+is registered (see the highlighted lines in the following code block for the relevant bits):
 
 .. code-block:: python
-    :emphasize-lines: 36,37,38
+    :emphasize-lines: 7,36-38
 
-    # someapp/versatileimagefield.py
+    # versatileimagefield/versatileimagefield.py
     import StringIO
 
     from PIL import Image
@@ -295,12 +294,10 @@ All Sizers are registered via the ``versatileimagefield_registry.register_sizer`
 argument is the attribute you want to make the Sizer available at and
 the second is the ``SizedImage`` subclass.
 
-Filters are just as easy. Here's how the ``InvertImage`` filter is
-registered (see the highlighted line at bottom of the following code block for the relevant
-bit):
+Filters are just as easy. Here's how the ``InvertImage`` filter is registered (see the highlighted lines in the following code block for the relevant bits):
 
 .. code-block:: python
-    :emphasize-lines: 30
+    :emphasize-lines: 6,28
 
     import StringIO
 
@@ -316,8 +313,6 @@ bit):
 
         See the `process_image()` for more specifics
         """
-
-        filename_key = 'invert'
 
         def process_image(self, image, image_format, save_kwargs={}):
             """

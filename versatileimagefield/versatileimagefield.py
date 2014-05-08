@@ -91,8 +91,6 @@ class InvertImage(FilteredImage):
     See the `process_image()` for more specifics
     """
 
-    filename_key = 'invert'
-
     def process_image(self, image, image_format, save_kwargs={}):
         """
         Returns a StringIO instance of `image` with inverted colors
