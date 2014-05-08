@@ -13,7 +13,7 @@ PIL's
 method (by `Kevin Cazabon <http://www.cazabon.com/>`__) is what powers
 the image manipulation of the ``crop`` Sizer and it takes an optional
 keyword argument, ``centering``, which expects a 2-tuple comprised of
-floats which are less than 0 and greater than 1. These two values
+floats which are greater than or equal to 0 and less than or equal to 1. These two values
 together form a cartesian coordinate system that dictates where to
 center the crop:
 
