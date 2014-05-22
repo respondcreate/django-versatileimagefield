@@ -10,6 +10,7 @@ as a drop-in replacement for it. Here's a simple example model that
 depicts a typical usage of django's ``ImageField``:
 
 .. code-block:: python
+    :emphasize-lines: 2,9-14
 
     # models.py with `ImageField`
     from django.db import models
@@ -43,7 +44,7 @@ depicts a typical usage of django's ``ImageField``:
 And here's that same model using ``VersatileImageField`` instead (see highlighted section in the code block below):
 
 .. code-block:: python
-    :emphasize-lines: 11,12,13,14,15,16
+    :emphasize-lines: 4,11
 
     # models.py with `VersatileImageField`
     from django.db import models

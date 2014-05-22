@@ -12,7 +12,7 @@ Sizers provide a way to create new images of differing
 sizes from the one assigned to the field. ``VersatileImageField`` ships
 with two Sizers, ``thumbnail`` and ``crop``.
 
-Each Sizer registered to the Sizer registry is available as an attribute
+Each Sizer registered to the :ref:`Sizer registry <registering-sizers-and-filters>` is available as an attribute
 on each ``VersatileImageField``. Sizers are ``dict`` subclasses that
 only accept precisely formatted keys comprised of two integers –
 representing width and height, respectively – separated by an 'x' (i.e.
@@ -29,6 +29,7 @@ Here's how you would create a thumbnail image that would be constrained
 to fit within a 400px by 400px area:
 
 .. code-block:: python
+    :emphasize-lines: 6,7,10,11
 
     # Importing our example Model
     >>> from someapp.models import ImageExampleModel
@@ -37,15 +38,17 @@ to fit within a 400px by 400px area:
     # Displaying the path-on-storage of the image currently assigned to the field
     >>> example.image.name
     u'images/testimagemodel/test-image.jpg'
-    # Retrieving the path on the field's storage class to a 400px wide by 400px tall
-    # constrained thumbnail of the image
+    # Retrieving the path on the field's storage class to a 400px wide
+    # by 400px tall constrained thumbnail of the image.
     >>> example.image.thumbnail['400x400'].name
     u'__sized__/images/testimagemodel/test-image-thumbnail-400x400.jpg'
     # Retrieving the URL to the 400px wide by 400px tall thumbnail
     >>> example.image.thumbnail['400x400'].url
     u'/media/__sized__/images/testimagemodel/test-image-thumbnail-400x400.jpg'
 
-If you want to open the created thumbnail image as an image file
+.. note:: Images are created on-demand. If no image had yet existed at the location required – by either the path (``.name``) *or* URL (``.url``) shown in the highlighted lines above – one would have been created directly before returning them.
+
+Here's how you'd open the thumbnail image we just created as an image file
 directly in the shell:
 
 .. code-block:: python
@@ -54,11 +57,12 @@ directly in the shell:
     ...     example.image.thumbnail['400x400'].name
     ... )
 
+.. _crop-sizer:
+
 crop
 ^^^^
 
-If you wanted create an image cropped to a specific size, use the
-``crop`` Sizer:
+To create images cropped to a specific size, use the ``crop`` Sizer:
 
 .. code-block:: python
 
@@ -178,6 +182,8 @@ Filters are quick and easy to write, for more information about creating
 your own, see the :ref:`Writing a Custom Filter <writing-a-custom-filter>`
 section.
 
+.. _template-usage:
+
 Using Sizers / Filters in Templates
 ===================================
 
@@ -202,5 +208,5 @@ necessary:
     All Sizers return an instance of
     ``versatileimagefield.datastructures.sizedimage.SizedImageInstance``
     which provides the sized image's URL via the ``__unicode__()``
-    method (which django's templating engine looks for when it is asked
+    method (which django's templating engine looks for when asked
     to render class instances directly).

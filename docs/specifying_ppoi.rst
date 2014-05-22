@@ -2,7 +2,7 @@
 Specifying a Primary Point of Interest (PPOI)
 =============================================
 
-The ``crop`` Sizer is super-useful for creating images at a specific
+The :ref:`crop Sizer<crop-sizer>` is super-useful for creating images at a specific
 size/aspect-ratio however, sometimes you want the 'crop centerpoint' to
 be somewhere other than the center of a particular image. In fact, the
 initial inspiration for ``django-versatileimagefield`` came as a result
@@ -39,7 +39,7 @@ unique PPOI in the database via the easy-to-use ``PPOIField``. Here's
 how to integrate it into our example model (relevant lines highlighted in the code block below):
 
 .. code-block:: python
-    :emphasize-lines: 5,17,29,30,31
+    :emphasize-lines: 4,5,17,29,30,31
 
     # models.py with `VersatileImageField` & `PPOIField`
     from django.db import models

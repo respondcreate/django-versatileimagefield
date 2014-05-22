@@ -3,8 +3,8 @@ Writing Custom Sizers and Filters
 =================================
 
 It's quick and easy to create new Sizers and Filters for use on your
-project's ``VersatileImageField`` fields or modify already-registered
-Sizers and Filters.
+project's ``VersatileImageField`` fields or :ref:`modify already-registered
+Sizers and Filters <overriding-existing-sizer-or-filter>`.
 
 Both Sizers and Filters subclass from
 ``versatileimagefield.datastructures.base.ProcessedImage`` which
@@ -223,6 +223,8 @@ Filter would need to define a method named ``preprocess_PNG``.
     about per filetype support in PIL `visit
     here <https://infohost.nmt.edu/tcc/help/pubs/pil/formats.html>`__.
 
+.. _registering-sizers-and-filters:
+
 Registering Sizers and Filters
 ==============================
 
@@ -380,6 +382,8 @@ in a ``UnallowedSizerName`` exception:
 -  ``write``
 -  ``writelines``
 -  ``xreadlines``
+
+.. _overriding-existing-sizer-or-filter:
 
 Overriding an existing Sizer or Filter
 ======================================

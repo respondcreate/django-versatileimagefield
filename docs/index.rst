@@ -7,19 +7,25 @@
 Welcome to django-versatileimagefield's documentation!
 ======================================================
 
+.. image:: https://pypip.in/download/django-versatileimagefield/badge.png
+    :target: https://pypi.python.org/pypi/django-versatileimagefield/
+    :alt: Downloads
+
+.. image:: https://pypip.in/version/django-versatileimagefield/badge.png
+    :target: https://pypi.python.org/pypi/django-versatileimagefield/
+    :alt: Latest Version
+
+----
+
 A drop-in replacement for django's ImageField that provides a flexible,
 intuitive and easily-extensible interface for quickly creating new
 images from the one assigned to your field.
 
-Current Release
-===============
-
-0.1.1
 
 In A Nutshell
 =============
 
--  Creates images anywhere you need them: not just in templates.
+-  Creates images anywhere you need them: not just :ref:`in templates <template-usage>`.
 
 -  Non-destructive: Your original image is never modified.
 
@@ -49,13 +55,6 @@ Table of Contents
    specifying_ppoi
    using_sizers_and_filters
    writing_custom_sizers_and_filters
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
 
 TODO for v0.2
 =============
