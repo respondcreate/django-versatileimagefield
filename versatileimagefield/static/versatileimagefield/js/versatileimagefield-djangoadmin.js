@@ -1,1 +1,3 @@
-django.jQuery(document).ready(generateCenterpointWidget);
+django.jQuery(document).ready(function(){
+    django.jQuery('.sizedimage-preview').load(generateCenterpointWidget);
+});

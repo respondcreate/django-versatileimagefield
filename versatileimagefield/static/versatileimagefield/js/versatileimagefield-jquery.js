@@ -1,1 +1,3 @@
-$(document).ready(generateCenterpointWidget);
+$(document).ready(function(){
+    $('.sizedimage-preview').load(generateCenterpointWidget);
+});
