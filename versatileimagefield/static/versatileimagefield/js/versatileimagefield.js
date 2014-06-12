@@ -32,3 +32,11 @@ function generateCenterpointWidget(){
         point.style.left = (e.offsetX - (point.offsetHeight / 2)) + 'px'
     }
 }
+
+var jQuery = window.jQuery || django.jQuery;
+
+if (jQuery){
+     jQuery(document).ready(function(){
+          jQuery('.sizedimage-preview').load(generateCenterpointWidget);
+     });
+}

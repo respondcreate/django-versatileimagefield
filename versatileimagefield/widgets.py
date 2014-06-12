@@ -209,9 +209,6 @@ class SizedImageCenterpointClickDjangoAdminWidget(
                 'versatileimagefield/css/versatileimagefield-djangoadmin.css',
             ),
         }
-        js = (
-            'versatileimagefield/js/versatileimagefield-djangoadmin.js',
-        )
 
 
 class SizedImageCenterpointClickBootstrap3Widget(
@@ -246,6 +243,3 @@ class SizedImageCenterpointClickBootstrap3Widget(
         css = {
             'all': ('versatileimagefield/css/versatileimagefield-bootstrap3.css',),
         }
-        js = (
-            'versatileimagefield/js/versatileimagefield-jquery.js',
-        )
