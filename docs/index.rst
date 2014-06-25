@@ -21,6 +21,31 @@ A drop-in replacement for django's ImageField that provides a flexible,
 intuitive and easily-extensible interface for quickly creating new
 images from the one assigned to your field.
 
+Release Notes
+=============
+
+0.1.3
+^^^^^
+
+-  Added support for auto-rotation during pre-processing as dictated by 'Orientation' EXIF data, if available.
+-  Added release notes to docs
+
+0.1.2
+^^^^^
+
+-  Removed redundant javascript from ppoi 'click' widget (thanks, `@skumar <https://github.com/theskumar>`_!)
+
+0.1.1
+^^^^^
+
+-  Converted giant README into Sphinx-friendly RST
+-  Docs added to readthedocs
+
+0.1
+^^^^^
+
+-  Initial open source release
+
 
 In A Nutshell
 =============
