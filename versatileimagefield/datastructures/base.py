@@ -1,6 +1,6 @@
 import os
 
-from PIL import Image
+from PIL import Image, ExifTags
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
@@ -14,6 +14,10 @@ if not USE_PLACEHOLDIT:
     PLACEHOLDER_FOLDER, PLACEHOLDER_FILENAME = os.path.split(
         VERSATILEIMAGEFIELD_PLACEHOLDER_IMAGE
     )
+
+ORIENTATION_KEY = ExifTags.TAGS.keys()[
+    ExifTags.TAGS.values().index('Orientation')
+]
 
 
 class ProcessedImage(object):
@@ -71,6 +75,21 @@ class ProcessedImage(object):
                    arguments, return an empty dict ({}).
         """
         save_kwargs = {'format': image_format}
+
+        # Ensuring image is properly rotated
+        if hasattr(image, '_getexif'):
+            exif_datadict = image._getexif()  # returns None if no EXIF data
+            if exif_datadict is not None:
+                exif = dict(exif_datadict.items())
+                orientation = exif[ORIENTATION_KEY]
+
+                if orientation == 3:
+                    image = image.transpose(Image.ROTATE_180)
+                elif orientation == 6:
+                    image = image.transpose(Image.ROTATE_270)
+                elif orientation == 8:
+                    image = image.transpose(Image.ROTATE_90)
+
         if hasattr(self, 'preprocess_%s' % image_format):
             image, addl_save_kwargs = getattr(
                 self,
