@@ -81,14 +81,17 @@ class ProcessedImage(object):
             exif_datadict = image._getexif()  # returns None if no EXIF data
             if exif_datadict is not None:
                 exif = dict(exif_datadict.items())
-                orientation = exif[ORIENTATION_KEY]
-
-                if orientation == 3:
-                    image = image.transpose(Image.ROTATE_180)
-                elif orientation == 6:
-                    image = image.transpose(Image.ROTATE_270)
-                elif orientation == 8:
-                    image = image.transpose(Image.ROTATE_90)
+                try:
+                    orientation = exif[ORIENTATION_KEY]
+                except KeyError:
+                    pass
+                else:
+                    if orientation == 3:
+                        image = image.transpose(Image.ROTATE_180)
+                    elif orientation == 6:
+                        image = image.transpose(Image.ROTATE_270)
+                    elif orientation == 8:
+                        image = image.transpose(Image.ROTATE_90)
 
         if hasattr(self, 'preprocess_%s' % image_format):
             image, addl_save_kwargs = getattr(
