@@ -24,6 +24,11 @@ images from the one assigned to your field.
 Release Notes
 =============
 
+0.1.4
+^^^^^
+
+-  Overhauling how CroppedImage processes PPOI value when creating cropped images. This new approach yields significantly more accurate results than using the previously utilized ``ImageOps.fit`` function, especially when dealing with PPOI values located near the edges of an image *or* aspect ratios that differ significantly from the original image.
+
 0.1.3
 ^^^^^
 

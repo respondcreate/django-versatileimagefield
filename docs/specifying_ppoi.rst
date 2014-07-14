@@ -8,14 +8,12 @@ be somewhere other than the center of a particular image. In fact, the
 initial inspiration for ``django-versatileimagefield`` came as a result
 of tackling this very problem.
 
-PIL's
+The ``crop`` Sizer's core functionality (located in the ``versatileimagefield.versatileimagefield.CroppedImage.crop_on_centerpoint`` method) was inspired by PIL's
 `ImageOps.fit <http://pillow.readthedocs.org/en/latest/reference/ImageOps.html#PIL.ImageOps.fit>`__
-method (by `Kevin Cazabon <http://www.cazabon.com/>`__) is what powers
-the image manipulation of the ``crop`` Sizer and it takes an optional
-keyword argument, ``centering``, which expects a 2-tuple comprised of
+function (by `Kevin Cazabon <http://www.cazabon.com/>`__) which takes an optional
+keyword argument, ``centering``, that expects a 2-tuple comprised of
 floats which are greater than or equal to 0 and less than or equal to 1. These two values
-together form a cartesian coordinate system that dictates where to
-center the crop:
+together form a cartesian coordinate system that dictates what percentage of pixels to 'trim' off each of the long sides (i.e. left/right or top/bottom, depending on the aspect ratio of the cropped size vs. the original size):
 
 +----------+--------------+--------------+--------------+
 |          |Left          |Center        |Right         |
@@ -26,6 +24,10 @@ center the crop:
 +----------+--------------+--------------+--------------+
 |**Bottom**|``(1.0, 0.0)``|``(1.0, 0.5)``|``(1.0, 1.0)``|
 +----------+--------------+--------------+--------------+
+
+The ``crop`` Sizer works in a similar way but converts the 2-tuple into an exact (x, y) pixel coordinate which is then used as the 'centerpoint' of the crop. This approach gives significantly more accurate results than using ``ImageOps.fit``, especially when dealing with PPOI values located near the edges of an image *or* aspect ratios that differ significantly from the original image.
+
+.. note:: Even though the PPOI value is used as a crop 'centerpoint', the pixel it corresponds to won't necessarily be in the center of the cropped image, especially if its near the edges of the original image.
 
 .. note:: At present, only the ``crop`` Sizer changes how it creates images
     based on PPOI but a ``VersatileImageField`` makes its PPOI value

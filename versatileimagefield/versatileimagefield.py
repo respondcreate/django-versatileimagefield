@@ -26,6 +26,93 @@ class CroppedImage(SizedImage):
             self.ppoi_as_str()
         )
 
+    def crop_on_centerpoint(self, image, width, height, ppoi=(0.5, 0.5)):
+        """
+        Returns a PIL Image instance cropped from `image` (at the aspect
+        ratio provided by dividing `width` / `height`), sized down
+        to `width`x`height`. Any 'excess pixels' are trimmed away in respect
+        to the pixel of `image` that corresponds to `ppoi` (Primary Point
+        of Interest).
+
+        `image`: A PIL Image instance
+        `width`: Integer, width of the image to return (in pixels)
+        `height`: Integer, height of the image to return (in pixels)
+        `ppoi`: A 2-tuple of floats with values greater than 0 and less than 1
+                These values are converted into a cartesian coordinate that
+                signifies the 'center pixel' which the crop will center on
+                (to trim the excess from the 'long side').
+
+        Determines whether to trim away pixels from either the left/right or
+        top/bottom sides by comparing the aspect ratio of `image` vs the
+        aspect ratio of `width`x`height`.
+
+        Will trim from the left/right sides if the aspect ratio of `image`
+        is greater-than-or-equal-to the aspect ratio of `width`x`height`.
+
+        Will trim from the top/bottom sides if the aspect ration of `image`
+        is less-than the aspect ratio or `width`x`height`.
+
+        Similar to Kevin Cazabon's ImageOps.fit method but uses the
+        ppoi value as an absolute centerpoint (as opposed as a
+        percentage to trim off the 'long sides').
+        """
+
+        ppoi_x_axis = int(image.size[0] * ppoi[0])
+        ppoi_y_axis = int(image.size[1] * ppoi[1])
+        center_pixel_coord = (ppoi_x_axis, ppoi_y_axis)
+        # Calculate the aspect ratio of `image`
+        orig_aspect_ratio = float(
+            image.size[0]
+        ) / float(
+            image.size[1]
+        )
+        crop_aspect_ratio = float(width) / float(height)
+
+        # Figure out if we're trimming from the left/right or top/bottom
+        if orig_aspect_ratio >= crop_aspect_ratio:
+            # `image` is wider than what's needed,
+            # crop from left/right sides
+            orig_crop_width = int(
+                (crop_aspect_ratio * float(image.size[1])) + 0.5
+            )
+            orig_crop_height = image.size[1]
+        else:
+            # `image` is taller than what's needed,
+            # crop from top/bottom sides
+            orig_crop_width = image.size[0]
+            orig_crop_height = int(
+                (float(image.size[0]) / crop_aspect_ratio) + 0.5
+            )
+
+        # Calculating the left side crop boundary
+        crop_boundary_left = center_pixel_coord[0] - (orig_crop_width / 2)
+        if crop_boundary_left < 0:
+            crop_boundary_left = 0
+
+        # Calculating the top side crop boundary
+        crop_boundary_top = center_pixel_coord[1] - (orig_crop_height / 2)
+        if crop_boundary_top < 0:
+            crop_boundary_top = 0
+
+        # Calculating the right and bottom crop boundaries
+        crop_boundary_right = crop_boundary_left + orig_crop_width
+        crop_boundary_bottom = crop_boundary_top + orig_crop_height
+
+        # Cropping the image from the original image
+        cropped_image = image.crop(
+            (
+                crop_boundary_left,
+                crop_boundary_top,
+                crop_boundary_right,
+                crop_boundary_bottom
+            )
+        )
+        # Resizing the newly cropped image to the size specified
+        # (as determined by `width`x`height`)
+        return cropped_image.resize(
+            (width, height)
+        )
+
     def process_image(self, image, image_format, save_kwargs,
                       width, height):
         """
@@ -37,19 +124,19 @@ class CroppedImage(SizedImage):
         """
         imagefile = StringIO.StringIO()
         palette = image.getpalette()
-        fit_image = ImageOps.fit(
-            image=image,
-            size=(width, height),
-            method=Image.ANTIALIAS,
-            centering=self.ppoi
+        cropped_image = self.crop_on_centerpoint(
+            image,
+            width,
+            height,
+            self.ppoi
         )
 
         # Using ImageOps.fit on GIFs can introduce issues with their palette
         # Solution derived from: http://stackoverflow.com/a/4905209/1149774
         if image_format == 'GIF':
-            fit_image.putpalette(palette)
+            cropped_image.putpalette(palette)
 
-        fit_image.save(
+        cropped_image.save(
             imagefile,
             **save_kwargs
         )
