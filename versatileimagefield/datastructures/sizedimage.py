@@ -85,6 +85,7 @@ class SizedImage(ProcessedImage, dict):
 
         if not self.path_to_image and USE_PLACEHOLDIT:
             resized_url = "http://placehold.it/%dx%d" % (width, height)
+            resized_storage_path = resized_url
         else:
             resized_storage_path, resized_url = get_resized_path(
                 path_to_image=self.path_to_image,
