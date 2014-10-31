@@ -3,11 +3,13 @@ from ast import literal_eval
 from django.core.exceptions import ValidationError
 from django.utils import six
 
-INVALID_CENTERPOINT_ERROR_MESSAGE = "%s is in invalid ppoi. A valid "
-"ppoi must provide two coordinates, one for the x axis and one "
-"for the y, where both values are between 0 and 1. You may pass it as "
-"either a two-position tuple like this: (0.5,0.5) or as a string where "
-"the two values are separated by an 'x' like this: '0.5x0.5'."
+INVALID_CENTERPOINT_ERROR_MESSAGE = (
+    "%s is in invalid ppoi. A valid "
+    "ppoi must provide two coordinates, one for the x axis and one "
+    "for the y, where both values are between 0 and 1. You may pass it as "
+    "either a two-position tuple like this: (0.5,0.5) or as a string where "
+    "the two values are separated by an 'x' like this: '0.5x0.5'."
+)
 
 
 def validate_ppoi_tuple(value):
@@ -62,7 +64,7 @@ def validate_ppoi(value, return_converted_tuple=False):
         except:
             try:
                 string_split = literal_eval(value)
-            except ValueError:
+            except:
                 valid_ppoi = False
             else:
                 tup = string_split
