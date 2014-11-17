@@ -30,6 +30,7 @@ Release Notes
 -  Overhauled how CroppedImage processes PPOI value when creating cropped images. This new approach yields significantly more accurate results than using the previously utilized ``ImageOps.fit`` function, especially when dealing with PPOI values located near the edges of an image *or* aspect ratios that differ significantly from the original image.
 -  Improved PPOI validation
 -  Squashed unset ``VERSATILEIMAGEFIELD_SETTINGS['global_placeholder_image']`` bug.
+-  Set `crop` Sizer default resample to PIL.Image.ANTIALIAS
 
 0.1.3
 ^^^^^
@@ -98,4 +99,3 @@ TODO for v0.2
 -  Management command for auto-generating sets of images (and
    pre-warming the cache)
 -  Templatetags for sizing/filtering static images
-
