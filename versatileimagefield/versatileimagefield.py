@@ -110,7 +110,8 @@ class CroppedImage(SizedImage):
         # Resizing the newly cropped image to the size specified
         # (as determined by `width`x`height`)
         return cropped_image.resize(
-            (width, height)
+            (width, height),
+            Image.ANTIALIAS
         )
 
     def process_image(self, image, image_format, save_kwargs,
