@@ -76,6 +76,15 @@ class CroppedImage(SizedImage):
                 (crop_aspect_ratio * float(image.size[1])) + 0.5
             )
             orig_crop_height = image.size[1]
+            crop_boundary_top = 0
+            crop_boundary_bottom = orig_crop_height
+            crop_boundary_left = center_pixel_coord[0] - (orig_crop_width / 2)
+            if crop_boundary_left < 0:
+                crop_boundary_left = 0
+            crop_boundary_right = crop_boundary_left + orig_crop_width
+            if crop_boundary_right > image.size[0]:
+                crop_boundary_right = image.size[0]
+
         else:
             # `image` is taller than what's needed,
             # crop from top/bottom sides
@@ -83,21 +92,14 @@ class CroppedImage(SizedImage):
             orig_crop_height = int(
                 (float(image.size[0]) / crop_aspect_ratio) + 0.5
             )
-
-        # Calculating the left side crop boundary
-        crop_boundary_left = center_pixel_coord[0] - (orig_crop_width / 2)
-        if crop_boundary_left < 0:
             crop_boundary_left = 0
-
-        # Calculating the top side crop boundary
-        crop_boundary_top = center_pixel_coord[1] - (orig_crop_height / 2)
-        if crop_boundary_top < 0:
-            crop_boundary_top = 0
-
-        # Calculating the right and bottom crop boundaries
-        crop_boundary_right = crop_boundary_left + orig_crop_width
-        crop_boundary_bottom = crop_boundary_top + orig_crop_height
-
+            crop_boundary_right = orig_crop_width
+            crop_boundary_top = center_pixel_coord[1] - (orig_crop_height / 2)
+            if crop_boundary_top < 0:
+                crop_boundary_top = 0
+            crop_boundary_bottom = crop_boundary_top + orig_crop_height
+            if crop_boundary_bottom > image.size[1]:
+                crop_boundary_bottom = image.size[1]
         # Cropping the image from the original image
         cropped_image = image.crop(
             (
