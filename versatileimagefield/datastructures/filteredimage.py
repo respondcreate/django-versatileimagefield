@@ -29,8 +29,10 @@ class FilteredImage(ProcessedImage):
     name = None
     url = None
 
-    def __init__(self, path_to_image, storage, filename_key):
-        super(FilteredImage, self).__init__(path_to_image, storage)
+    def __init__(self, path_to_image, storage, create_on_demand, filename_key):
+        super(FilteredImage, self).__init__(
+            path_to_image, storage, create_on_demand
+        )
         self.name, self.url = get_filtered_path(
             path_to_image=self.path_to_image,
             filename_key=filename_key,
@@ -42,7 +44,8 @@ class FilteredImage(ProcessedImage):
         Creates a filtered image.
         `path_to_image`: The path to the image with the media directory
                          to resize.
-        `save_path_on_storage`: Where on self.storage to save the filtered image
+        `save_path_on_storage`: Where on self.storage to save the filtered
+                                image
         """
 
         image, file_ext, image_format, mime_type = self.retrieve_image(
@@ -73,11 +76,12 @@ class FilterLibrary(dict):
     """
 
     def __init__(self, original_file_location,
-                 storage, registry, ppoi):
+                 storage, registry, ppoi, create_on_demand):
         self.original_file_location = original_file_location
         self.storage = storage
         self.registry = registry
         self.ppoi = ppoi
+        self.create_on_demand = create_on_demand
 
     def __getattr__(self, key):
         return self[key]
@@ -121,27 +125,29 @@ class FilterLibrary(dict):
                     prepped_filter = filter_cls(
                         path_to_image=self.original_file_location,
                         storage=self.storage,
+                        create_on_demand=self.create_on_demand,
                         filename_key=key
                     )
-                    if cache.get(filtered_url):
-                        # The filtered_url exists in the cache so the image
-                        # already exists. So we `pass` to skip directly to the
-                        # return statement.
-                        pass
-                    else:
-                        if not self.storage.exists(filtered_path):
-                            prepped_filter.create_filtered_image(
-                                path_to_image=self.original_file_location,
-                                save_path_on_storage=filtered_path
-                            )
+                    if self.create_on_demand is True:
+                        if cache.get(filtered_url):
+                            # The filtered_url exists in the cache so the image
+                            # already exists. So we `pass` to skip directly to
+                            # the return statement.
+                            pass
+                        else:
+                            if not self.storage.exists(filtered_path):
+                                prepped_filter.create_filtered_image(
+                                    path_to_image=self.original_file_location,
+                                    save_path_on_storage=filtered_path
+                                )
 
-                        # Setting a super-long cache for the newly created
-                        # image
-                        cache.set(
-                            filtered_url,
-                            1,
-                            VERSATILEIMAGEFIELD_CACHE_LENGTH
-                        )
+                            # Setting a super-long cache for the newly created
+                            # image
+                            cache.set(
+                                filtered_url,
+                                1,
+                                VERSATILEIMAGEFIELD_CACHE_LENGTH
+                            )
 
                 # 'Bolting' all image sizers within
                 # `self.registry._sizedimage_registry` onto
@@ -155,6 +161,7 @@ class FilterLibrary(dict):
                         sizedimage_cls(
                             path_to_image=filtered_path,
                             storage=self.storage,
+                            create_on_demand=self.create_on_demand,
                             ppoi=self.ppoi
                         )
                     )

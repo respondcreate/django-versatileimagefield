@@ -39,8 +39,10 @@ class SizedImage(ProcessedImage, dict):
     examples.
     """
 
-    def __init__(self, path_to_image, storage, ppoi=None):
-        super(SizedImage, self).__init__(path_to_image, storage)
+    def __init__(self, path_to_image, storage, create_on_demand, ppoi=None):
+        super(SizedImage, self).__init__(
+            path_to_image, storage, create_on_demand
+        )
         self.ppoi = ppoi
         try:
             key = self.get_filename_key()
@@ -94,20 +96,22 @@ class SizedImage(ProcessedImage, dict):
                 filename_key=self.get_filename_key(),
                 storage=self.storage
             )
-            if cache.get(resized_url):
-                # The sized path exists in the cache so the image already
-                # exists. So we `pass` to skip directly to the return statement
-                pass
-            else:
-                if not self.storage.exists(resized_storage_path):
-                    self.create_resized_image(
-                        path_to_image=self.path_to_image,
-                        save_path_on_storage=resized_storage_path,
-                        width=width,
-                        height=height
-                    )
-                # Setting a super-long cache for a resized image (30 Days)
-                cache.set(resized_url, 1, VERSATILEIMAGEFIELD_CACHE_LENGTH)
+            if self.create_on_demand is True:
+                if cache.get(resized_url):
+                    # The sized path exists in the cache so the image already
+                    # exists. So we `pass` to skip directly to the return
+                    # statement
+                    pass
+                else:
+                    if not self.storage.exists(resized_storage_path):
+                        self.create_resized_image(
+                            path_to_image=self.path_to_image,
+                            save_path_on_storage=resized_storage_path,
+                            width=width,
+                            height=height
+                        )
+                    # Setting a super-long cache for a resized image (30 Days)
+                    cache.set(resized_url, 1, VERSATILEIMAGEFIELD_CACHE_LENGTH)
         return SizedImageInstance(resized_storage_path, resized_url)
 
     def process_image(self, image, image_format, save_kwargs,

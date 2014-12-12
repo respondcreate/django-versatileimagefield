@@ -11,6 +11,7 @@ VERSATILEIMAGEFIELD_CACHE_LENGTH = 2592000
 VERSATILEIMAGEFIELD_CACHE_NAME = 'versatileimagefield_cache'
 VERSATILEIMAGEFIELD_SIZED_DIRNAME = '__sized__'
 VERSATILEIMAGEFIELD_FILTERED_DIRNAME = '__filtered__'
+VERSATILEIMAGEFIELD_CREATE_ON_DEMAND = True
 
 DEFAULTS = {
     # The amount of time, in seconds, that references to created images
@@ -34,7 +35,11 @@ DEFAULTS = {
     'sized_directory_name': VERSATILEIMAGEFIELD_SIZED_DIRNAME,
     # The name of the directory to save all filtered images within.
     # Defaults to '__filtered__':
-    'filtered_directory_name': VERSATILEIMAGEFIELD_FILTERED_DIRNAME
+    'filtered_directory_name': VERSATILEIMAGEFIELD_FILTERED_DIRNAME,
+    # Whether or not to create new images on-the-fly. Set this to `False` for
+    # speedy performance but don't forget to 'pre-warm' to ensure they're
+    # created and available at the appropriate URL.
+    'create_images_on_demand': VERSATILEIMAGEFIELD_CREATE_ON_DEMAND
 }
 
 SETTINGS = getattr(
@@ -79,3 +84,10 @@ VERSATILEIMAGEFIELD_FILTERED_DIRNAME = SETTINGS.get(
     'filtered_directory_name',
     VERSATILEIMAGEFIELD_FILTERED_DIRNAME
 )
+
+VERSATILEIMAGEFIELD_CREATE_ON_DEMAND = SETTINGS.get(
+    'create_images_on_demand',
+    VERSATILEIMAGEFIELD_CREATE_ON_DEMAND
+)
+
+IMAGE_SETS = getattr(settings, 'VERSATILEIMAGEFIELD_RENDITION_KEY_SETS', {})

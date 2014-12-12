@@ -1,10 +1,13 @@
 import os
 
+from django.core.exceptions import ImproperlyConfigured
+
 from .settings import (
     USE_PLACEHOLDIT,
     VERSATILEIMAGEFIELD_PLACEHOLDER_IMAGE,
     VERSATILEIMAGEFIELD_SIZED_DIRNAME,
-    VERSATILEIMAGEFIELD_FILTERED_DIRNAME
+    VERSATILEIMAGEFIELD_FILTERED_DIRNAME,
+    IMAGE_SETS
 )
 
 if not USE_PLACEHOLDIT:
@@ -54,6 +57,14 @@ FILE_EXTENSION_MAP = {
     'xbm': XBM,
     'xpm': XPM
 }
+
+
+class InvalidSizeList(Exception):
+    pass
+
+
+class InvalidSizeKey(Exception):
+    pass
 
 
 def get_resized_filename(filename, width, height, filename_key):
@@ -161,3 +172,92 @@ def get_image_metadata_from_file_ext(file_ext):
         return JPEG
     else:
         return FILE_EXTENSION_MAP[file_ext]
+
+
+def validate_versatileimagefield_sizekey_list(sizes):
+    """
+    `sizes`: An iterable of 2-tuples, both strings. Example:
+    [
+        ('large', 'url'),
+        ('medium', 'crop__400x400'),
+        ('small', 'thumbnail__100x100')
+    ]
+    """
+    try:
+        sizes = list(sizes)
+    except TypeError:
+        raise InvalidSizeList('`sizes` must be an iterable')
+    else:
+        for key, size_key in sizes:
+            size_key_split = size_key.split('__')
+            if size_key_split[-1] != 'url' and (
+                'x' not in size_key_split[-1]
+            ):
+                raise InvalidSizeKey(
+                    "{0} is an invalid size. All sizes must be either "
+                    "'url' or made up of at least two segments separated "
+                    "by double underscores. Examples: 'crop__400x400', "
+                    "filters__invert__url".format(size_key)
+                )
+    return list(set(sizes))
+
+
+def get_url_from_image_key(image_instance, image_key):
+    """"""
+    img_key_split = image_key.split('__')
+    if 'x' in img_key_split[-1]:
+        size_key = img_key_split.pop(-1)
+    else:
+        size_key = None
+    img_url = reduce(getattr, img_key_split, image_instance)
+    if size_key:
+        img_url = img_url[size_key].url
+    else:
+        img_url = image_instance.url
+    return img_url
+
+
+def build_versatileimagefield_url_set(image_instance, size_set):
+    """
+    Returns a dictionary of urls corresponding to size_set
+    - `image_instance`: A VersatileImageFieldFile
+    - `size_set`: An iterable of 2-tuples, both strings. Example:
+    [
+        ('large', 'url'),
+        ('medium', 'crop__400x400'),
+        ('small', 'thumbnail__100x100')
+    ]
+
+    The above would lead to the following response:
+    {
+        'large': 'http://some.url/image.jpg',
+        'medium': 'http://some.url/__sized__/image-crop-400x400.jpg',
+        'small': 'http://some.url/__sized__/image-thumbnail-100x100.jpg',
+    }
+    """
+    size_set = validate_versatileimagefield_sizekey_list(size_set)
+    to_return = {}
+    if image_instance:
+        for key, image_key in size_set:
+            img_url = get_url_from_image_key(image_instance, image_key)
+            to_return[key] = img_url
+    return to_return
+
+
+def get_rendition_key_set(key, validate=True):
+    """
+    Retrieves a validated and prepped Rendition Key Set from
+    settings.VERSATILEIMAGEFIELD_RENDITION_KEY_SETS
+    """
+    try:
+        rendition_key_set = IMAGE_SETS[key]
+    except KeyError:
+        raise ImproperlyConfigured(
+            "No Rendition Key Set exists at "
+            "settings.VERSATILEIMAGEFIELD_RENDITION_KEY_SETS['{}']".format(key)
+        )
+    else:
+        if validate is True:
+            return validate_versatileimagefield_sizekey_list(rendition_key_set)
+        else:
+            return rendition_key_set

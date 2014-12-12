@@ -27,6 +27,8 @@ class ProcessedImage(object):
     Constructor arguments:
         * `path_to_image`: A path to a file within `storage`
         * `storage`: A django storage class
+        * `create_on_demand`: A bool signifying whether new images should be
+                              created on-demand.
 
     Subclasses must define the `process_image` method. see
     versatileimagefield.datastructures.filteredimage.FilteredImage and
@@ -37,9 +39,10 @@ class ProcessedImage(object):
     the `preprocess` method for more specific information.
     """
 
-    def __init__(self, path_to_image, storage):
+    def __init__(self, path_to_image, storage, create_on_demand):
         self.path_to_image = path_to_image
         self.storage = storage
+        self.create_on_demand = create_on_demand
 
     def process_image(self, image, image_format, **kwargs):
         """

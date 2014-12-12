@@ -82,7 +82,8 @@ class VersatileImageField(ImageField):
         if ppoi_filled and not force:
             return
 
-        # file should be an instance of VersatileImageFieldFile or should be None.
+        # file should be an instance of VersatileImageFieldFile or should be
+        # None.
         if file and not isinstance(file, tuple):
             ppoi = file.ppoi
         else:
