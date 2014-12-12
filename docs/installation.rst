@@ -38,8 +38,12 @@ After installation completes, add ``'versatileimagefield'`` to
         'versatileimagefield',
     )
 
-You can fine-tune how ``django-versatileimagefield`` works via the
-``VERSATILEIMAGEFIELD_SETTINGS`` setting:
+.. _versatileimagefield-settings:
+
+``VERSATILEIMAGEFIELD_SETTINGS``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A dictionary that allows you to fine-tune how ``django-versatileimagefield`` works:
 
 .. code-block:: python
 
@@ -65,5 +69,79 @@ You can fine-tune how ``django-versatileimagefield`` works via the
         'sized_directory_name': '__sized__',
         # The name of the directory to save all filtered images within.
         # Defaults to '__filtered__':
-        'filtered_directory_name': '__filtered__'
+        'filtered_directory_name': '__filtered__',
+        # Whether or not to create new images on-the-fly. Set this to `False` for
+        # speedy performance but don't forget to 'pre-warm' to ensure they're
+        # created and available at the appropriate URL.
+        'create_images_on_demand': True
     }
+
+.. _rendition-key-sets:
+
+``VERSATILEIMAGEFIELD_RENDITION_KEY_SETS``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A dictionary used to specify 'Rendition Key Sets' that are used for both serialization or as a way to 'warm' image files so they don't need to be created on demand (i.e. when ``settings.VERSATILEIMAGEFIELD_SETTINGS['create_images_on_demand']`` is set to ``False``) which will greatly improve the overall performance of your app. Here's an example:
+
+.. code-block:: python
+
+    VERSATILEIMAGEFIELD_RENDITION_KEY_SETS = {
+        'image_gallery': [
+            ('gallery_large', 'crop__800x450'),
+            ('gallery_square_small', 'crop__50x50')
+        ],
+        'primary_image_detail': [
+            ('hero', 'crop__600x283'),
+            ('social', 'thumbnail__800x800')
+        ],
+        'primary_image_list': [
+            ('list', 'crop__400x225'),
+        ],
+        'headshot': [
+            ('headshot_small', 'crop__150x175'),
+        ]
+    }
+
+Each key in ``VERSATILEIMAGEFIELD_RENDITION_KEY_SETS`` signifies a 'Rendition Key Set', a list comprised of 2-tuples wherein the  first position is a serialization-friendly name of an image rendition and the second position is a 'Rendition Key' (which dictates how the original image should be modified).
+
+.. _writing-rendition-keys:
+
+Writing Rendition Keys
+~~~~~~~~~~~~~~~~~~~~~~
+
+Rendition Keys are intuitive and easy to write, simply swap out double-underscores for the dot-notated paths you'd use in the shell or in templates. Examples:
+
+.. list-table::
+   :widths: 15 35 25 25
+   :header-rows: 1
+
+   * - Intended image
+     - As 'Rendition Key'
+     - In the shell
+     - In templates
+   * - 400px by 400px Crop
+     - ``'crop__400x400'``
+     - ``instance.image_field.crop['400x400'].url``
+     - ``{{ instance.image_field.crop.400x400 }}``
+   * - 100px by 100px Thumbnail
+     - ``'thumbnail__100x100'``
+     - ``instance.image_field.thumbnail['100x100'].url``
+     - ``{{ instance.image_field.thumbnail.100x100 }}``
+   * - Inverted Image (Full Size)
+     - ``'filters__invert'``
+     - ``instance.image_field.filters.url``
+     - ``{{ instance.image_field.filters.invert }}``
+   * - Inverted Image, 50px by 50px crop
+     - ``'filters__invert__crop__50x50'``
+     - ``instance.image_field.filters.crop['50x50'].url``
+     - ``{{ instance.image_field.filters.crop.50x50 }}``
+
+.. note:: :doc:`Click here </using_sizers_and_filters>` for more information on how to use sizes and filters within the shell and/or :ref:`templates <template-usage>`.
+
+Using Rendition Key Sets
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+Rendition Key sets are useful! Read up on how they can help you...
+
+- ... :ref:`serializing VersatileImageField instances <serialization>` within Django REST Framework.
+- ... 'warm' images to improve performance.

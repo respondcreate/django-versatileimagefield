@@ -46,6 +46,8 @@ to fit within a 400px by 400px area:
     >>> example.image.thumbnail['400x400'].url
     u'/media/__sized__/images/testimagemodel/test-image-thumbnail-400x400.jpg'
 
+.. _on-demand-image-creation:
+
 .. note:: Images are created on-demand. If no image had yet existed at the location required – by either the path (``.name``) *or* URL (``.url``) shown in the highlighted lines above – one would have been created directly before returning them.
 
 Here's how you'd open the thumbnail image we just created as an image file

@@ -92,6 +92,8 @@ Table of Contents
    specifying_ppoi
    using_sizers_and_filters
    writing_custom_sizers_and_filters
+   drf_integration
+   improving_performance
 
 TODO for v0.2
 =============

@@ -194,7 +194,7 @@ return a 2-tuple of the image and a dict of any additional keyword
 arguments to pass along to PIL's ``Image.save`` method.
 
 Pre-processor Naming Convention
-------------------------------
+-------------------------------
 
 In order for preprocessor methods to run, they need to be named
 correctly via this simple naming convention: ``preprocess_FILETYPE``.
@@ -349,6 +349,7 @@ in a ``UnallowedSizerName`` exception:
 -  ``chunks``
 -  ``close``
 -  ``closed``
+-  ``create_on_demand``
 -  ``delete``
 -  ``encoding``
 -  ``field``
