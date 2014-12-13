@@ -44,7 +44,7 @@ In A Nutshell
 
 -  Works with any storage: Stores the images it creates within the same storage class as your field . Works great with external storage (like Amazon S3).
 
--  `Fully interchangeable <http://django-versatileimagefield.readthedocs.org/en/latest/model_integration.html`_ with ``ImageField``: you can easily remove ``VersatileImageField`` from your project's models whenever you'd like.
+-  `Fully interchangeable <http://django-versatileimagefield.readthedocs.org/en/latest/model_integration.html>`_ with ``ImageField``: you can easily remove ``VersatileImageField`` from your project's models whenever you'd like.
 
 -  Integrated caching: References to created images are stored in the cache, keeping your application running quickly and efficiently.
 
