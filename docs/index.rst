@@ -65,6 +65,11 @@ Table of Contents
 Release Notes
 =============
 
+0.2
+^^^
+-  Introducing :doc:`Django REST Framework support </drf_integration>`!
+-  Added ability to turn off on-demand image creation and pre-warm images to :doc:`improve performance </improving_performance>`.
+
 0.1.5
 ^^^^^
 -  Squashed ``CroppedImage`` bug that was causing black stripes to appear on crops of images with PPOI values that were to the right and/or bottom of center (greater-than 0.5).
