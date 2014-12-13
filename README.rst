@@ -21,6 +21,11 @@ Documentation
 
 Full documentation available at `Read the Docs <http://django-versatileimagefield.readthedocs.org/en/latest/>`_.
 
+Code
+====
+
+``django-versatileimagefield`` is hosted on `github <https://github.com/WGBH/django-versatileimagefield>`_.
+
 In A Nutshell
 =============
 
@@ -37,20 +42,20 @@ In A Nutshell
 
 -  `Primary Point of Interest (PPOI) support <http://django-versatileimagefield.readthedocs.org/en/latest/specifying_ppoi.html>`_: provides a way to specify where the 'primary point of interest' of each individual image is – a value which is available to all Sizers and Filters. Use case: sometimes you want the 'crop centerpoint' to be somewhere other than the center of an image. Includes `a user-friendly formfield/widget for selecting PPOI <http://django-versatileimagefield.readthedocs.org/en/latest/specifying_ppoi.html#formfield-admin-integration>`_ in the admin (or anywhere else you use ModelForms).
 
--  Works with any storage: Stores the images it creates within the same storage class as your field (just like django's ``FileField`` & ``ImageField``). Works great with a local filesystem or external storage (like Amazon S3).
+-  Works with any storage: Stores the images it creates within the same storage class as your field . Works great with external storage (like Amazon S3).
 
--  Fully interchangeable with ``ImageField``: you can easily remove VersatileImageField from your project's models whenever you'd like.
+-  `Fully interchangeable <http://django-versatileimagefield.readthedocs.org/en/latest/model_integration.html`_ with ``ImageField``: you can easily remove ``VersatileImageField`` from your project's models whenever you'd like.
 
 -  Integrated caching: References to created images are stored in the cache, keeping your application running quickly and efficiently.
 
-TODO for v0.2
-=============
+-  `Django REST Framework support <http://django-versatileimagefield.readthedocs.org/en/latest/drf_integration.html>`_: Serialize multiple image renditions from a single ``VersatileImageField``.
+
+-  Flexible and fast: On-demand image creation can be toggled in your settings file allowing you to `turn it off <http://django-versatileimagefield.readthedocs.org/en/latest/improving_performance.html>`_ when you need your application to run as quickly as possible.
+
+Roadmap to v1.0
+===============
 
 -  Tests!
 -  Placeholder docs
 -  Programmatically delete images created by ``VersatileImageField``
    (including clearing their connected cache keys)
--  Management command for auto-generating sets of images (and
-   pre-warming the cache)
--  Templatetags for sizing/filtering static images
-
