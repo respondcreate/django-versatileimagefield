@@ -25,6 +25,8 @@ installing ``django-versatileimagefield``:
 
 .. note:: ``django-versatileimagefield`` will not install ``django``.
 
+.. _settings:
+
 Settings
 --------
 

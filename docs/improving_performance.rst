@@ -8,7 +8,7 @@ Turning off on-demand image creation
 
 To turn off on-demand image creation just set the ``'create_images_on_demand'`` key of the ``VERSATILEIMAGEFIELD_SETTINGS`` setting to ``False`` (:ref:`docs <versatileimagefield-settings>`). Now your ``VersatileImageField`` fields will return the expected URLs of each image rendition that is requested from it without first checking to see if they've actually been created yet.
 
-.. note:: Once an image has been created by a ``VersatileImageField``, a reference to it is stored in the cache which makes for speedy subsequent retrievals. Setting ``VERSATILEIMAGEFIELD_SETTINGS['create_images_on_demand']`` to ``False`` bypasses this entirely making ``VersatileImageField`` perform even faster.
+.. note:: Once an image has been created by a ``VersatileImageField``, a reference to it is stored in the cache which makes for speedy subsequent retrievals. Setting ``VERSATILEIMAGEFIELD_SETTINGS['create_images_on_demand']`` to ``False`` bypasses this entirely making ``VersatileImageField`` perform even faster (:ref:`docs <versatileimagefield-settings>`).
 
 Ensuring images are created
 ---------------------------
