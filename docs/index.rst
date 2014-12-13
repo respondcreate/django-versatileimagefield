@@ -21,6 +21,47 @@ A drop-in replacement for django's ImageField that provides a flexible,
 intuitive and easily-extensible interface for quickly creating new
 images from the one assigned to your field.
 
+
+In A Nutshell
+=============
+
+-  Creates images anywhere you need them: not just :ref:`in templates <template-usage>`.
+
+-  Non-destructive: Your original image is never modified.
+
+-  :doc:`Sizer and Filter framework </using_sizers_and_filters>`: enables you to quickly add new – or modify existing – ways to create new images:
+
+    +  **Sizers** create images with new sizes and/or aspect ratios
+    +  **Filters** change the appearance of an image
+
+-  :ref:`Sizers can be chained onto Filters <using-sizers-with-filters>`: Use case: give me a black-and-white, 400px by 400px square crop of this image.
+
+-  :doc:`Primary Point of Interest (PPOI) support </specifying_ppoi>`: provides a way to specify where the 'primary point of interest' of each individual image is – a value which is available to all Sizers and Filters. Use case: sometimes you want the 'crop centerpoint' to be somewhere other than the center of an image. Includes :ref:`a user-friendly formfield/widget for selecting PPOI <ppoi-formfield>` in the admin (or anywhere else you use ModelForms).
+
+-  Works with any storage: Stores the images it creates within the same storage class as your field . Works great with external storage (like Amazon S3).
+
+-  :doc:`Fully interchangeable </model_integration>` with ``ImageField``: you can easily remove ``VersatileImageField`` from your project's models whenever you'd like.
+
+-  Integrated caching: References to created images are stored in the cache, keeping your application running quickly and efficiently.
+
+-  :doc:`Django REST Framework support </drf_integration>`: Serialize multiple image renditions from a single ``VersatileImageField``.
+
+-  Flexible and fast: On-demand image creation can be toggled in your settings file allowing you to :doc:`turn it off </improving_performance>` when you need your application to run as quickly as possible.
+
+Table of Contents
+=================
+
+.. toctree::
+   :maxdepth: 4
+
+   installation
+   model_integration
+   specifying_ppoi
+   using_sizers_and_filters
+   writing_custom_sizers_and_filters
+   drf_integration
+   improving_performance
+
 Release Notes
 =============
 
@@ -58,50 +99,10 @@ Release Notes
 
 -  Initial open source release
 
-
-In A Nutshell
-=============
-
--  Creates images anywhere you need them: not just :ref:`in templates <template-usage>`.
-
--  Non-destructive: Your original image is never modified.
-
--  :doc:`Sizer and Filter framework </using_sizers_and_filters>`: enables you to quickly add new – or modify existing – ways to create new images:
-
-    +  **Sizers** create images with new sizes and/or aspect ratios
-    +  **Filters** change the appearance of an image
-
--  :ref:`Sizers can be chained onto Filters <using-sizers-with-filters>`: Use case: give me a black-and-white, 400px by 400px square crop of this image.
-
--  :doc:`Primary Point of Interest (PPOI) support </specifying_ppoi>`: provides a way to specify where the 'primary point of interest' of each individual image is – a value which is available to all Sizers and Filters. Use case: sometimes you want the 'crop centerpoint' to be somewhere other than the center of an image. Includes :ref:`a user-friendly formfield/widget for selecting PPOI <ppoi-formfield>` in the admin (or anywhere else you use ModelForms).
-
--  Works with any storage: Stores the images it creates within the same storage class as your field (just like django's ``FileField`` & ``ImageField``). Works great with a local filesystem or external storage (like Amazon S3).
-
--  Fully interchangeable with ``ImageField``: you can easily remove VersatileImageField from your project's models whenever you'd like.
-
--  Integrated caching: References to created images are stored in the cache, keeping your application running quickly and efficiently.
-
-Table of Contents
-=================
-
-.. toctree::
-   :maxdepth: 4
-
-   installation
-   model_integration
-   specifying_ppoi
-   using_sizers_and_filters
-   writing_custom_sizers_and_filters
-   drf_integration
-   improving_performance
-
-TODO for v0.2
-=============
+Roadmap to v1.0
+===============
 
 -  Tests!
 -  Placeholder docs
 -  Programmatically delete images created by ``VersatileImageField``
    (including clearing their connected cache keys)
--  Management command for auto-generating sets of images (and
-   pre-warming the cache)
--  Templatetags for sizing/filtering static images

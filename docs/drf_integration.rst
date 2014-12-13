@@ -1,14 +1,14 @@
 Django REST Framework Integration
 =================================
 
-If you've got an API powered by `Tom Christie <https://twitter.com/_tomchristie>`_'s excellent `Django REST Framework <http://www.django-rest-framework.org/>`_ and want to serve images in multiple sizes/renditions ``django-versatileimagefield`` has you covered with it's super easy-to-use (and aptly named) ``VersatileImageFieldSerializer``.
+If you've got an API powered by `Tom Christie <https://twitter.com/_tomchristie>`_'s excellent `Django REST Framework <http://www.django-rest-framework.org/>`_ and want to serve images in multiple sizes/renditions ``django-versatileimagefield`` has you covered with it's  ``VersatileImageFieldSerializer``.
 
 .. _example-model:
 
 Example
 -------
 
-To demonstrate how it works we'll use a very simple model:
+To demonstrate how it works we'll use this simple model:
 
 .. code-block:: python
 
@@ -39,6 +39,7 @@ To demonstrate how it works we'll use a very simple model:
 OK, let's write a simple ``ModelSerializer`` subclass to serialize Person instances:
 
 .. code-block:: python
+    :emphasize-lines: 5,12-19
 
     # myproject/person/serializers.py
 
@@ -71,6 +72,7 @@ OK, let's write a simple ``ModelSerializer`` subclass to serialize Person instan
 And here's what it would look like serialized:
 
 .. code-block:: python
+    :emphasize-lines: 14-19
 
     >>> from myproject.person.models import Person
     >>> john_doe = Person.objects.create(
@@ -93,7 +95,7 @@ And here's what it would look like serialized:
         }
     }
 
-As you can see, the ``sizes`` argument on ``VersatileImageFieldSerializer`` simply unpacks the list of 2-tuples using the value in the first position as the 'Name' of the image and the second position as a 'Rendition Key' which dictates how the original image should be modified.
+As you can see, the ``sizes`` argument on ``VersatileImageFieldSerializer`` simply unpacks the list of 2-tuples using the value in the first position as the attribute of the image and the second position as a 'Rendition Key' which dictates how the original image should be modified.
 
 .. _reusing-rendition-key-sets:
 
@@ -145,4 +147,4 @@ Now, let's update our serializer to use it:
                 'headshot'
             )
 
-That's it! Now that you know how to define Rendition Key Sets, leverage them to improve performance!
+That's it! Now that you know how to define Rendition Key Sets, leverage them to :doc:`improve performance </improving_performance>`!

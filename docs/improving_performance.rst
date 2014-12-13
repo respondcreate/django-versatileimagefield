@@ -29,11 +29,11 @@ This boost in speed is great but how do you ensure that the images your ``Versat
     ... )
     >>> num_created, failed_to_create = person_img_warmer.warm()
 
-``num_created`` will be an integer of how many images were successfully created and ``failed_to_create`` will be a list of paths of that field's storage class to images that could not be created (due to a PIL error, for example).
+``num_created`` will be an integer of how many images were successfully created and ``failed_to_create`` will be a list of paths on that field's storage class to images that could not be created (due to a `PIL/Pillow <https://pillow.readthedocs.org/>`_ error, for example).
 
-This technique is useful if you've recently converted your project's ``models.ImageField`` fields to use ``VersatileImageField`` or if you want to 'pre warm' images as part of a `Fabric <http://www.fabfile.org/>`_ script, for example.
+This technique is useful if you've recently converted your project's ``models.ImageField`` fields to use ``VersatileImageField`` or if you want to 'pre warm' images as part of a `Fabric <http://www.fabfile.org/>`_ script.
 
-.. note:: The above example would create a set of images (as dictated by the ``'person_headshot'`` :ref:`Rendition Key Set <reusing-rendition-key-sets>`) for the ``headshot`` field of each ``Person`` instance. ``rendition_key_set`` also accepts a valid Rendition Key Set directly like so:
+.. note:: The above example would create a set of images (as dictated by the ``'person_headshot'`` :ref:`Rendition Key Set <reusing-rendition-key-sets>`) for the ``headshot`` field of each ``Person`` instance. ``rendition_key_set`` also accepts a valid :ref:`Rendition Key Set <rendition-key-sets>` directly:
 
     .. code-block:: python
         :emphasize-lines: 3-6
@@ -48,7 +48,7 @@ This technique is useful if you've recently converted your project's ``models.Im
         ...     verbose=True
         ... )
 
-.. note:: Setting ``verbose=True`` when instantiating a ``VersatileImageFieldWarmer`` will provide a yum-style progress bar showing the image warming progress:
+.. note:: Setting ``verbose=True`` when instantiating a ``VersatileImageFieldWarmer`` will display a yum-style progress bar showing the image warming progress:
 
     .. code-block:: python
 
@@ -58,7 +58,7 @@ This technique is useful if you've recently converted your project's ``models.Im
 .. note:: The ``image_attr`` argument can be dot-notated in order to follow ``ForeignKey`` and ``OneToOneField`` relationships. Example: ``'related_model.image_field'``.
 
 Auto-creating sets of images on ``post_save``
----------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You also might want to create new images immediately after model instances are saved. Here's how we'd do it with our example model (see highlighted lines below):
 

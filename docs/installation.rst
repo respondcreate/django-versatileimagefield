@@ -81,7 +81,7 @@ A dictionary that allows you to fine-tune how ``django-versatileimagefield`` wor
 ``VERSATILEIMAGEFIELD_RENDITION_KEY_SETS``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A dictionary used to specify 'Rendition Key Sets' that are used for both serialization or as a way to 'warm' image files so they don't need to be created on demand (i.e. when ``settings.VERSATILEIMAGEFIELD_SETTINGS['create_images_on_demand']`` is set to ``False``) which will greatly improve the overall performance of your app. Here's an example:
+A dictionary used to specify 'Rendition Key Sets' that are used for both :doc:`serialization </drf_integration>` or as a way to :doc:`'warm' image files </improving_performance>` so they don't need to be created on demand (i.e. when ``settings.VERSATILEIMAGEFIELD_SETTINGS['create_images_on_demand']`` is set to ``False``) which will greatly improve the overall performance of your app. Here's an example:
 
 .. code-block:: python
 
@@ -107,7 +107,7 @@ Each key in ``VERSATILEIMAGEFIELD_RENDITION_KEY_SETS`` signifies a 'Rendition Ke
 .. _writing-rendition-keys:
 
 Writing Rendition Keys
-~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^
 
 Rendition Keys are intuitive and easy to write, simply swap out double-underscores for the dot-notated paths you'd use in the shell or in templates. Examples:
 
@@ -144,4 +144,4 @@ Using Rendition Key Sets
 Rendition Key sets are useful! Read up on how they can help you...
 
 - ... :ref:`serializing VersatileImageField instances <serialization>` within Django REST Framework.
-- ... 'warm' images to improve performance.
+- ... :doc:`'warm' images to improve performance </improving_performance>`.
