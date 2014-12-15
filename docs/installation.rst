@@ -111,7 +111,7 @@ Each key in ``VERSATILEIMAGEFIELD_RENDITION_KEY_SETS`` signifies a 'Rendition Ke
 Writing Rendition Keys
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Rendition Keys are intuitive and easy to write, simply swap out double-underscores for the dot-notated paths you'd use in the shell or in templates. Examples:
+Rendition Keys are intuitive and easy to write, simply swap out double-underscores for the dot-notated paths you'd use :doc:`in the shell </using_sizers_and_filters>` or :ref:`in templates <template-usage>`. Examples:
 
 .. list-table::
    :widths: 15 35 25 25
@@ -131,14 +131,12 @@ Rendition Keys are intuitive and easy to write, simply swap out double-underscor
      - ``{{ instance.image_field.thumbnail.100x100 }}``
    * - Inverted Image (Full Size)
      - ``'filters__invert'``
-     - ``instance.image_field.filters.url``
+     - ``instance.image_field.filters.invert.url``
      - ``{{ instance.image_field.filters.invert }}``
    * - Inverted Image, 50px by 50px crop
      - ``'filters__invert__crop__50x50'``
-     - ``instance.image_field.filters.crop['50x50'].url``
-     - ``{{ instance.image_field.filters.crop.50x50 }}``
-
-.. note:: :doc:`Click here </using_sizers_and_filters>` for more information on how to use sizes and filters within the shell and/or :ref:`templates <template-usage>`.
+     - ``instance.image_field.filters.invert.crop['50x50'].url``
+     - ``{{ instance.image_field.filters.invert.crop.50x50 }}``
 
 Using Rendition Key Sets
 ^^^^^^^^^^^^^^^^^^^^^^^^

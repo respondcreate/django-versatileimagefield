@@ -100,7 +100,7 @@ Release Notes
 -  Docs added to readthedocs
 
 0.1
-^^^^^
+^^^
 
 -  Initial open source release
 
@@ -108,6 +108,7 @@ Roadmap to v1.0
 ===============
 
 -  Tests!
--  Placeholder docs
+-  Python 3 support
+-  Custom placeholder image docs
 -  Programmatically delete images created by ``VersatileImageField``
    (including clearing their connected cache keys)

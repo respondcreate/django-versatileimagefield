@@ -34,6 +34,7 @@ class VersatileImageFieldRegistry(object):
         'chunks',
         'close',
         'closed',
+        'create_on_demand',
         'delete',
         'encoding',
         'field',

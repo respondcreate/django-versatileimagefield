@@ -1,21 +1,19 @@
 Improving Performance
 =====================
 
-During development, ``VersatileImageField``'s convenient and flexible :ref:`on-demand image creation <on-demand-image-creation>` enables you to quickly iterate but, once your application is deployed, this small bit of overhead can hinder the overall performance of your application.
+During development, ``VersatileImageField``'s :ref:`on-demand image creation <on-demand-image-creation>` enables you to quickly iterate but, once your application is deployed, this convenience adds a small bit of overhead that you'll probably want to turn off once your app is in production.
 
 Turning off on-demand image creation
 ------------------------------------
 
-To turn off on-demand image creation just set the ``'create_images_on_demand'`` key of the ``VERSATILEIMAGEFIELD_SETTINGS`` setting to ``False`` (:ref:`docs <versatileimagefield-settings>`). Now your ``VersatileImageField`` fields will return the expected URLs of each image rendition that is requested from it without first checking to see if they've actually been created yet.
+To turn off on-demand image creation just set the ``'create_images_on_demand'`` key of the ``VERSATILEIMAGEFIELD_SETTINGS`` setting to ``False`` (:ref:`docs <versatileimagefield-settings>`). Now your ``VersatileImageField`` fields will return URLs to images without first checking to see if they've actually been created yet.
 
 .. note:: Once an image has been created by a ``VersatileImageField``, a reference to it is stored in the cache which makes for speedy subsequent retrievals. Setting ``VERSATILEIMAGEFIELD_SETTINGS['create_images_on_demand']`` to ``False`` bypasses this entirely making ``VersatileImageField`` perform even faster (:ref:`docs <versatileimagefield-settings>`).
 
 Ensuring images are created
 ---------------------------
 
-This boost in speed is great but how do you ensure that the images your ``VersatileImageField`` fields are referencing are actually available?
-
-``VersatileImageFieldWarmer`` will help you do just that. Here's an example in the Python shell using the :ref:`example model <example-model>` from the Django REST Framework serialization example:
+This boost in performance is great but now you'll need to ensure that the images your application links to actually exist. Luckily, ``VersatileImageFieldWarmer`` will help you do just that. Here's an example in the Python shell using the :ref:`example model <example-model>` from the Django REST Framework serialization example:
 
 .. code-block:: python
 
@@ -29,7 +27,7 @@ This boost in speed is great but how do you ensure that the images your ``Versat
     ... )
     >>> num_created, failed_to_create = person_img_warmer.warm()
 
-``num_created`` will be an integer of how many images were successfully created and ``failed_to_create`` will be a list of paths on that field's storage class to images that could not be created (due to a `PIL/Pillow <https://pillow.readthedocs.org/>`_ error, for example).
+``num_created`` will be an integer of how many images were successfully created and ``failed_to_create`` will be a list of paths to images (on the field's storage class) that could not be created (due to a `PIL/Pillow <https://pillow.readthedocs.org/>`_ error, for example).
 
 This technique is useful if you've recently converted your project's ``models.ImageField`` fields to use ``VersatileImageField`` or if you want to 'pre warm' images as part of a `Fabric <http://www.fabfile.org/>`_ script.
 
@@ -55,7 +53,7 @@ This technique is useful if you've recently converted your project's ``models.Im
         >>> num_created, failed_to_create = person_img_warmer.warm()
         [###########----------------------------------------] 20/100 (20%)
 
-.. note:: The ``image_attr`` argument can be dot-notated in order to follow ``ForeignKey`` and ``OneToOneField`` relationships. Example: ``'related_model.image_field'``.
+.. note:: The ``image_attr`` argument can be dot-notated in order to follow ``ForeignKey`` and ``OneToOneField`` relationships. Example: ``'related_model.headshot'``.
 
 Auto-creating sets of images on ``post_save``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

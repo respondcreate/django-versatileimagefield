@@ -48,7 +48,7 @@ to fit within a 400px by 400px area:
 
 .. _on-demand-image-creation:
 
-.. note:: Images are created on-demand. If no image had yet existed at the location required – by either the path (``.name``) *or* URL (``.url``) shown in the highlighted lines above – one would have been created directly before returning them.
+.. note:: Images are created on-demand. If no image had yet existed at the location required – by either the path (``.name``) *or* URL (``.url``) shown in the highlighted lines above – one would have been created directly before returning it.
 
 Here's how you'd open the thumbnail image we just created as an image file
 directly in the shell:
