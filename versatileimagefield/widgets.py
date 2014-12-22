@@ -81,6 +81,8 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
         """
         Given the name of the image preview tag, return the HTML id for it.
         """
+        # Ensuring admin preview thumbnails are created and available
+        value.create_on_demand = True
         return """
         <img src="%(sized_url)s" id="%(image_preview_id)s" data-hidden_field_id="%(hidden_field_id)s" data-point_stage_id="%(point_stage_id)s" data-ppoi_id="%(ppoi_id)s" class="sizedimage-preview"/>
         """ % {
