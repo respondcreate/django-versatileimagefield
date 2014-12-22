@@ -65,6 +65,10 @@ Table of Contents
 Release Notes
 =============
 
+0.2.1
+^^^^^
+-  Ensuring :ref:`admin widget <ppoi-formfield>`-dependent thumbnail images are created even if ``VERSATILEIMAGEFIELD_SETTINGS['create_on_demand']`` is set to ``False``
+
 0.2
 ^^^
 -  Introducing :doc:`Django REST Framework support </drf_integration>`!
