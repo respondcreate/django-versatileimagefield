@@ -12,11 +12,6 @@ from versatileimagefield.settings import VERSATILEIMAGEFIELD_SIZED_DIRNAME,\
 
 from .models import VersatileImageTestModel
 
-try:
-    settings.configure()
-except RuntimeError:
-    pass
-
 
 class VersatileImageFieldTestCase(TestCase):
     fixtures = ['versatileimagefield']
