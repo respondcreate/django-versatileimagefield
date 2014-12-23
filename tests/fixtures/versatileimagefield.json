@@ -1,0 +1,29 @@
+[
+{
+    "fields": {
+        "img_type": "png",
+        "image": "python-logo.png",
+        "ppoi": "0.5x0.5"
+    },
+    "model": "tests.versatileimagetestmodel",
+    "pk": 1
+},
+{
+    "fields": {
+        "img_type": "jpg",
+        "image": "python-logo.jpg",
+        "ppoi": "0.25x0.25"
+    },
+    "model": "tests.versatileimagetestmodel",
+    "pk": 2
+},
+{
+    "fields": {
+        "img_type": "gif",
+        "image": "python-logo.gif",
+        "ppoi": "0.75x0.75"
+    },
+    "model": "tests.versatileimagetestmodel",
+    "pk": 3
+}
+]
