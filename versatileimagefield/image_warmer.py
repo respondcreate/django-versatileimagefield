@@ -1,5 +1,9 @@
 from sys import stdout
-from django.db.models import Model, QuerySet
+from django.db.models import Model
+try:
+    from django.db.models import QuerySet
+except ImportError:
+    from django.db.models.query import QuerySet
 from .utils import (
     get_rendition_key_set,
     get_url_from_image_key,
