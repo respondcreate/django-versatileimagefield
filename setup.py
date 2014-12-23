@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from distutils.core import setup
+from pip.req import parse_requirements
 from setuptools import find_packages
 
 setup(
@@ -17,7 +18,8 @@ setup(
     long_description=open('README.rst').read(),
     zip_safe=False,
     install_requires=[
-        'Pillow>=2.4.0',
+        str(ir.req)
+        for ir in parse_requirements('requirements.txt')
     ],
     package_data={
         'versatileimagefield': [
