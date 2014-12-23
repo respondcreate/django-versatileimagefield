@@ -5,9 +5,9 @@ python:
   - "2.7"
 # List the versions of Django you'd like to test against
 env:
-  - DJANGO_VERSION=1.5.12
-  - DJANGO_VERSION=1.6.9
-  - DJANGO_VERSION=1.7.2
+  - DJANGO_VERSION=1.5
+  - DJANGO_VERSION=1.6
+  - DJANGO_VERSION=1.7
 # Tell it the things it will need to install when it boots
 install:
    # Install the dependencies the app itself has
