@@ -5,6 +5,7 @@ MEDIA_ROOT = os.path.join(PROJECT_DIR, 'media')
 SECRET_KEY = 'fake-key'
 INSTALLED_APPS = [
     "tests",
+    "rest_framework",
     "versatileimagefield"
 ]
 
