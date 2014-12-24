@@ -7,8 +7,6 @@ sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
 import django
 from django.conf import settings
 
-from tests.test_settings import DATABASES, CACHES
-
 if __name__ == "__main__":
     os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.test_settings'
     django_version = '.'.join([str(seg) for seg in django.VERSION])
