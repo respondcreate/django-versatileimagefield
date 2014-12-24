@@ -22,7 +22,8 @@ CENTERPOINT_CHOICES = (
 
 class ClearableFileInputWithImagePreview(ClearableFileInput):
     ppoi_label = ugettext_lazy('Primary Point of Interest')
-    template_with_clear = '%(clear)s <label class="versatileimagefield-label" for="%(clear_checkbox_id)s">%(clear_checkbox_label)s</label>'
+    template_with_clear = '%(clear)s <label class="versatileimagefield-label" for="%(clear_checkbox_id)s">' \
+                          '%(clear_checkbox_label)s</label>'
     template_with_initial_and_imagepreview = """
     <div class="sizedimage-mod initial">
         <label class="versatileimagefield-label">%(initial_text)s</label>
@@ -83,9 +84,10 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
         """
         # Ensuring admin preview thumbnails are created and available
         value.create_on_demand = True
-        return """
-        <img src="%(sized_url)s" id="%(image_preview_id)s" data-hidden_field_id="%(hidden_field_id)s" data-point_stage_id="%(point_stage_id)s" data-ppoi_id="%(ppoi_id)s" class="sizedimage-preview"/>
-        """ % {
+        return ('<img src="%(sized_url)s" id="%(image_preview_id)s" '
+                'data-hidden_field_id="%(hidden_field_id)s" '
+                'data-point_stage_id="%(point_stage_id)s" '
+                'data-ppoi_id="%(ppoi_id)s" class="sizedimage-preview"/>') % {
             'sized_url': value.thumbnail['300x300'],
             'image_preview_id': self.image_preview_id(name),
             'hidden_field_id': self.get_hidden_field_id(name),
@@ -239,7 +241,8 @@ class SizedImageCenterpointClickBootstrap3Widget(
         %(input)s
     </div>"""
 
-    clear_checkbox_template = '<label for="%(clear_checkbox_id)s" class="checkbox-inline">%(clear)s %(clear_checkbox_label)s</label>'
+    clear_checkbox_template = '<label for="%(clear_checkbox_id)s" class="checkbox-inline">%(clear)s ' \
+                              '%(clear_checkbox_label)s</label>'
 
     class Media:
         css = {
