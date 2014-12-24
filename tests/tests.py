@@ -2,9 +2,11 @@ import os
 from shutil import rmtree
 
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
-from django.test import TestCase
+from django.test import Client, TestCase
 
 from versatileimagefield.image_warmer import VersatileImageFieldWarmer
 from versatileimagefield.settings import VERSATILEIMAGEFIELD_SIZED_DIRNAME,\
@@ -21,6 +23,24 @@ class VersatileImageFieldTestCase(TestCase):
         self.jpg = VersatileImageTestModel.objects.get(img_type='jpg')
         self.png = VersatileImageTestModel.objects.get(img_type='png')
         self.gif = VersatileImageTestModel.objects.get(img_type='gif')
+        password = '12345'
+        user = User.objects.create_user(
+            username='test',
+            email='test@test.com',
+            password=password
+        )
+        user.is_active = True
+        user.is_staff = True
+        user.is_superuser = True
+        user.save()
+        client = Client()
+        login = client.login(
+            username='test',
+            password=password
+        )
+        self.assertTrue(login)
+        self.user = user
+        self.client = client
 
     def tearDown(self):
         """
@@ -179,4 +199,33 @@ class VersatileImageFieldTestCase(TestCase):
                     '-100x100.jpg'
                 )
             }
+        )
+
+    def test_widget_javascript(self):
+        """
+        Ensures the VersatileImagePPOIClickWidget widget loads appropriately
+        and its image preview is available
+        """
+        response = self.client.get('/admin/tests/versatileimagetestmodel/1/')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(
+            (
+                '<img src="/media/__sized__/python-logo-thumbnail-300x300.png"'
+                ' id="image_0_imagepreview" data-hidden_field_id="id_image_1"'
+                ' data-point_stage_id="image_0_point-stage" '
+                'data-ppoi_id="image_0_ppoi" class="sizedimage-preview"/>'
+                in response.content
+            )
+        )
+        self.assertTrue(
+            (
+                '<script type="text/javascript" src="/static/'
+                'versatileimagefield/js/versatileimagefield.js"></script>'
+                in response.content
+            )
+        )
+        self.assertTrue(
+            self.png.image.field.storage.exists(
+                self.png.image.thumbnail['300x300'].name
+            )
         )

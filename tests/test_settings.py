@@ -4,9 +4,15 @@ PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
 MEDIA_ROOT = os.path.join(PROJECT_DIR, 'media')
 SECRET_KEY = 'fake-key'
 INSTALLED_APPS = [
-    "tests",
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.messages",
+    "django.contrib.sessions",
+    "django.contrib.staticfiles",
     "rest_framework",
-    "versatileimagefield"
+    "versatileimagefield",
+    "tests"
 ]
 
 MIDDLEWARE_CLASSES = (
@@ -60,6 +66,7 @@ CACHES = {
 }
 
 MEDIA_URL = '/media/'
+STATIC_URL = '/static/'
 
 VERSATILEIMAGEFIELD_RENDITION_KEY_SETS = {
     'test_set': (
@@ -70,3 +77,6 @@ VERSATILEIMAGEFIELD_RENDITION_KEY_SETS = {
         ('test_invert_crop', 'filters__invert__crop__100x100'),
     ),
 }
+
+ROOT_URLCONF = 'tests.urls'
+DEBUG = True
