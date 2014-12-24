@@ -16,6 +16,11 @@ from .models import VersatileImageTestModel
 class VersatileImageFieldTestCase(TestCase):
     fixtures = ['versatileimagefield']
 
+    def setUp(self):
+        self.jpg = VersatileImageTestModel.objects.get(img_type='jpg')
+        self.png = VersatileImageTestModel.objects.get(img_type='png')
+        self.gif = VersatileImageTestModel.objects.get(img_type='gif')
+
     def tearDown(self):
         """
         Deletes files made by VersatileImageFields during tests
@@ -41,52 +46,43 @@ class VersatileImageFieldTestCase(TestCase):
 
     def test_check_storage_paths(self):
         """Ensure storage paths are properly set"""
-        jpg = VersatileImageTestModel.objects.get(img_type='jpg')
-        png = VersatileImageTestModel.objects.get(img_type='png')
-        gif = VersatileImageTestModel.objects.get(img_type='gif')
-        self.assertEqual(jpg.image.name, 'python-logo.jpg')
-        self.assertEqual(png.image.name, 'python-logo.png')
-        self.assertEqual(gif.image.name, 'python-logo.gif')
+        self.assertEqual(self.jpg.image.name, 'python-logo.jpg')
+        self.assertEqual(self.png.image.name, 'python-logo.png')
+        self.assertEqual(self.gif.image.name, 'python-logo.gif')
 
     def test_thumbnail_resized_path(self):
         """Ensure thumbnail Sizer paths are set correctly"""
-        jpg = VersatileImageTestModel.objects.get(img_type='jpg')
         self.assertEqual(
-            jpg.image.thumbnail['100x100'].url,
+            self.jpg.image.thumbnail['100x100'].url,
             '/media/__sized__/python-logo-thumbnail-100x100.jpg'
         )
 
     def test_crop_resized_path(self):
         """Ensure crop Sizer paths are set correctly"""
-        jpg = VersatileImageTestModel.objects.get(img_type='jpg')
         self.assertEqual(
-            jpg.image.crop['100x100'].url,
+            self.jpg.image.crop['100x100'].url,
             '/media/__sized__/python-logo-crop-c0-25__0-25-100x100.jpg'
         )
-        gif = VersatileImageTestModel.objects.get(img_type='gif')
         self.assertEqual(
-            gif.image.crop['100x100'].url,
+            self.gif.image.crop['100x100'].url,
             '/media/__sized__/python-logo-crop-c0-75__0-75-100x100.gif'
         )
-        png = VersatileImageTestModel.objects.get(img_type='png')
         self.assertEqual(
-            png.image.crop['100x100'].url,
+            self.png.image.crop['100x100'].url,
             '/media/__sized__/python-logo-crop-c0-5__0-5-100x100.png'
         )
 
     def test_invert_filtered_path(self):
         """Ensure crop Sizer paths are set correctly"""
-        jpg = VersatileImageTestModel.objects.get(img_type='jpg')
         self.assertEqual(
-            jpg.image.filters.invert.url,
+            self.jpg.image.filters.invert.url,
             '/media/__filtered__/python-logo__invert__.jpg'
         )
 
     def test_invert_plus_thumbnail_sizer_filtered_path(self):
         """Ensure crop Sizer paths are set correctly"""
-        jpg = VersatileImageTestModel.objects.get(img_type='jpg')
         self.assertEqual(
-            jpg.image.filters.invert.thumbnail['100x100'].url,
+            self.jpg.image.filters.invert.thumbnail['100x100'].url,
             (
                 '/media/__sized__/__filtered__/python-logo__invert__'
                 '-thumbnail-100x100.jpg'
@@ -150,9 +146,8 @@ class VersatileImageFieldTestCase(TestCase):
 
     def test_image_warmer(self):
         """Ensures VersatileImageFieldWarmer works as advertised."""
-        jpg = VersatileImageTestModel.objects.get(img_type='jpg')
         jpg_warmer = VersatileImageFieldWarmer(
-            instance_or_queryset=jpg,
+            instance_or_queryset=self.jpg,
             rendition_key_set='test_set',
             image_attr='image'
         )
