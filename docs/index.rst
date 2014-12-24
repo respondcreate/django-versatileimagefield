@@ -7,13 +7,17 @@
 Welcome to django-versatileimagefield's documentation!
 ======================================================
 
-.. image:: https://pypip.in/download/django-versatileimagefield/badge.png
+.. image:: https://pypip.in/download/django-versatileimagefield/badge.svg
     :target: https://pypi.python.org/pypi/django-versatileimagefield/
     :alt: Downloads
 
-.. image:: https://pypip.in/version/django-versatileimagefield/badge.png
+.. image:: https://pypip.in/version/django-versatileimagefield/badge.svg
     :target: https://pypi.python.org/pypi/django-versatileimagefield/
     :alt: Latest Version
+
+.. image:: https://travis-ci.org/WGBH/django-versatileimagefield.svg
+    :target: https://travis-ci.org/WGBH/django-versatileimagefield
+    :alt: Travis CI Status
 
 ----
 
