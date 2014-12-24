@@ -63,7 +63,7 @@ In A Nutshell
 Roadmap to v1.0
 ===============
 
--  Tests!
+-  Python 3 support
 -  Placeholder docs
 -  Programmatically delete images created by ``VersatileImageField``
    (including clearing their connected cache keys)

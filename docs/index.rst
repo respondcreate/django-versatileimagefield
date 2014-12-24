@@ -73,13 +73,18 @@ Table of Contents
 Release Notes
 =============
 
+0.3
+^^^
+-  Added a test suite with `Travis CI <https://travis-ci.org/WGBH/django-versatileimagefield>`_ and `coveralls <https://coveralls.io/r/WGBH/django-versatileimagefield>`_ integration.
+-  Introduced support for :doc:`Django REST Framework 3.0 </drf_integration>` serialization.
+
 0.2.1
 ^^^^^
 -  Ensuring :ref:`admin widget <ppoi-formfield>`-dependent thumbnail images are created even if ``VERSATILEIMAGEFIELD_SETTINGS['create_on_demand']`` is set to ``False``
 
 0.2
 ^^^
--  Introducing :doc:`Django REST Framework support </drf_integration>`!
+-  Introduced :doc:`Django REST Framework support </drf_integration>`!
 -  Added ability to turn off on-demand image creation and pre-warm images to :doc:`improve performance </improving_performance>`.
 
 0.1.5
@@ -119,7 +124,6 @@ Release Notes
 Roadmap to v1.0
 ===============
 
--  Tests!
 -  Python 3 support
 -  Custom placeholder image docs
 -  Programmatically delete images created by ``VersatileImageField``
