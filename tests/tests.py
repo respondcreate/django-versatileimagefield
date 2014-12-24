@@ -122,6 +122,8 @@ class VersatileImageFieldTestCase(TestCase):
             jpg.image.ppoi,
             (0.5, 0.5)
         )
+        jpg.image.ppoi = '(0.77, 0.77)'
+        jpg.save()
         jpg.image.ppoi = '0.25x0.25'
         jpg.save()
         self.assertEqual(
