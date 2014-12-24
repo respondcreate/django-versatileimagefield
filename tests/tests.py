@@ -3,7 +3,6 @@ from shutil import rmtree
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.test import Client, TestCase
@@ -174,6 +173,15 @@ class VersatileImageFieldTestCase(TestCase):
         )
         num_created, failed_to_create = jpg_warmer.warm()
         self.assertEqual(num_created, 5)
+        all_imgs_warmer = VersatileImageFieldWarmer(
+            instance_or_queryset=VersatileImageTestModel.objects.all(),
+            rendition_key_set=(
+                ('test_thumb', 'thumbnail__100x100'),
+            ),
+            image_attr='image',
+            verbose=True
+        )
+        num_created, failed_to_create = all_imgs_warmer.warm()
 
     def test_VersatileImageFieldSerializer_output(self):
         """Ensures VersatileImageFieldSerializer serializes correctly"""
