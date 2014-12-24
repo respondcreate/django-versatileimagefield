@@ -19,6 +19,10 @@ Welcome to django-versatileimagefield's documentation!
     :target: https://travis-ci.org/WGBH/django-versatileimagefield
     :alt: Travis CI Status
 
+.. image:: https://img.shields.io/coveralls/WGBH/django-versatileimagefield.svg
+    :target: https://coveralls.io/r/WGBH/django-versatileimagefield
+    :alt: Coverage Status
+
 ----
 
 A drop-in replacement for django's ImageField that provides a flexible,
