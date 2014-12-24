@@ -36,4 +36,11 @@ class VersatileImageFieldSerializer(ImageField):
         )
 
     def to_native(self, value):
+        """For djangorestframework <=2.3.14"""
+        return build_versatileimagefield_url_set(value, self.sizes)
+
+    def to_representation(self, value):
+        """
+        For djangorestframework >= 3
+        """
         return build_versatileimagefield_url_set(value, self.sizes)
