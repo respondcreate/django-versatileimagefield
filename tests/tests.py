@@ -239,3 +239,20 @@ class VersatileImageFieldTestCase(TestCase):
                 self.png.image.thumbnail['300x300'].name
             )
         )
+
+    def test_VersatileImageFieldDescriptor__set__(self):
+        """
+        Ensures VersatileImageFieldDescriptor.__set__ works as intended
+        """
+        self.jpg.image = 'python-logo-2.jpg'
+        self.jpg.save()
+        self.assertEqual(
+            self.jpg.image.thumbnail['100x100'].url,
+            '/media/__sized__/python-logo-2-thumbnail-100x100.jpg'
+        )
+        self.jpg.image = 'python-logo.jpg'
+        self.jpg.save()
+        self.assertEqual(
+            self.jpg.image.thumbnail['100x100'].url,
+            '/media/__sized__/python-logo-thumbnail-100x100.jpg'
+        )
