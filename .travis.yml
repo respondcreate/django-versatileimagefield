@@ -5,9 +5,11 @@ python:
   - "2.7"
 # List the versions of Django you'd like to test against
 env:
-  - DJANGO_VERSION=1.5
-  - DJANGO_VERSION=1.6
-  - DJANGO_VERSION=1.7
+  - DJANGO_VERSION=1.5.11 REST_FRAMEWORK_VERSION=2.3.14
+  - DJANGO_VERSION=1.6.8 REST_FRAMEWORK_VERSION=2.3.14
+  - DJANGO_VERSION=1.6.8 REST_FRAMEWORK_VERSION=3.0.2
+  - DJANGO_VERSION=1.7.1 REST_FRAMEWORK_VERSION=2.3.14
+  - DJANGO_VERSION=1.7.1 REST_FRAMEWORK_VERSION=3.0.2
 before_install:
   - export DJANGO_SETTINGS_MODULE=tests.test_settings
   - export PIP_USE_MIRRORS=true
@@ -19,7 +21,7 @@ install:
    # Install whatever version of Django that's listed above
    # Travis is currently working on
  - pip install -q Django==$DJANGO_VERSION
- - pip install djangorestframework
+ - pip install djangorestframework==$REST_FRAMEWORK_VERSION
  - pip install coveralls
 # Tell Travis how to run the test script itself
 script: coverage run --source=versatileimagefield runtests.py
