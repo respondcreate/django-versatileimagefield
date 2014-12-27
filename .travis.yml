@@ -23,6 +23,9 @@ install:
  - pip install -q Django==$DJANGO_VERSION
  - pip install djangorestframework==$REST_FRAMEWORK_VERSION
  - pip install coveralls
+ - pip install flake8
 # Tell Travis how to run the test script itself
-script: coverage run --source=versatileimagefield runtests.py
+script:
+- flake8 .
+- coverage run --source=versatileimagefield runtests.py
 after_success: coveralls
