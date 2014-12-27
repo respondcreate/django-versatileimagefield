@@ -22,8 +22,11 @@ CENTERPOINT_CHOICES = (
 
 class ClearableFileInputWithImagePreview(ClearableFileInput):
     ppoi_label = ugettext_lazy('Primary Point of Interest')
-    template_with_clear = '%(clear)s <label class="versatileimagefield-label" for="%(clear_checkbox_id)s">' \
-                          '%(clear_checkbox_label)s</label>'
+    template_with_clear = (
+        '%(clear)s <label class="versatileimagefield-label" '
+        'for="%(clear_checkbox_id)s">'
+        '%(clear_checkbox_label)s</label>'
+    )
     template_with_initial_and_imagepreview = """
     <div class="sizedimage-mod initial">
         <label class="versatileimagefield-label">%(initial_text)s</label>
@@ -35,7 +38,8 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
     <div class="sizedimage-mod preview">
         <label class="versatileimagefield-label">%(ppoi_label)s</label>
         <div class="image-wrap outer">
-            <div class="point-stage" id="%(point_stage_id)s" data-image_preview_id="%(image_preview_id)s">
+            <div class="point-stage" id="%(point_stage_id)s"
+                 data-image_preview_id="%(image_preview_id)s">
                 <div class="ppoi-point" id="%(ppoi_id)s"></div>
             </div>
             <div class="image-wrap inner">
@@ -51,7 +55,8 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
     def __init__(self, attrs=None, image_preview_template=None,
                  clear_checkbox_template=None):
         if image_preview_template:
-            self.template_with_initial_and_imagepreview = image_preview_template
+            self.template_with_initial_and_imagepreview = \
+                image_preview_template
         if clear_checkbox_template:
             self.template_with_clear = clear_checkbox_template
         super(ClearableFileInputWithImagePreview, self).__init__(attrs)
@@ -131,14 +136,19 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
             if not self.is_required:
                 checkbox_name = self.clear_checkbox_name(name)
                 checkbox_id = self.clear_checkbox_id(checkbox_name)
-                substitutions['clear_checkbox_name'] = conditional_escape(checkbox_name)
-                substitutions['clear_checkbox_id'] = conditional_escape(checkbox_id)
+                substitutions['clear_checkbox_name'] = conditional_escape(
+                    checkbox_name
+                )
+                substitutions['clear_checkbox_id'] = conditional_escape(
+                    checkbox_id
+                )
                 substitutions['clear'] = CheckboxInput().render(
                     checkbox_name,
                     False,
                     attrs={'id': checkbox_id}
                 )
-                substitutions['clear_template'] = self.template_with_clear % substitutions
+                substitutions['clear_template'] = self.template_with_clear % \
+                    substitutions
         return mark_safe(template % substitutions)
 
 
@@ -228,7 +238,8 @@ class SizedImageCenterpointClickBootstrap3Widget(
     <div class="form-group sizedimage-mod preview">
         <label>%(ppoi_label)s</label>
         <div class="image-wrap outer">
-            <div class="point-stage" id="%(point_stage_id)s" data-image_preview_id="%(image_preview_id)s">
+            <div class="point-stage" id="%(point_stage_id)s"
+                 data-image_preview_id="%(image_preview_id)s">
                 <div class="ppoi-point" id="%(ppoi_id)s"></div>
             </div>
             <div class="image-wrap inner">
@@ -241,10 +252,15 @@ class SizedImageCenterpointClickBootstrap3Widget(
         %(input)s
     </div>"""
 
-    clear_checkbox_template = '<label for="%(clear_checkbox_id)s" class="checkbox-inline">%(clear)s ' \
-                              '%(clear_checkbox_label)s</label>'
+    clear_checkbox_template = (
+        '<label for="%(clear_checkbox_id)s"'
+        'class="checkbox-inline">%(clear)s %(clear_checkbox_label)s'
+        '</label>'
+    )
 
     class Media:
         css = {
-            'all': ('versatileimagefield/css/versatileimagefield-bootstrap3.css',),
+            'all': (
+                'versatileimagefield/css/versatileimagefield-bootstrap3.css',
+            ),
         }

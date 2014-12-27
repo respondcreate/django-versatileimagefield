@@ -1,2 +1,8 @@
-from .sizedimage import SizedImage  # noqa
-from .filteredimage import FilteredImage, FilterLibrary  # noqa
+from .sizedimage import SizedImage
+from .filteredimage import FilteredImage, FilterLibrary
+
+__all__ = [
+    'SizedImage',
+    'FilteredImage',
+    'FilterLibrary'
+]
