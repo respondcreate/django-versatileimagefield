@@ -1,2 +1,2 @@
-from .sizedimage import SizedImage
-from .filteredimage import FilteredImage, FilterLibrary
+from .sizedimage import SizedImage  # noqa
+from .filteredimage import FilteredImage, FilterLibrary  # noqa
