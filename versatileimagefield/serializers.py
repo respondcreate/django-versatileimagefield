@@ -29,7 +29,7 @@ class VersatileImageFieldSerializer(ImageField):
 
     def __init__(self, sizes, *args, **kwargs):
         if isinstance(sizes, basestring):
-            sizes = get_rendition_key_set(sizes, validate=False)
+            sizes = get_rendition_key_set(sizes)
         self.sizes = validate_versatileimagefield_sizekey_list(sizes)
         super(VersatileImageFieldSerializer, self).__init__(
             *args, **kwargs

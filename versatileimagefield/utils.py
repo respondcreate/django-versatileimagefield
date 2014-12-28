@@ -59,7 +59,7 @@ FILE_EXTENSION_MAP = {
 }
 
 
-class InvalidSizeList(Exception):
+class InvalidSizeKeySet(Exception):
     pass
 
 
@@ -184,10 +184,6 @@ def validate_versatileimagefield_sizekey_list(sizes):
     ]
     """
     try:
-        sizes = list(sizes)
-    except TypeError:
-        raise InvalidSizeList('`sizes` must be an iterable')
-    else:
         for key, size_key in sizes:
             size_key_split = size_key.split('__')
             if size_key_split[-1] != 'url' and (
@@ -199,6 +195,11 @@ def validate_versatileimagefield_sizekey_list(sizes):
                     "by double underscores. Examples: 'crop__400x400', "
                     "filters__invert__url".format(size_key)
                 )
+    except ValueError:
+        raise InvalidSizeKeySet(
+            '{} is an invalid size key set. Size key sets must be an '
+            'iterable of 2-tuples'.format(str(sizes))
+        )
     return list(set(sizes))
 
 
@@ -244,7 +245,7 @@ def build_versatileimagefield_url_set(image_instance, size_set):
     return to_return
 
 
-def get_rendition_key_set(key, validate=True):
+def get_rendition_key_set(key):
     """
     Retrieves a validated and prepped Rendition Key Set from
     settings.VERSATILEIMAGEFIELD_RENDITION_KEY_SETS
@@ -257,7 +258,4 @@ def get_rendition_key_set(key, validate=True):
             "settings.VERSATILEIMAGEFIELD_RENDITION_KEY_SETS['{}']".format(key)
         )
     else:
-        if validate is True:
-            return validate_versatileimagefield_sizekey_list(rendition_key_set)
-        else:
-            return rendition_key_set
+        return validate_versatileimagefield_sizekey_list(rendition_key_set)

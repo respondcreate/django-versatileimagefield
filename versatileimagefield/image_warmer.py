@@ -82,7 +82,7 @@ class VersatileImageFieldWarmer(object):
             )
         self.queryset = queryset
         if isinstance(rendition_key_set, basestring):
-            rendition_key_set = get_rendition_key_set(rendition_key_set, validate=False)
+            rendition_key_set = get_rendition_key_set(rendition_key_set)
         self.size_key_list = [
             size_key
             for key, size_key in validate_versatileimagefield_sizekey_list(

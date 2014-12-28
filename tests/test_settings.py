@@ -76,6 +76,10 @@ VERSATILEIMAGEFIELD_RENDITION_KEY_SETS = {
         ('test_invert_thumb', 'filters__invert__thumbnail__100x100'),
         ('test_invert_crop', 'filters__invert__crop__100x100'),
     ),
+    'invalid_size_key': (
+        ('test', 'thumbnail'),
+    ),
+    'invalid_set': ('test_thumb', 'thumbnail__100x100')
 }
 
 ROOT_URLCONF = 'tests.urls'

@@ -4,12 +4,18 @@ from shutil import rmtree
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache import cache
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.test import Client, TestCase
 
 from versatileimagefield.image_warmer import VersatileImageFieldWarmer
 from versatileimagefield.settings import VERSATILEIMAGEFIELD_SIZED_DIRNAME,\
     VERSATILEIMAGEFIELD_FILTERED_DIRNAME
+from versatileimagefield.utils import (
+    get_rendition_key_set,
+    InvalidSizeKey,
+    InvalidSizeKeySet
+)
+
 
 from .models import VersatileImageTestModel
 from .serializers import VersatileImageTestModelSerializer
@@ -255,4 +261,46 @@ class VersatileImageFieldTestCase(TestCase):
         self.assertEqual(
             self.jpg.image.thumbnail['100x100'].url,
             '/media/__sized__/python-logo-thumbnail-100x100.jpg'
+        )
+
+    @staticmethod
+    def non_existent_rendition_key_set():
+        """
+        Tries to retrieve a non-existent rendition key set.
+        Should raise ImproperlyConfigured
+        """
+        get_rendition_key_set('does_not_exist')
+
+    @staticmethod
+    def invalid_size_key():
+        """
+        Tries to validate a Size Key set with an invalid size key.
+        Should raise InvalidSizeKey
+        """
+        get_rendition_key_set('invalid_size_key')
+
+    @staticmethod
+    def invalid_size_key_set():
+        """
+        Tries to retrieve a non-existent rendition key set.
+        Should raise InvalidSizeKeySet
+        """
+        get_rendition_key_set('invalid_set')
+
+    def test_VERSATILEIMAGEFIELD_RENDITION_KEY_SETS_setting(self):
+        """
+        Ensures VERSATILEIMAGEFIELD_RENDITION_KEY_SETS setting
+        validates correctly
+        """
+        self.assertRaises(
+            ImproperlyConfigured,
+            self.non_existent_rendition_key_set
+        )
+        self.assertRaises(
+            InvalidSizeKeySet,
+            self.invalid_size_key_set
+        )
+        self.assertRaises(
+            InvalidSizeKey,
+            self.invalid_size_key
         )
