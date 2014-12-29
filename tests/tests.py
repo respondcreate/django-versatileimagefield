@@ -1,3 +1,5 @@
+import math
+import operator
 import os
 from shutil import rmtree
 
@@ -7,7 +9,7 @@ from django.core.cache import cache
 from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.test import Client, TestCase
 
-from PIL import Image, ImageChops
+from PIL import Image
 from versatileimagefield.datastructures.filteredimage import InvalidFilter
 from versatileimagefield.datastructures.sizedimage import \
     MalformedSizedImageKey
@@ -72,7 +74,15 @@ class VersatileImageFieldTestCase(TestCase):
         Returns a bool signifying whether or not `image1` and `image2`
         are identical
         """
-        return ImageChops.difference(image1, image2).getbbox() is None
+        h1 = image1.histogram()
+        h2 = image2.histogram()
+        rms = math.sqrt(
+            reduce(
+                operator.add,
+                map(lambda a, b: (a - b)**2, h1, h2)
+            ) / len(h1)
+        )
+        return rms == 0.0
 
     @staticmethod
     def bad_ppoi():
