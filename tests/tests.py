@@ -82,6 +82,9 @@ class VersatileImageFieldTestCase(TestCase):
                 map(lambda a, b: (a - b)**2, h1, h2)
             ) / len(h1)
         )
+        print '------'
+        print rms
+        print '------'
         return rms == 0.0
 
     @staticmethod
