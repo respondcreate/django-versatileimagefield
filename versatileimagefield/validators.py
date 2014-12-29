@@ -1,7 +1,4 @@
-from ast import literal_eval
-
 from django.core.exceptions import ValidationError
-from django.utils import six
 
 INVALID_CENTERPOINT_ERROR_MESSAGE = (
     "%s is in invalid ppoi. A valid "
@@ -19,10 +16,7 @@ def validate_ppoi_tuple(value):
     ...both values are floats/ints that are greater-than-or-equal-to 0
        AND less-than-or-equal-to 1
     """
-    if value:
-        valid = True
-    else:
-        valid = False
+    valid = True
     while valid is True:
         if len(value) == 2 and isinstance(value, tuple):
             for x in value:
@@ -53,7 +47,7 @@ def validate_ppoi(value, return_converted_tuple=False):
         valid_ppoi = validate_ppoi_tuple(value)
         if valid_ppoi:
             to_return = value
-    elif isinstance(value, six.string_types):
+    else:
         tup = tuple()
         try:
             string_split = [
@@ -62,12 +56,7 @@ def validate_ppoi(value, return_converted_tuple=False):
                 if float(segment.strip()) >= 0 and float(segment.strip()) <= 1
             ]
         except:
-            try:
-                string_split = literal_eval(value)
-            except:
-                valid_ppoi = False
-            else:
-                tup = string_split
+            valid_ppoi = False
         else:
             tup = tuple(string_split)
 
@@ -75,8 +64,6 @@ def validate_ppoi(value, return_converted_tuple=False):
 
         if valid_ppoi:
             to_return = tup
-    else:
-        valid_ppoi = False
     if not valid_ppoi:
         raise ValidationError(
             message=INVALID_CENTERPOINT_ERROR_MESSAGE % str(value),

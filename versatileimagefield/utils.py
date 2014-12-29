@@ -168,10 +168,7 @@ def get_image_metadata_from_file_ext(file_ext):
         [1]: InMemoryUploadedFile-friendly save format (i.e. 'image/jpeg')
     image_format, in_memory_file_type
     """
-    if file_ext not in FILE_EXTENSION_MAP:
-        return JPEG
-    else:
-        return FILE_EXTENSION_MAP[file_ext]
+    return FILE_EXTENSION_MAP.get(file_ext, JPEG)
 
 
 def validate_versatileimagefield_sizekey_list(sizes):
@@ -213,8 +210,6 @@ def get_url_from_image_key(image_instance, image_key):
     img_url = reduce(getattr, img_key_split, image_instance)
     if size_key:
         img_url = img_url[size_key].url
-    else:
-        img_url = image_instance.url
     return img_url
 
 

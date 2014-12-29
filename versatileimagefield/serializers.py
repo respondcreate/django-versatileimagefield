@@ -43,4 +43,4 @@ class VersatileImageFieldSerializer(ImageField):
         """
         For djangorestframework >= 3
         """
-        return build_versatileimagefield_url_set(value, self.sizes)
+        return self.to_native(value)

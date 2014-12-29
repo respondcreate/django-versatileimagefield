@@ -80,9 +80,6 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
     def get_point_stage_id(self, name):
         return name + '_point-stage'
 
-    def get_point_id(self, name):
-        return name + '_point-id'
-
     def image_preview(self, name, value):
         """
         Given the name of the image preview tag, return the HTML id for it.

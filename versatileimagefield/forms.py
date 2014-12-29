@@ -1,5 +1,4 @@
 from django.forms.fields import (
-    ChoiceField,
     MultiValueField,
     CharField,
     ImageField
@@ -7,9 +6,7 @@ from django.forms.fields import (
 
 from .widgets import (
     VersatileImagePPOIClickWidget,
-    VersatileImagePPOISelectWidget,
-    SizedImageCenterpointClickDjangoAdminWidget,
-    CENTERPOINT_CHOICES
+    SizedImageCenterpointClickDjangoAdminWidget
 )
 
 
@@ -34,22 +31,6 @@ class SizedImageCenterpointMixIn(object):
 
     def compress(self, data_list):
         return tuple(data_list)
-
-
-class VersatileImagePPOISelectField(SizedImageCenterpointMixIn,
-                                    MultiValueField):
-    widget = VersatileImagePPOISelectWidget
-
-    def __init__(self, *args, **kwargs):
-        max_length = kwargs.pop('max_length', None)
-        del max_length
-        fields = (
-            VersatileImageForFormImageField(label='Image'),
-            ChoiceField(choices=CENTERPOINT_CHOICES, label='Centerpoint')
-        )
-        super(VersatileImagePPOISelectField, self).__init__(
-            tuple(fields), *args, **kwargs
-        )
 
 
 class VersatileImagePPOIClickField(SizedImageCenterpointMixIn,

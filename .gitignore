@@ -34,3 +34,10 @@ docs/_build/
 # Coverage Reports #
 ##################
 .coverage
+
+# Generated Image #
+#################
+__filtered__/
+__filtered__/*
+__sized__/
+__sized__/*

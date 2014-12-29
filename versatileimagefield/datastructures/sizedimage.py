@@ -26,7 +26,7 @@ class SizedImageInstance(object):
         return self.url
 
     def __unicode__(self):
-        return self.__str__()
+        return unicode(self.__str__())
 
 
 class SizedImage(ProcessedImage, dict):
@@ -78,7 +78,7 @@ class SizedImage(ProcessedImage, dict):
         """
         try:
             width, height = [int(i) for i in key.split('x')]
-        except KeyError:
+        except (KeyError, ValueError):
             raise MalformedSizedImageKey(
                 "%s keys must be in the following format: "
                 "'`width`x`height`' where both `width` and `height` are "
@@ -140,7 +140,11 @@ class SizedImage(ProcessedImage, dict):
             * [0]: Original Image instance (passed to `image`)
             * [1]: Dict with a transparency key (to GIF transparency layer)
         """
-        return (image, {'transparency': image.info['transparency']})
+        if 'transparency' in image.info:
+            save_kwargs = {'transparency': image.info['transparency']}
+        else:
+            save_kwargs = {}
+        return (image, save_kwargs)
 
     def preprocess_JPEG(self, image, **kwargs):
         """

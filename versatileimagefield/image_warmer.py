@@ -138,10 +138,11 @@ class VersatileImageFieldWarmer(object):
                     num_images_pre_warmed += 1
                     if self.verbose:
                         cli_progress_bar(num_images_pre_warmed, total)
-                        if a*b == total:
-                            stdout.write('\n')
                 else:
                     failed_to_create_image_path_list.append(url_or_filepath)
+
+                if a*b == total:
+                    stdout.write('\n')
 
         stdout.flush()
         return (num_images_pre_warmed, failed_to_create_image_path_list)

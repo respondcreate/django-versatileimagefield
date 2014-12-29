@@ -3,6 +3,7 @@
     "fields": {
         "img_type": "png",
         "image": "python-logo.png",
+        "optional_image": "python-logo.jpg",
         "ppoi": "0.5x0.5"
     },
     "model": "tests.versatileimagetestmodel",
@@ -25,5 +26,41 @@
     },
     "model": "tests.versatileimagetestmodel",
     "pk": 3
+},
+{
+    "fields": {
+        "img_type": "exif_3",
+        "image": "exif-orientation-examples/Landscape_3.jpg",
+        "ppoi": "0.5x0.5"
+    },
+    "model": "tests.versatileimagetestmodel",
+    "pk": 4
+},
+{
+    "fields": {
+        "img_type": "exif_6",
+        "image": "exif-orientation-examples/Landscape_6.jpg",
+        "ppoi": "0.5x0.5"
+    },
+    "model": "tests.versatileimagetestmodel",
+    "pk": 5
+},
+{
+    "fields": {
+        "img_type": "exif_8",
+        "image": "exif-orientation-examples/Landscape_8.jpg",
+        "ppoi": "0.5x0.5"
+    },
+    "model": "tests.versatileimagetestmodel",
+    "pk": 6
+},
+{
+    "fields": {
+        "img_type": "no_ext",
+        "image": "python-logo-no-ext",
+        "ppoi": "0.5x0.5"
+    },
+    "model": "tests.versatileimagetestmodel",
+    "pk": 7
 }
 ]

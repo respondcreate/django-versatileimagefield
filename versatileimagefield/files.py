@@ -51,11 +51,7 @@ class VersatileImageFileDescriptor(ImageFileDescriptor):
         # it's also conceivable that user subclasses might also want to
         # subclass the attribute class]. This object understands how to convert
         # a path to a file, and also how to handle None.
-        if file is None:
-            attr = self.field.attr_class(instance, self.field, file)
-            instance.__dict__[self.field.name] = attr
-
-        elif isinstance(file, six.string_types):
+        if isinstance(file, six.string_types) or file is None:
             attr = self.field.attr_class(
                 instance=instance,
                 field=self.field,

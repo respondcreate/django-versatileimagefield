@@ -22,6 +22,7 @@ install:
    # Travis is currently working on
  - pip install -q Django==$DJANGO_VERSION
  - pip install djangorestframework==$REST_FRAMEWORK_VERSION
+ - pip install south
  - pip install coveralls
  - pip install flake8
 # Tell Travis how to run the test script itself
