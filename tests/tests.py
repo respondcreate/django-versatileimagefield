@@ -82,9 +82,6 @@ class VersatileImageFieldTestCase(TestCase):
                 map(lambda a, b: (a - b)**2, h1, h2)
             ) / len(h1)
         )
-        print '------'
-        print rms
-        print '------'
         return rms == 0.0
 
     @staticmethod
@@ -410,7 +407,7 @@ class VersatileImageFieldTestCase(TestCase):
             self.invalid_size_key
         )
 
-    def test_exif_orientation_rotate_180(self):
+    def __test_exif_orientation_rotate_180(self):
         """
         Ensures VersatileImageFields process exif orientation==3 data properly
         """
@@ -435,7 +432,7 @@ class VersatileImageFieldTestCase(TestCase):
             )
         )
 
-    def xtest_exif_orientation_rotate_270(self):
+    def __test_exif_orientation_rotate_270(self):
         """
         Ensures VersatileImageFields process exif orientation==6 data properly
         """
@@ -457,7 +454,7 @@ class VersatileImageFieldTestCase(TestCase):
             )
         )
 
-    def xtest_exif_orientation_rotate_90(self):
+    def __test_exif_orientation_rotate_90(self):
         """
         Ensures VersatileImageFields process exif orientation==8 data properly
         """
