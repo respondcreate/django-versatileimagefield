@@ -1,14 +1,7 @@
-from django.conf import settings
-from django.utils import six
-
 from .datastructures import FilterLibrary
 from .registry import autodiscover, versatileimagefield_registry
 from .settings import VERSATILEIMAGEFIELD_CREATE_ON_DEMAND
-from .validators import (
-    validate_ppoi,
-    validate_ppoi_tuple,
-    ValidationError
-)
+from .validators import validate_ppoi
 
 # Finding SizedImage subclasses (stored in sizedimage.py files
 # within apps on settings.INSTALLED_APPS)
