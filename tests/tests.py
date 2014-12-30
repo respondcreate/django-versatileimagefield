@@ -1,12 +1,14 @@
 import math
 import operator
 import os
+import cPickle as pickle
 from shutil import rmtree
 
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core.exceptions import ImproperlyConfigured, ValidationError
+from django.core.files import File
 from django.test import Client, TestCase
 
 from PIL import Image
@@ -362,6 +364,31 @@ class VersatileImageFieldTestCase(TestCase):
         self.jpg.save()
         self.assertEqual(
             self.jpg.image.thumbnail['100x100'].url,
+            '/media/__sized__/python-logo-thumbnail-100x100.jpg'
+        )
+        fieldfile_obj = self.jpg.image
+        del fieldfile_obj.field
+        self.jpg.image = fieldfile_obj
+        img_path = self.jpg.image.path
+        img_file = file(img_path)
+        self.jpg.image = img_file
+        django_file = File(img_file)
+        self.jpg.image = django_file
+
+    def test_VersatileImageField_picklability(self):
+        """
+        Ensures VersatileImageField instances can be pickled/unpickled.
+        """
+        pickle.dump(
+            self.jpg,
+            open("pickletest.p", "wb")
+        )
+        jpg_unpickled = pickle.load(
+            open("pickletest.p", "rb")
+        )
+        jpg_instance = jpg_unpickled
+        self.assertEqual(
+            jpg_instance.image.thumbnail['100x100'].url,
             '/media/__sized__/python-logo-thumbnail-100x100.jpg'
         )
 

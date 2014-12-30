@@ -41,3 +41,7 @@ __filtered__/
 __filtered__/*
 __sized__/
 __sized__/*
+
+# Pickled Files #
+#################
+*.p

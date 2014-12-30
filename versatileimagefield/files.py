@@ -7,10 +7,20 @@ from django.db.models.fields.files import (
 from django.utils import six
 
 from .mixins import VersatileImageMixIn
+from .settings import VERSATILEIMAGEFIELD_CREATE_ON_DEMAND
 
 
 class VersatileImageFieldFile(VersatileImageMixIn, ImageFieldFile):
-    pass
+
+    def __getstate__(self):
+        # VersatileImageFieldFile needs access to its associated model field
+        # and an instance it's attached to in order to work properly, but the
+        # only necessary data to be pickled is the file's name itself.
+        # Everything else will be restored later, by
+        # VersatileImageFileDescriptor below.
+        state = super(VersatileImageFieldFile, self).__getstate__()
+        state['_create_on_demand'] = VERSATILEIMAGEFIELD_CREATE_ON_DEMAND
+        return state
 
 
 class VersatileImageFileDescriptor(ImageFileDescriptor):
