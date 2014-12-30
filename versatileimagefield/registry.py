@@ -9,6 +9,10 @@ class InvalidSizedImageSubclass(Exception):
     pass
 
 
+class InvalidFilteredImageSubclass(Exception):
+    pass
+
+
 class NotRegistered(Exception):
     pass
 
@@ -80,7 +84,9 @@ class VersatileImageFieldRegistry(object):
         Registers a new SizedImage subclass (`sizedimage_cls`) to be used
         via the attribute (`attr_name`)
         """
-        if attr_name.startswith('_') or attr_name in self.unallowed_sizer_names:
+        if attr_name.startswith(
+            '_'
+        )or attr_name in self.unallowed_sizer_names:
             raise UnallowedSizerName(
                 "`%s` is an unallowed Sizer name. Sizer names cannot begin "
                 "with an underscore or be named any of the "
@@ -100,9 +106,9 @@ class VersatileImageFieldRegistry(object):
 
         if attr_name in self._sizedimage_registry:
             raise AlreadyRegistered(
-                'A SizedImage class is already registered to the `%s` attribute. '
-                'If you would like to override this attribute, use the '
-                'unregister method' % attr_name
+                'A SizedImage class is already registered to the `%s` '
+                'attribute. If you would like to override this attribute, '
+                'use the unregister method' % attr_name
             )
         else:
             self._sizedimage_registry[attr_name] = sizedimage_cls
@@ -132,15 +138,16 @@ class VersatileImageFieldRegistry(object):
                 'with an underscore.' % attr_name
             )
         if not issubclass(filterimage_cls, FilteredImage):
-            raise InvalidSizedImageSubclass(
-                'Only subclasses of FilteredImage may be registered as filters'
-                'with VersatileImageFieldRegistry')
+            raise InvalidFilteredImageSubclass(
+                'Only subclasses of FilteredImage may be registered as '
+                'filters with VersatileImageFieldRegistry'
+            )
 
         if attr_name in self._filter_registry:
             raise AlreadyRegistered(
-                'A ProcessedImageMixIn class is already registered to the `%s` '
-                'attribute. If you would like to override this attribute, use '
-                'the unregister method' % attr_name
+                'A ProcessedImageMixIn class is already registered to the `%s`'
+                ' attribute. If you would like to override this attribute, '
+                'use the unregister method' % attr_name
             )
         else:
             self._filter_registry[attr_name] = filterimage_cls

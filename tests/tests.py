@@ -16,6 +16,15 @@ from versatileimagefield.datastructures.filteredimage import InvalidFilter
 from versatileimagefield.datastructures.sizedimage import \
     MalformedSizedImageKey
 from versatileimagefield.image_warmer import VersatileImageFieldWarmer
+from versatileimagefield.registry import (
+    versatileimagefield_registry,
+    AlreadyRegistered,
+    InvalidSizedImageSubclass,
+    InvalidFilteredImageSubclass,
+    NotRegistered,
+    UnallowedSizerName,
+    UnallowedFilterName
+)
 from versatileimagefield.settings import VERSATILEIMAGEFIELD_SIZED_DIRNAME,\
     VERSATILEIMAGEFIELD_FILTERED_DIRNAME
 from versatileimagefield.utils import (
@@ -24,6 +33,7 @@ from versatileimagefield.utils import (
     InvalidSizeKeySet
 )
 from versatileimagefield.validators import validate_ppoi_tuple
+from versatileimagefield.versatileimagefield import CroppedImage, InvertImage
 
 from .models import VersatileImageTestModel
 from .serializers import VersatileImageTestModelSerializer
@@ -618,4 +628,98 @@ class VersatileImageFieldTestCase(TestCase):
         self.assertRaises(
             MalformedSizedImageKey,
             self.get_bad_sized_image_key
+        )
+
+    @staticmethod
+    def register_invalid_sizer():
+        class A(object):
+            pass
+        versatileimagefield_registry.register_sizer('a', A)
+
+    @staticmethod
+    def register_invalid_filter():
+        class A(object):
+            pass
+        versatileimagefield_registry.register_filter('a', A)
+
+    @staticmethod
+    def register_invalid_sizer_name():
+        versatileimagefield_registry.register_sizer('chunks', CroppedImage)
+
+    @staticmethod
+    def register_invalid_filter_name():
+        versatileimagefield_registry.register_filter('_poop', InvertImage)
+
+    @staticmethod
+    def register_with_already_registered_sizer_name():
+        versatileimagefield_registry.register_sizer('crop', CroppedImage)
+
+    @staticmethod
+    def register_with_already_registered_filter_name():
+        versatileimagefield_registry.register_filter('invert', InvertImage)
+
+    @staticmethod
+    def unregister_non_existant_sizer():
+        versatileimagefield_registry.unregister_sizer('poop')
+
+    @staticmethod
+    def unregister_non_existant_filter():
+        versatileimagefield_registry.unregister_filter('poop')
+
+    def test_registration_exceptions(self):
+        """
+        Ensures all registration-related exceptions fire as expected
+        """
+        self.assertRaises(
+            InvalidSizedImageSubclass,
+            self.register_invalid_sizer
+        )
+        self.assertRaises(
+            InvalidFilteredImageSubclass,
+            self.register_invalid_filter
+        )
+        self.assertRaises(
+            UnallowedSizerName,
+            self.register_invalid_sizer_name
+        )
+        self.assertRaises(
+            UnallowedFilterName,
+            self.register_invalid_filter_name
+        )
+        self.assertRaises(
+            AlreadyRegistered,
+            self.register_with_already_registered_sizer_name
+        )
+        self.assertRaises(
+            AlreadyRegistered,
+            self.register_with_already_registered_filter_name
+        )
+        self.assertRaises(
+            NotRegistered,
+            self.unregister_non_existant_sizer
+        )
+        self.assertRaises(
+            NotRegistered,
+            self.unregister_non_existant_filter
+        )
+
+    def test_unregister_methods(self):
+        """
+        Ensuring versatileimagefield_registry unregister methods
+        work as expected
+        """
+        self.assertTrue(
+            'crop' in versatileimagefield_registry._sizedimage_registry
+        )
+        versatileimagefield_registry.unregister_sizer('crop')
+        self.assertFalse(
+            'crop' in versatileimagefield_registry._sizedimage_registry
+        )
+
+        self.assertTrue(
+            'invert' in versatileimagefield_registry._filter_registry
+        )
+        versatileimagefield_registry.unregister_filter('invert')
+        self.assertFalse(
+            'invert' in versatileimagefield_registry._filter_registry
         )
