@@ -35,10 +35,10 @@ class VersatileImageField(ImageField):
     def pre_save(self, model_instance, add):
         "Returns field's value just before saving."
         file = super(VersatileImageField, self).pre_save(model_instance, add)
-        self.update_ppoi_field(model_instance, force=True)
+        self.update_ppoi_field(model_instance)
         return file
 
-    def update_ppoi_field(self, instance, force=False, *args, **kwargs):
+    def update_ppoi_field(self, instance, *args, **kwargs):
         """
         Updates field's ppoi field, if defined.
 
@@ -59,36 +59,12 @@ class VersatileImageField(ImageField):
         # self.attr_class(VersatileImageFieldFile in this case).
         file = getattr(instance, self.attname)
 
-        # Nothing to update if we have no file and not being forced to update.
-        if not file and not force:
-            return
-
-        ppoi_filled = not(
-            (
-                self.ppoi_field and not getattr(
-                    instance,
-                    self.ppoi_field
-                )
-            )
-        )
-        # When the model instance ppoi field is filled and force
-        # is `False`, we are most likely loading data from the database or
-        # updating an image field that already had an image stored. In the
-        # first case, we don't want to update the ppoi field because
-        # we are already getting the value from the database. In the second
-        # case, we do want to update the ppoi field and will skip this
-        # return because force will be `True` since this method was called
-        # from VersatileImageFileDescriptor.__set__.
-        if ppoi_filled and not force:
-            return
-
         # file should be an instance of VersatileImageFieldFile or should be
         # None.
+        ppoi = None
         if file and not isinstance(file, tuple):
-            ppoi = file.ppoi
-        else:
-            # No file, so clear the ppoi field.
-            ppoi = None
+            if hasattr(file, 'ppoi'):
+                ppoi = file.ppoi
 
         # Update the ppoi field.
         if self.ppoi_field:
@@ -178,9 +154,7 @@ class PPOIField(CharField):
 
     def get_prep_value(self, value):
         if isinstance(value, tuple):
-            for_db = 'x'.join(str(num) for num in value)
-        else:
-            for_db = value
-        return for_db
+            value = 'x'.join(str(num) for num in value)
+        return value
 
 __all__ = ['VersatileImageField']

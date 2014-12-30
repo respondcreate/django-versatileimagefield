@@ -22,7 +22,7 @@ class VersatileImageFileDescriptor(ImageFileDescriptor):
         # Updating ppoi_field on attribute set
         if previous_file is not None:
             self.field.update_dimension_fields(instance, force=True)
-            self.field.update_ppoi_field(instance, force=True)
+            self.field.update_ppoi_field(instance)
 
     def __get__(self, instance=None, owner=None):
         if instance is None:
