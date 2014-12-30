@@ -50,6 +50,10 @@ VERSATILEIMAGEFIELD_SETTINGS = {
     # for non-existant images.
     # If 'global_placeholder_image' is unset, the excellent, free-to-use
     # http://placehold.it service will be used instead.
+    'global_placeholder_image': os.path.join(
+        PROJECT_DIR,
+        'placeholder.gif'
+    ),
     # The name of the top-level folder within storage classes to save all
     # sized images. Defaults to '__sized__'
     'sized_directory_name': '__sized__',

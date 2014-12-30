@@ -182,7 +182,17 @@ class VersatileImageFieldTestCase(TestCase):
         """Ensures placehold.it integration"""
         self.assertEqual(
             self.jpg.optional_image.crop['100x100'].url,
-            'http://placehold.it/100x100'
+            '/media/__sized__/GLOBAL-PLACEHOLDER/'
+            'placeholder-crop-c0-5__0-5-100x100.gif'
+        )
+        self.assertEqual(
+            self.jpg.optional_image.thumbnail['100x100'].url,
+            '/media/__sized__/GLOBAL-PLACEHOLDER/'
+            'placeholder-thumbnail-100x100.gif'
+        )
+        self.assertEqual(
+            self.jpg.optional_image.filters.invert.url,
+            '/media/GLOBAL-PLACEHOLDER/__filtered__/placeholder__invert__.gif'
         )
 
     def test_setting_ppoi_values(self):
