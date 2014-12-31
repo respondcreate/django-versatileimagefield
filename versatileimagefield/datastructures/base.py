@@ -108,16 +108,9 @@ class ProcessedImage(object):
     def retrieve_image(self, path_to_image):
         """
         Returns a PIL Image instance stored at `path_to_image`
-
-        If `path_to_image` is None, the global Placeholder image (as specified
-        by the VERSATILEIMAGEFIELD_PLACEHOLDER_IMAGE setting) will be returned.
         """
-        if not path_to_image:
-            image = VERSATILEIMAGEFIELD_PLACEHOLDER_IMAGE
-            file_ext = image.rsplit('.')[-1]
-        else:
-            image = self.storage.open(path_to_image, 'r')
-            file_ext = path_to_image.rsplit('.')[-1]
+        image = self.storage.open(path_to_image, 'r')
+        file_ext = path_to_image.rsplit('.')[-1]
         image_format, mime_type = get_image_metadata_from_file_ext(file_ext)
 
         return (
