@@ -16,7 +16,7 @@ from django.utils._os import upath
 from PIL import Image
 from versatileimagefield.datastructures.filteredimage import InvalidFilter
 from versatileimagefield.datastructures.sizedimage import \
-    MalformedSizedImageKey
+    MalformedSizedImageKey, SizedImage
 from versatileimagefield.image_warmer import VersatileImageFieldWarmer
 from versatileimagefield.registry import (
     versatileimagefield_registry,
@@ -305,6 +305,7 @@ class VersatileImageFieldTestCase(TestCase):
             instance_or_queryset=VersatileImageTestModel.objects.all(),
             rendition_key_set=(
                 ('test_thumb', 'thumbnail__100x100'),
+                ('test_crop', 'crop__100x100'),
                 ('test_invert', 'filters__invert__url'),
             ),
             image_attr='image',
@@ -774,3 +775,33 @@ class VersatileImageFieldTestCase(TestCase):
         self.assertEqual(instance.optional_image.name, 'optional/test2.png')
         instance.image.delete()
         instance.optional_image.delete()
+
+    @staticmethod
+    def SizedImage_with_no_filename_key():
+        class SizedImageSubclass(SizedImage):
+            pass
+
+        SizedImageSubclass('', '', False)
+
+    @staticmethod
+    def SizedImage_no_process_image():
+        class SizedImageSubclass(SizedImage):
+            filename_key = 'test'
+
+        x = SizedImageSubclass('', '', False)
+        x.process_image(image=None, image_format='JPEG', save_kwargs={},
+                        width=100, height=100)
+
+    def test_SizedImage_subclass_exceptions(self):
+        """
+        Ensures improperly constructed SizedImage subclasses throw
+        NotImplementedError when appropriate.
+        """
+        self.assertRaises(
+            NotImplementedError,
+            self.SizedImage_with_no_filename_key
+        )
+        self.assertRaises(
+            NotImplementedError,
+            self.SizedImage_no_process_image
+        )

@@ -62,5 +62,23 @@
     },
     "model": "tests.versatileimagetestmodel",
     "pk": 7
+},
+{
+    "fields": {
+        "img_type": "tgif",
+        "image": "transparent.gif",
+        "ppoi": "1x1"
+    },
+    "model": "tests.versatileimagetestmodel",
+    "pk": 8
+},
+{
+    "fields": {
+        "img_type": "cmyk",
+        "image": "cmyk.jpg",
+        "ppoi": "0.5x0.5"
+    },
+    "model": "tests.versatileimagetestmodel",
+    "pk": 9
 }
 ]
