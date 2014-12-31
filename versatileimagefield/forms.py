@@ -10,23 +10,6 @@ from .widgets import (
 )
 
 
-class VersatileImageForFormImageField(ImageField):
-    """
-    A django.forms.fields.ImageField subclass that provides
-    proper validation when displaying fields.VersatileImageField
-    as a HTML form.
-    """
-
-    def to_python(self, data):
-        """
-        Ensures `data` is opened so django.forms.fields.ImageField
-        validation runs correctly
-        """
-        if data:
-            data.open()
-        return super(VersatileImageForFormImageField, self).to_python(data)
-
-
 class SizedImageCenterpointMixIn(object):
 
     def compress(self, data_list):
@@ -41,7 +24,7 @@ class VersatileImagePPOIClickField(SizedImageCenterpointMixIn,
         max_length = kwargs.pop('max_length', None)
         del max_length
         fields = (
-            VersatileImageForFormImageField(label='Image'),
+            ImageField(label='Image'),
             CharField(required=False)
         )
         super(VersatileImagePPOIClickField, self).__init__(

@@ -9,8 +9,8 @@ class VersatileImageTestModel(models.Model):
         unique=True
     )
     image = VersatileImageField(
-        upload_to='/',
-        ppoi_field='ppoi'
+        upload_to='./',
+        ppoi_field='ppoi',
     )
     optional_image = VersatileImageField(
         upload_to='optional/',

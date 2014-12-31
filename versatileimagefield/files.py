@@ -7,7 +7,6 @@ from django.db.models.fields.files import (
 from django.utils import six
 
 from .mixins import VersatileImageMixIn
-from .settings import VERSATILEIMAGEFIELD_CREATE_ON_DEMAND
 
 
 class VersatileImageFieldFile(VersatileImageMixIn, ImageFieldFile):
@@ -19,7 +18,7 @@ class VersatileImageFieldFile(VersatileImageMixIn, ImageFieldFile):
         # Everything else will be restored later, by
         # VersatileImageFileDescriptor below.
         state = super(VersatileImageFieldFile, self).__getstate__()
-        state['_create_on_demand'] = VERSATILEIMAGEFIELD_CREATE_ON_DEMAND
+        state['_create_on_demand'] = self._create_on_demand
         return state
 
 
@@ -43,12 +42,12 @@ class VersatileImageFileDescriptor(ImageFileDescriptor):
         # This is slightly complicated, so worth an explanation.
         # instance.file`needs to ultimately return some instance of `File`,
         # probably a subclass. Additionally, this returned object needs to have
-        # the VersatileImageFieldFile API so that users can easily do things like
-        # instance.file.path & have that delegated to the file storage engine.
-        # Easy enough if we're strict about assignment in __set__, but if you
-        # peek below you can see that we're not. So depending on the current
-        # value of the field we have to dynamically construct some sort of
-        # "thing" to return.
+        # the VersatileImageFieldFile API so that users can easily do things
+        # like instance.file.path & have that delegated to the file storage
+        # engine. Easy enough if we're strict about assignment in __set__, but
+        # if you peek below you can see that we're not. So depending on the
+        # current value of the field we have to dynamically construct some
+        # sort of "thing" to return.
 
         # The instance dict contains whatever was originally assigned
         # in __set__.

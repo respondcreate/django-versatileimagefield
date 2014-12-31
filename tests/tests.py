@@ -9,7 +9,9 @@ from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.core.files import File
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase
+from django.utils._os import upath
 
 from PIL import Image
 from versatileimagefield.datastructures.filteredimage import InvalidFilter
@@ -35,6 +37,7 @@ from versatileimagefield.utils import (
 from versatileimagefield.validators import validate_ppoi_tuple
 from versatileimagefield.versatileimagefield import CroppedImage, InvertImage
 
+from .forms import VersatileImageTestModelForm
 from .models import VersatileImageTestModel
 from .serializers import VersatileImageTestModelSerializer
 
@@ -733,3 +736,41 @@ class VersatileImageFieldTestCase(TestCase):
         self.assertFalse(
             'invert' in versatileimagefield_registry._filter_registry
         )
+
+    def test_save_form_data(self):
+        """
+        Testing VersatileImageField.save_form_data
+        """
+        with open(
+            os.path.join(
+                os.path.dirname(upath(__file__)),
+                "test.png"
+            ),
+            'rb'
+        ) as fp:
+            image_data = fp.read()
+        with open(
+            os.path.join(
+                os.path.dirname(upath(__file__)),
+                "test2.png"
+            ),
+            'rb'
+        ) as fp:
+            image_data2 = fp.read()
+        f = VersatileImageTestModelForm(
+            data={'img_type': 'xxx'},
+            files={
+                'image': SimpleUploadedFile('test.png', image_data),
+                'optional_image': SimpleUploadedFile('test2.png', image_data2)
+            }
+        )
+        self.assertEqual(f.is_valid(), True)
+        self.assertEqual(type(f.cleaned_data['image']), SimpleUploadedFile)
+        self.assertEqual(
+            type(f.cleaned_data['optional_image']), SimpleUploadedFile
+        )
+        instance = f.save()
+        self.assertEqual(instance.image.name, './test.png')
+        self.assertEqual(instance.optional_image.name, 'optional/test2.png')
+        instance.image.delete()
+        instance.optional_image.delete()

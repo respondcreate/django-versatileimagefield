@@ -89,7 +89,7 @@ class VersatileImageField(ImageField):
         """
         to_assign = data
         if data is not None:
-            if not data:
+            if data is False:
                 # OK, it's False, set to an empty string to clear the field
                 to_assign = ''
             # This value is coming from a MultiValueField
