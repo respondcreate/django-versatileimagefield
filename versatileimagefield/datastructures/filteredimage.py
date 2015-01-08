@@ -24,7 +24,7 @@ class FilteredImage(ProcessedImage):
                           filename to identify it. This should be short
                           and descriptive (i.e. 'grayscale' or 'invert')
 
-    Subclasses must implement a process_filter method.
+    Subclasses must implement a process_image method.
     """
     name = None
     url = None

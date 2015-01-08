@@ -52,15 +52,6 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
         %(input)s
     </div>"""
 
-    def __init__(self, attrs=None, image_preview_template=None,
-                 clear_checkbox_template=None):
-        if image_preview_template:
-            self.template_with_initial_and_imagepreview = \
-                image_preview_template
-        if clear_checkbox_template:
-            self.template_with_clear = clear_checkbox_template
-        super(ClearableFileInputWithImagePreview, self).__init__(attrs)
-
     def get_hidden_field_id(self, name):
         i = name.rindex('_')
         return "id_%s_%d" % (name[:i], int(name[i + 1:]) + 1)
@@ -152,12 +143,13 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
 class SizedImageCenterpointWidgetMixIn(object):
 
     def decompress(self, value):
+        to_return = [None, None]
         if value:
-            return [
+            to_return = [
                 value,
                 u'x'.join(unicode(num) for num in value.ppoi)
             ]
-        return [None, None]
+        return to_return
 
 
 class VersatileImagePPOISelectWidget(SizedImageCenterpointWidgetMixIn,
@@ -183,8 +175,6 @@ class VersatileImagePPOIClickWidget(SizedImageCenterpointWidgetMixIn,
         widgets = (
             ClearableFileInputWithImagePreview(
                 attrs={'class': 'file-chooser'},
-                image_preview_template=self.image_preview_template or None,
-                clear_checkbox_template=self.clear_checkbox_template or None
             ),
             HiddenInput(
                 attrs={'class': 'ppoi-input'}
@@ -224,7 +214,7 @@ class SizedImageCenterpointClickDjangoAdminWidget(
 
 class SizedImageCenterpointClickBootstrap3Widget(
         VersatileImagePPOIClickWidget):
-    image_preview_template = """
+    template_with_initial_and_imagepreview = """
     <div class="form-group">
         <label>%(initial_text)s</label>
         %(initial)s
@@ -248,8 +238,7 @@ class SizedImageCenterpointClickBootstrap3Widget(
         <label class="versatileimagefield-label">%(input_text)s</label>
         %(input)s
     </div>"""
-
-    clear_checkbox_template = (
+    template_with_clear = (
         '<label for="%(clear_checkbox_id)s"'
         'class="checkbox-inline">%(clear)s %(clear_checkbox_label)s'
         '</label>'

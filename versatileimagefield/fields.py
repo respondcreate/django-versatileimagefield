@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.core.exceptions import ValidationError
 from django.db.models import SubfieldBase
 from django.db.models.fields import CharField
 from django.db.models.fields.files import ImageField
@@ -88,28 +87,24 @@ class VersatileImageField(ImageField):
 
         """
         to_assign = data
-        if data is not None:
-            if data is False:
-                # OK, it's False, set to an empty string to clear the field
-                to_assign = ''
+        if isinstance(data, tuple):
             # This value is coming from a MultiValueField
-            elif isinstance(data, tuple):
-                if data[0] is None:
-                    # This means the file hasn't changed but we need to
-                    # update the ppoi
-                    current_field = getattr(instance, self.name)
-                    if data[1]:
-                        current_field.ppoi = data[1]
-                    to_assign = current_field
-                elif data[0] is False:
-                    # This means the 'Clear' checkbox was checked so we
-                    # need to empty the field
-                    to_assign = ''
-                else:
-                    # This means there is a new upload so we need to unpack
-                    # the tuple and assign the first position to the field
-                    # attribute
-                    to_assign = data[0]
+            if data[0] is None:
+                # This means the file hasn't changed but we need to
+                # update the ppoi
+                current_field = getattr(instance, self.name)
+                if data[1]:
+                    current_field.ppoi = data[1]
+                to_assign = current_field
+            elif data[0] is False:
+                # This means the 'Clear' checkbox was checked so we
+                # need to empty the field
+                to_assign = ''
+            else:
+                # This means there is a new upload so we need to unpack
+                # the tuple and assign the first position to the field
+                # attribute
+                to_assign = data[0]
         super(VersatileImageField, self).save_form_data(instance, to_assign)
 
     def formfield(self, **kwargs):
@@ -126,18 +121,12 @@ class PPOIField(CharField):
     def __init__(self, *args, **kwargs):
         if 'default' not in kwargs:
             kwargs['default'] = '0.5x0.5'
-        else:
-            try:
-                valid_ppoi = validate_ppoi(
-                    kwargs['default'],
-                    return_converted_tuple=True
-                )
-            except ValidationError:
-                raise
-            else:
-                kwargs['default'] = self.get_prep_value(
-                    value=valid_ppoi
-                )
+        kwargs['default'] = self.get_prep_value(
+            value=validate_ppoi(
+                kwargs['default'],
+                return_converted_tuple=True
+            )
+        )
         if 'max_length' not in kwargs:
             kwargs['max_length'] = 20
 

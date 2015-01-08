@@ -94,7 +94,7 @@ class VersatileImageFieldTestCase(TestCase):
         rms = math.sqrt(
             reduce(
                 operator.add,
-                map(lambda a, b: (a - b)**2, h1, h2)
+                map(lambda a, b: (a - b) ** 2, h1, h2)
             ) / len(h1)
         )
         return rms == 0.0
@@ -758,23 +758,41 @@ class VersatileImageFieldTestCase(TestCase):
             'rb'
         ) as fp:
             image_data2 = fp.read()
+        # Testing new uploads
         f = VersatileImageTestModelForm(
             data={'img_type': 'xxx'},
             files={
-                'image': SimpleUploadedFile('test.png', image_data),
-                'optional_image': SimpleUploadedFile('test2.png', image_data2)
+                'image_0': SimpleUploadedFile('test.png', image_data),
+                'optional_image_0': SimpleUploadedFile(
+                    'test2.png', image_data2
+                )
             }
         )
         self.assertEqual(f.is_valid(), True)
-        self.assertEqual(type(f.cleaned_data['image']), SimpleUploadedFile)
+        self.assertEqual(type(f.cleaned_data['image'][0]), SimpleUploadedFile)
         self.assertEqual(
-            type(f.cleaned_data['optional_image']), SimpleUploadedFile
+            type(f.cleaned_data['optional_image'][0]), SimpleUploadedFile
         )
         instance = f.save()
         self.assertEqual(instance.image.name, './test.png')
-        self.assertEqual(instance.optional_image.name, 'optional/test2.png')
-        instance.image.delete()
+        self.assertEqual(instance.optional_image.name, './test2.png')
+        # Testing updating files / PPOI values
+        # Deleting optional_image file (since it'll be cleared with the
+        # next form)
         instance.optional_image.delete()
+        f2 = VersatileImageTestModelForm(
+            data={
+                'img_type': 'xxx',
+                'image_0': '',
+                'image_1': '0.25x0.25',
+                'optional_image_0-clear': 'on'
+            },
+            instance=instance
+        )
+        instance = f2.save()
+        self.assertEqual(instance.image.ppoi, (0.25, 0.25))
+        self.assertEqual(instance.optional_image.name, '')
+        instance.image.delete()
 
     @staticmethod
     def SizedImage_with_no_filename_key():

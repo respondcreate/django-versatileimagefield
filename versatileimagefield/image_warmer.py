@@ -1,9 +1,6 @@
 from sys import stdout
 from django.db.models import Model
-try:
-    from django.db.models import QuerySet
-except ImportError:
-    from django.db.models.query import QuerySet
+from django.db.models.query import QuerySet
 from .utils import (
     get_rendition_key_set,
     get_url_from_image_key,
@@ -141,7 +138,7 @@ class VersatileImageFieldWarmer(object):
                 else:
                     failed_to_create_image_path_list.append(url_or_filepath)
 
-                if a*b == total:
+                if a * b == total:
                     stdout.write('\n')
 
         stdout.flush()

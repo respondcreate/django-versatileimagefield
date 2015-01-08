@@ -13,7 +13,7 @@ class VersatileImageTestModel(models.Model):
         ppoi_field='ppoi',
     )
     optional_image = VersatileImageField(
-        upload_to='optional/',
+        upload_to='./',
         blank=True
     )
     ppoi = PPOIField()
