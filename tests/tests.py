@@ -14,9 +14,11 @@ from django.test import Client, TestCase
 from django.utils._os import upath
 
 from PIL import Image
+from versatileimagefield.files import VersatileImageFileDescriptor
 from versatileimagefield.datastructures.filteredimage import InvalidFilter
 from versatileimagefield.datastructures.sizedimage import \
     MalformedSizedImageKey, SizedImage
+from versatileimagefield.datastructures.filteredimage import FilteredImage
 from versatileimagefield.image_warmer import VersatileImageFieldWarmer
 from versatileimagefield.registry import (
     versatileimagefield_registry,
@@ -374,9 +376,17 @@ class VersatileImageFieldTestCase(TestCase):
             )
         )
 
-    def test_VersatileImageFieldDescriptor__set__(self):
+    def VersatileImageFileDescriptor__get__None(self):
         """
-        Ensures VersatileImageFieldDescriptor.__set__ works as intended
+        Calls VersatileImageFileDescriptor.__get__ without an instance
+        should raise AttributeError
+        """
+        x = VersatileImageFileDescriptor(self.jpg.image.name)
+        VersatileImageFileDescriptor.__get__(x)
+
+    def test_VersatileImageFileDescriptor(self):
+        """
+        Ensures VersatileImageFileDescriptor works as intended
         """
         self.jpg.image = 'python-logo-2.jpg'
         self.jpg.save()
@@ -398,6 +408,10 @@ class VersatileImageFieldTestCase(TestCase):
         self.jpg.image = img_file
         django_file = File(img_file)
         self.jpg.image = django_file
+        self.assertRaises(
+            AttributeError,
+            self.VersatileImageFileDescriptor__get__None
+        )
 
     def test_VersatileImageField_picklability(self):
         """
@@ -414,6 +428,17 @@ class VersatileImageFieldTestCase(TestCase):
         self.assertEqual(
             jpg_instance.image.thumbnail['100x100'].url,
             '/media/__sized__/python-logo-thumbnail-100x100.jpg'
+        )
+        pickled_state = self.jpg.image.__getstate__()
+        self.assertEqual(
+            pickled_state,
+            {
+                '_create_on_demand': False,
+                '_committed': True,
+                '_file': None,
+                'name': 'python-logo.jpg',
+                'closed': False
+            }
         )
 
     @staticmethod
@@ -810,9 +835,21 @@ class VersatileImageFieldTestCase(TestCase):
         x.process_image(image=None, image_format='JPEG', save_kwargs={},
                         width=100, height=100)
 
-    def test_SizedImage_subclass_exceptions(self):
+    def FilteredImage_no_process_image(self):
+        class FilteredImageSubclass(FilteredImage):
+            filename_key = 'test'
+
+        x = FilteredImageSubclass(
+            self.jpg.image.name,
+            self.jpg.image.field.storage,
+            False,
+            filename_key='foo'
+        )
+        x.process_image(image=None, image_format='JPEG', save_kwargs={})
+
+    def test_ProcessedImage_subclass_exceptions(self):
         """
-        Ensures improperly constructed SizedImage subclasses throw
+        Ensures improperly constructed ProcessedImage subclasses throw
         NotImplementedError when appropriate.
         """
         self.assertRaises(
@@ -822,4 +859,8 @@ class VersatileImageFieldTestCase(TestCase):
         self.assertRaises(
             NotImplementedError,
             self.SizedImage_no_process_image
+        )
+        self.assertRaises(
+            NotImplementedError,
+            self.FilteredImage_no_process_image
         )
