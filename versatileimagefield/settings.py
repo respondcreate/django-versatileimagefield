@@ -45,8 +45,11 @@ DEFAULTS = {
 SETTINGS = getattr(
     settings,
     'VERSATILEIMAGEFIELD_SETTINGS',
-    DEFAULTS
+    None
 )
+
+if SETTINGS:
+    DEFAULTS.update(SETTINGS)
 
 QUAL = SETTINGS.get('jpeg_resize_quality', QUAL)
 

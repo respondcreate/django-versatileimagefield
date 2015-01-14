@@ -173,8 +173,8 @@ versatileimagefield_registry = VersatileImageFieldRegistry()
 def autodiscover():
     """
     Auto-discover INSTALLED_APPS sizedimage.py modules and fail silently when
-    not present. This forces an import on them to register any versatileimagefield
-    bits they may want.
+    not present. This forces an import on them to register any
+    versatileimagefield bits they may want.
 
     This is a near 1-to-1 copy of how django's admin application registers
     models.
@@ -187,7 +187,7 @@ def autodiscover():
 
     for app in settings.INSTALLED_APPS:
         mod = import_module(app)
-        # Attempt to import the app's sizedimage module.
+        # Attempt to import the app's versatileimagefield module.
         try:
             before_import_sizedimage_registry = copy.copy(
                 versatileimagefield_registry._sizedimage_registry
@@ -197,12 +197,14 @@ def autodiscover():
             )
             import_module('%s.versatileimagefield' % app)
         except:
-            # Reset the versatileimagefield_registry to the state before the last
-            # import as this import will have to reoccur on the next request
-            # and this could raise NotRegistered and AlreadyRegistered
+            # Reset the versatileimagefield_registry to the state before the
+            # last import as this import will have to reoccur on the next
+            # request and this could raise NotRegistered and AlreadyRegistered
             # exceptions (see django ticket #8245).
-            versatileimagefield_registry._sizedimage_registry = before_import_sizedimage_registry
-            versatileimagefield_registry._filter_registry = before_import_filter_registry
+            versatileimagefield_registry._sizedimage_registry = \
+                before_import_sizedimage_registry
+            versatileimagefield_registry._filter_registry = \
+                before_import_filter_registry
 
             # Decide whether to bubble up this error. If the app just
             # doesn't have a sizedimage module, we can ignore the error

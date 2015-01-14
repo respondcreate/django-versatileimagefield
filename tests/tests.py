@@ -10,7 +10,7 @@ from django.core.cache import cache
 from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.core.files import File
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import Client, TestCase
+from django.test import Client, TestCase, override_settings
 from django.utils._os import upath
 
 from PIL import Image
@@ -21,6 +21,7 @@ from versatileimagefield.datastructures.sizedimage import \
 from versatileimagefield.datastructures.filteredimage import FilteredImage
 from versatileimagefield.image_warmer import VersatileImageFieldWarmer
 from versatileimagefield.registry import (
+    autodiscover,
     versatileimagefield_registry,
     AlreadyRegistered,
     InvalidSizedImageSubclass,
@@ -863,4 +864,18 @@ class VersatileImageFieldTestCase(TestCase):
         self.assertRaises(
             NotImplementedError,
             self.FilteredImage_no_process_image
+        )
+
+    @override_settings(
+        INSTALLED_APPS=('tests.test_autodiscover',)
+    )
+    def test_autodiscover(self):
+        """
+        Ensures versatileimagefield.registry.autodiscover raises the
+        appropriate exception when trying to import on versatileimage.py
+        modules.
+        """
+        self.assertRaises(
+            ImportError,
+            autodiscover
         )
