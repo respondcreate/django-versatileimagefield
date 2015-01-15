@@ -1,6 +1,6 @@
+from django.conf import settings
 from ..settings import (
     QUAL,
-    USE_PLACEHOLDIT,
     cache,
     VERSATILEIMAGEFIELD_CACHE_LENGTH
 )
@@ -85,7 +85,9 @@ class SizedImage(ProcessedImage, dict):
                 "integers." % self.__class__.__name__
             )
 
-        if not self.path_to_image and USE_PLACEHOLDIT:
+        if not self.path_to_image and getattr(
+            settings, 'USE_PLACEHOLDIT', False
+        ):
             resized_url = "http://placehold.it/%dx%d" % (width, height)
             resized_storage_path = resized_url
         else:
@@ -103,7 +105,9 @@ class SizedImage(ProcessedImage, dict):
                     # statement
                     pass
                 else:
-                    if not self.storage.exists(resized_storage_path):
+                    if resized_storage_path and not self.storage.exists(
+                        resized_storage_path
+                    ):
                         self.create_resized_image(
                             path_to_image=self.path_to_image,
                             save_path_on_storage=resized_storage_path,

@@ -57,8 +57,11 @@ class VersatileImageMixIn(object):
             self.build_filters_and_sizers(ppoi, self.create_on_demand)
 
     def build_filters_and_sizers(self, ppoi_value, create_on_demand):
+        name = self.name
+        if not name and self.field.placeholder_image_name:
+            name = self.field.placeholder_image_name
         self.filters = FilterLibrary(
-            self.name,
+            name,
             self.storage,
             versatileimagefield_registry,
             ppoi_value,
@@ -72,7 +75,7 @@ class VersatileImageMixIn(object):
                 self,
                 attr_name,
                 sizedimage_cls(
-                    path_to_image=self.name,
+                    path_to_image=name,
                     storage=self.storage,
                     create_on_demand=create_on_demand,
                     ppoi=ppoi_value

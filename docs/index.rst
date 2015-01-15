@@ -15,7 +15,7 @@ Welcome to django-versatileimagefield's documentation!
     :target: https://pypi.python.org/pypi/django-versatileimagefield/
     :alt: Latest Version
 
-.. image:: https://travis-ci.org/WGBH/django-versatileimagefield.svg
+.. image:: https://travis-ci.org/WGBH/django-versatileimagefield.svg?branch=master
     :target: https://travis-ci.org/WGBH/django-versatileimagefield
     :alt: Travis CI Status
 

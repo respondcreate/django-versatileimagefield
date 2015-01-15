@@ -25,11 +25,6 @@ DEFAULTS = {
     # http://pillow.readthedocs.org/en/latest/handbook/image-file-formats.html#jpeg
     # Defaults to 70
     'jpeg_resize_quality': QUAL,
-    # A path on disc to an image that will be used as a 'placeholder'
-    # for non-existant images.
-    # If 'global_placeholder_image' is unset, the excellent, free-to-use
-    # http://placehold.it service will be used instead.
-    'global_placeholder_image': None,
     # The name of the top-level folder within your storage to save all
     # sized images. Defaults to '__sized__'
     'sized_directory_name': VERSATILEIMAGEFIELD_SIZED_DIRNAME,
@@ -52,16 +47,6 @@ if SETTINGS:
     DEFAULTS.update(SETTINGS)
 
 QUAL = SETTINGS.get('jpeg_resize_quality', QUAL)
-
-USE_PLACEHOLDIT = True
-
-VERSATILEIMAGEFIELD_PLACEHOLDER_IMAGE = SETTINGS.get(
-    'global_placeholder_image',
-    None
-)
-
-if VERSATILEIMAGEFIELD_PLACEHOLDER_IMAGE:
-    USE_PLACEHOLDIT = False
 
 VERSATILEIMAGEFIELD_CACHE_NAME = SETTINGS.get(
     'cache_name',

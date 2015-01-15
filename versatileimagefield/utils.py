@@ -3,17 +3,10 @@ import os
 from django.core.exceptions import ImproperlyConfigured
 
 from .settings import (
-    USE_PLACEHOLDIT,
-    VERSATILEIMAGEFIELD_PLACEHOLDER_IMAGE,
     VERSATILEIMAGEFIELD_SIZED_DIRNAME,
     VERSATILEIMAGEFIELD_FILTERED_DIRNAME,
     IMAGE_SETS
 )
-
-if not USE_PLACEHOLDIT:
-    PLACEHOLDER_FOLDER, PLACEHOLDER_FILENAME = os.path.split(
-        VERSATILEIMAGEFIELD_PLACEHOLDER_IMAGE
-    )
 
 # PIL-supported file formats as found here:
 # https://infohost.nmt.edu/tcc/help/pubs/pil/formats.html
@@ -94,11 +87,7 @@ def get_resized_path(path_to_image, width, height,
     and it's web-accessible URL (position 1) as dictated by `width`, `height`
     and `filename_key`
     """
-    if not path_to_image:
-        filename = PLACEHOLDER_FILENAME
-        containing_folder = 'GLOBAL-PLACEHOLDER'
-    else:
-        containing_folder, filename = os.path.split(path_to_image)
+    containing_folder, filename = os.path.split(path_to_image)
 
     resized_filename = get_resized_filename(
         filename,
@@ -141,11 +130,7 @@ def get_filtered_path(path_to_image, filename_key, storage):
     """
     Returns the 'filtered path' & URL of `path_to_image`
     """
-    if not path_to_image:
-        filename = PLACEHOLDER_FILENAME
-        containing_folder = 'GLOBAL-PLACEHOLDER'
-    else:
-        containing_folder, filename = os.path.split(path_to_image)
+    containing_folder, filename = os.path.split(path_to_image)
 
     filtered_filename = get_filtered_filename(filename, filename_key)
     path_to_return = os.path.join(*[

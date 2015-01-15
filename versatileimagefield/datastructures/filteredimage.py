@@ -1,11 +1,14 @@
+from django.conf import settings
+
 from ..settings import (
-    USE_PLACEHOLDIT,
     cache,
     VERSATILEIMAGEFIELD_CACHE_LENGTH
 )
 from ..utils import get_filtered_path
 
 from .base import ProcessedImage
+
+USE_PLACEHOLDIT = getattr(settings, 'USE_PLACEHOLDIT', False)
 
 
 class InvalidFilter(Exception):
@@ -55,12 +58,17 @@ class FilteredImage(ProcessedImage):
         imagefile = self.process_image(image, image_format, save_kwargs)
         self.save_image(imagefile, save_path_on_storage, file_ext, mime_type)
 
+    def __str__(self):
+        return self.url
+
+    def __unicode__(self):
+        return unicode(self.__str__())
+
 
 class DummyFilter(object):
     """
     A 'dummy' version of FilteredImage which is only used if
-    .settings.USE_PLACEHOLDIT is True (i.e. if the
-    VERSATILEIMAGEFIELD_PLACEHOLDER_IMAGE is unset)
+    settings.USE_PLACEHOLDIT is True
     """
     name = ''
     url = ''
@@ -108,7 +116,7 @@ class FilterLibrary(dict):
                 raise InvalidFilter('`%s` is an invalid filter.' % key)
             else:
                 # Handling 'empty' fields.
-                if not self.original_file_location and USE_PLACEHOLDIT:
+                if not self.original_file_location and getattr(settings, 'USE_PLACEHOLDIT', True):
                     # If USE_PLACEHOLDIT is True (i.e.
                     # settings.VERSATILEIMAGEFIELD_PLACEHOLDER_IMAGE is unset)
                     # use DummyFilter (so sized renditions can still return

@@ -83,8 +83,13 @@ class VersatileImageFieldTestCase(TestCase):
             settings.MEDIA_ROOT,
             VERSATILEIMAGEFIELD_SIZED_DIRNAME
         )
+        placeholder_path = os.path.join(
+            settings.MEDIA_ROOT,
+            'PLACEHOLDER-IMAGE'
+        )
         rmtree(filtered_path, ignore_errors=True)
         rmtree(sized_path, ignore_errors=True)
+        rmtree(placeholder_path, ignore_errors=True)
 
     @staticmethod
     def imageEqual(image1, image2):
@@ -188,17 +193,17 @@ class VersatileImageFieldTestCase(TestCase):
         """Ensures placehold.it integration"""
         self.assertEqual(
             self.jpg.optional_image.crop['100x100'].url,
-            '/media/__sized__/GLOBAL-PLACEHOLDER/'
+            '/media/__sized__/PLACEHOLDER-IMAGE/'
             'placeholder-crop-c0-5__0-5-100x100.gif'
         )
         self.assertEqual(
             self.jpg.optional_image.thumbnail['100x100'].url,
-            '/media/__sized__/GLOBAL-PLACEHOLDER/'
+            '/media/__sized__/PLACEHOLDER-IMAGE/'
             'placeholder-thumbnail-100x100.gif'
         )
         self.assertEqual(
             self.jpg.optional_image.filters.invert.url,
-            '/media/GLOBAL-PLACEHOLDER/__filtered__/placeholder__invert__.gif'
+            '/media/PLACEHOLDER-IMAGE/__filtered__/placeholder__invert__.gif'
         )
 
     def test_setting_ppoi_values(self):
@@ -879,3 +884,14 @@ class VersatileImageFieldTestCase(TestCase):
             ImportError,
             autodiscover
         )
+
+    @override_settings(
+        USE_PLACEHOLDIT=True
+    )
+    def test_placeholdit(self):
+        jpg = VersatileImageTestModel.objects.get(img_type='jpg')
+        self.assertEqual(
+            jpg.optional_image_2.filters.invert.crop['400x400'].url,
+            'http://placehold.it/400x400'
+        )
+

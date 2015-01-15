@@ -1,19 +1,9 @@
-import os
-
 from PIL import Image, ExifTags
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
-from ..settings import (
-    USE_PLACEHOLDIT,
-    VERSATILEIMAGEFIELD_PLACEHOLDER_IMAGE
-)
 from ..utils import get_image_metadata_from_file_ext
 
-if not USE_PLACEHOLDIT:
-    PLACEHOLDER_FOLDER, PLACEHOLDER_FILENAME = os.path.split(
-        VERSATILEIMAGEFIELD_PLACEHOLDER_IMAGE
-    )
 
 ORIENTATION_KEY = ExifTags.TAGS.keys()[
     ExifTags.TAGS.values().index('Orientation')
@@ -39,10 +29,12 @@ class ProcessedImage(object):
     the `preprocess` method for more specific information.
     """
 
-    def __init__(self, path_to_image, storage, create_on_demand):
+    def __init__(self, path_to_image, storage, create_on_demand,
+                 placeholder_image=None):
         self.path_to_image = path_to_image
         self.storage = storage
         self.create_on_demand = create_on_demand
+        self.placeholder_image = placeholder_image
 
     def process_image(self, image, image_format, **kwargs):
         """

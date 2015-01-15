@@ -1,3 +1,5 @@
+import os
+
 from django.conf import settings
 from django.db.models import SubfieldBase
 from django.db.models.fields import CharField
@@ -25,11 +27,24 @@ class VersatileImageField(ImageField):
     description = _('Versatile Image Field')
 
     def __init__(self, verbose_name=None, name=None, width_field=None,
-                 height_field=None, ppoi_field=None, **kwargs):
+                 height_field=None, ppoi_field=None, placeholder_image=None,
+                 **kwargs):
         self.ppoi_field = ppoi_field
         super(VersatileImageField, self).__init__(
             verbose_name, name, width_field, height_field, **kwargs
         )
+        self._process_placeholder_image(placeholder_image)
+
+    def _process_placeholder_image(self, placeholder_image):
+        placeholder_image_name = None
+        if placeholder_image:
+            name = getattr(placeholder_image, 'name', None)
+            placeholder_image_name = os.path.join('PLACEHOLDER-IMAGE', name)
+            if not self.storage.exists(placeholder_image_name):
+                self.storage.save(placeholder_image_name, placeholder_image)
+            if hasattr(placeholder_image, 'close'):
+                placeholder_image.close()
+        self.placeholder_image_name = placeholder_image_name
 
     def pre_save(self, model_instance, add):
         "Returns field's value just before saving."
