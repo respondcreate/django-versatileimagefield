@@ -10,6 +10,8 @@ from django.core.cache import cache
 from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.core.files import File
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.template import Context
+from django.template.loader import get_template
 from django.test import Client, TestCase, override_settings
 from django.utils._os import upath
 
@@ -895,3 +897,23 @@ class VersatileImageFieldTestCase(TestCase):
             'http://placehold.it/400x400'
         )
 
+    def test_template_rendering(self):
+        t = get_template("test-template.html")
+        c = Context({
+            'instance': self.jpg
+        })
+        rendered = t.render(c)
+        self.assertHTMLEqual(
+            rendered,
+            """
+<html>
+<body>
+<img id="image-crop" src="/media/__sized__/python-logo-crop-c0-25__0-25-400x400.jpg" />
+<img id="image-thumbnail" src="/media/__sized__/python-logo-thumbnail-400x400.jpg" />
+<img id="image-invert" src="/media/__filtered__/python-logo__invert__.jpg" />
+<img id="image-invert-crop" src="/media/__sized__/__filtered__/python-logo__invert__-crop-c0-25__0-25-400x400.jpg" />
+<img src="/media/__sized__/PLACEHOLDER-IMAGE/placeholder-crop-c0-5__0-5-400x400.gif" id="optional-image-crop"/>
+</body>
+</html>
+            """
+        )
