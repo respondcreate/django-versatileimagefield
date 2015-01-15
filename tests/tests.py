@@ -12,7 +12,8 @@ from django.core.files import File
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.template import Context
 from django.template.loader import get_template
-from django.test import Client, TestCase, override_settings
+from django.test import Client, TestCase
+from django.test.utils import override_settings
 from django.utils._os import upath
 
 from PIL import Image
