@@ -8,6 +8,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from .files import VersatileImageFieldFile, VersatileImageFileDescriptor
 from .forms import SizedImageCenterpointClickDjangoAdminField
+from .placeholder import OnStoragePlaceholderImage
+from .settings import VERSATILEIMAGEFIELD_PLACEHOLDER_DIRNAME
 from .validators import validate_ppoi
 
 if 'south' in settings.INSTALLED_APPS:
@@ -36,14 +38,25 @@ class VersatileImageField(ImageField):
         self._process_placeholder_image(placeholder_image)
 
     def _process_placeholder_image(self, placeholder_image):
+        """
+        Ensures the placeholder image has been saved to the same storage class
+        as the field in a top level folder with a name specified by
+        settings.VERSATILEIMAGEFIELD_SETTINGS['placeholder_directory_name']
+        """
         placeholder_image_name = None
         if placeholder_image:
-            name = getattr(placeholder_image, 'name', None)
-            placeholder_image_name = os.path.join('PLACEHOLDER-IMAGE', name)
+            if isinstance(placeholder_image, OnStoragePlaceholderImage):
+                name = placeholder_image.path
+            else:
+                name = placeholder_image.image_data.name
+            placeholder_image_name = os.path.join(
+                VERSATILEIMAGEFIELD_PLACEHOLDER_DIRNAME, name
+            )
             if not self.storage.exists(placeholder_image_name):
-                self.storage.save(placeholder_image_name, placeholder_image)
-            if hasattr(placeholder_image, 'close'):
-                placeholder_image.close()
+                self.storage.save(
+                    placeholder_image_name,
+                    placeholder_image.image_data
+                )
         self.placeholder_image_name = placeholder_image_name
 
     def pre_save(self, model_instance, add):

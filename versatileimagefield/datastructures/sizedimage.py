@@ -86,7 +86,7 @@ class SizedImage(ProcessedImage, dict):
             )
 
         if not self.path_to_image and getattr(
-            settings, 'USE_PLACEHOLDIT', False
+            settings, 'VERSATILEIMAGEFIELD_USE_PLACEHOLDIT', False
         ):
             resized_url = "http://placehold.it/%dx%d" % (width, height)
             resized_storage_path = resized_url
