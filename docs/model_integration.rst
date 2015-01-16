@@ -90,10 +90,12 @@ Specifying Placeholder Images
 
 For ``VersatileImageField`` fields that are set to ``blank=True`` you can optionally specify a placeholder image to be used when its sizers and filters are accessed (like a generic silouette for a non-existant user profile image, for instance).
 
-You have two options:
+You have two options for specifying placeholder images:
 
-    1. ``OnDiscPlaceholderImage``: For images on the same disc as your project's codebase.
-    2. ``OnStoragePlaceholderImage``: For images that are already stored on a storage class.
+    1. ``OnDiscPlaceholderImage``: If you want to use an image stored on the same disc as your project's codebase.
+    2. ``OnStoragePlaceholderImage``: If you want to use an image that can be accessed directly with a django storage class.
+
+.. note:: All placeholder images are transferred-to and served-from the storage class of their associated field.
 
 ``OnDiscPlaceholderImage``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -160,7 +162,7 @@ Placeholder images defined by ``OnDiscPlaceholderImage`` will simply be saved in
 ``OnStoragePlaceholderImage``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A placeholder image that is stored on a storage class. Example:
+A placeholder image that can be accessed with a django storage class. Example:
 
 .. code-block:: python
     :emphasize-lines: 5,32-34
