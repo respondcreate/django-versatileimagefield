@@ -73,6 +73,16 @@ Table of Contents
 Release Notes
 =============
 
+0.4
+^^^
+- Dropped support for Django 1.5.x
+- Introducing per-field :ref:`placeholder image <defining-placeholder-images>` image support! (Note: global placeholder support has been deprecated.)
+- Added the ``VERSATILEIMAGEFIELD_USE_PLACEHOLDIT`` setting (:ref:`docs <placehold-it>`)
+
+0.3.1
+^^^^^
+- Squashed a pip installation bug.
+
 0.3
 ^^^
 -  Added a test suite with `Travis CI <https://travis-ci.org/WGBH/django-versatileimagefield>`_ and `coveralls <https://coveralls.io/r/WGBH/django-versatileimagefield>`_ integration.

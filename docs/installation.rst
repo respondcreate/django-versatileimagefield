@@ -76,6 +76,8 @@ A dictionary that allows you to fine-tune how ``django-versatileimagefield`` wor
         'create_images_on_demand': True
     }
 
+.. _placehold-it:
+
 ``VERSATILEIMAGEFIELD_USE_PLACEHOLDIT``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
