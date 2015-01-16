@@ -10,8 +10,8 @@ Installation is easy with `pip <https://pypi.python.org/pypi/pip>`__:
 Dependencies
 ------------
 
--  ``django``>=1.5.0
--  ``Pillow`` >= 2.4.0
+-  ``django``>=1.6.x
+-  ``Pillow`` >= 2.4.x
 
 ``django-versatileimagefield`` depends on the excellent
 `Pillow <http://pillow.readthedocs.org>`__ fork of ``PIL``. If you
@@ -61,22 +61,25 @@ A dictionary that allows you to fine-tune how ``django-versatileimagefield`` wor
         # http://pillow.readthedocs.org/en/latest/handbook/image-file-formats.html#jpeg
         # Defaults to 70
         'jpeg_resize_quality': 70,
-        # A path on disc to an image that will be used as a 'placeholder'
-        # for non-existant images.
-        # If 'global_placeholder_image' is unset, the excellent, free-to-use
-        # http://placehold.it service will be used instead.
-        'global_placeholder_image': '/path/to/an-image.png',
         # The name of the top-level folder within storage classes to save all
         # sized images. Defaults to '__sized__'
         'sized_directory_name': '__sized__',
         # The name of the directory to save all filtered images within.
         # Defaults to '__filtered__':
         'filtered_directory_name': '__filtered__',
+        # The name of the directory to save placeholder images within.
+        # Defaults to '__placeholder__':
+        'placeholder_directory_name': '__placeholder__',
         # Whether or not to create new images on-the-fly. Set this to `False` for
         # speedy performance but don't forget to 'pre-warm' to ensure they're
         # created and available at the appropriate URL.
         'create_images_on_demand': True
     }
+
+``VERSATILEIMAGEFIELD_USE_PLACEHOLDIT``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A boolean that signifies whether optional (``blank=True``) ``VersatileImageField`` fields that do not  :ref:`specify a placeholder image <defining-placeholder-images>` should return `placehold.it <http://placehold.it/>`__ URLs.
 
 .. _rendition-key-sets:
 
