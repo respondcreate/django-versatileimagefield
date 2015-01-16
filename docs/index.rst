@@ -135,6 +135,5 @@ Roadmap to v1.0
 ===============
 
 -  Python 3 support
--  Custom placeholder image docs
 -  Programmatically delete images created by ``VersatileImageField``
    (including clearing their connected cache keys)
