@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 import os
 
 from django.core.files.base import ContentFile
@@ -30,7 +32,7 @@ class OnDiscPlaceholderImage(PlaceholderImage):
         `path` - An absolute path to an on-disc image.
         """
         folder, name = os.path.split(path)
-        file = open(path, 'r')
+        file = open(path, 'rb')
         self.image_data = ContentFile(file.read(), name=name)
         super(OnDiscPlaceholderImage, self).__init__(file, name)
 

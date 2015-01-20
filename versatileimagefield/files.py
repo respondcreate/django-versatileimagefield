@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from django.core.files.base import File
 from django.db.models.fields.files import (
     FieldFile,

@@ -1,4 +1,7 @@
+from __future__ import unicode_literals
+
 from django.conf import settings
+from django.utils.encoding import python_2_unicode_compatible
 from ..settings import (
     QUAL,
     cache,
@@ -12,6 +15,7 @@ class MalformedSizedImageKey(Exception):
     pass
 
 
+@python_2_unicode_compatible
 class SizedImageInstance(object):
     """
     A simple class for returning paths-on-storage and URLs
@@ -24,9 +28,6 @@ class SizedImageInstance(object):
 
     def __str__(self):
         return self.url
-
-    def __unicode__(self):
-        return unicode(self.__str__())
 
 
 class SizedImage(ProcessedImage, dict):
@@ -131,7 +132,7 @@ class SizedImage(ProcessedImage, dict):
                         height
 
 
-        Returns a StringIO.StringIO representation of the resized image.
+        Returns a BytesIO representation of the resized image.
 
         Subclasses MUST implement this method.
         """

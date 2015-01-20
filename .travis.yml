@@ -3,6 +3,7 @@ language: python
 # List the versions of Python you'd like to test against
 python:
   - "2.7"
+  - "3.4"
 # List the versions of Django you'd like to test against
 env:
   - DJANGO_VERSION=1.6.8 REST_FRAMEWORK_VERSION=2.3.14

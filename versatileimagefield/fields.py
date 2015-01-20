@@ -1,9 +1,12 @@
+from __future__ import unicode_literals
+
 import os
 
 from django.conf import settings
 from django.db.models import SubfieldBase
 from django.db.models.fields import CharField
 from django.db.models.fields.files import ImageField
+from django.utils.six import add_metaclass
 from django.utils.translation import ugettext_lazy as _
 
 from .files import VersatileImageFieldFile, VersatileImageFileDescriptor
@@ -143,8 +146,8 @@ class VersatileImageField(ImageField):
         return super(VersatileImageField, self).formfield(**defaults)
 
 
+@add_metaclass(SubfieldBase)
 class PPOIField(CharField):
-    __metaclass__ = SubfieldBase
 
     def __init__(self, *args, **kwargs):
         if 'default' not in kwargs:

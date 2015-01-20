@@ -1,13 +1,18 @@
+from __future__ import unicode_literals
+
 from PIL import Image, ExifTags
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.utils.six import itervalues
 
 from ..utils import get_image_metadata_from_file_ext
 
+ORIENTATION_KEY = 18
 
-ORIENTATION_KEY = ExifTags.TAGS.keys()[
-    ExifTags.TAGS.values().index('Orientation')
-]
+for i, x in enumerate(itervalues(ExifTags.TAGS)):
+    if x == 'Orientation':
+        ORIENTATION_KEY = i
+        break
 
 
 class ProcessedImage(object):
@@ -42,7 +47,7 @@ class ProcessedImage(object):
             * `image`: a PIL Image instance
             * `image_format`: str, a valid PIL format (i.e. 'JPEG' or 'GIF')
 
-        Returns a StringIO.StringIO representation of the resized image.
+        Returns a BytesIO representation of the resized image.
 
         Subclasses MUST implement this method.
         """
@@ -97,7 +102,7 @@ class ProcessedImage(object):
         """
         Returns a PIL Image instance stored at `path_to_image`
         """
-        image = self.storage.open(path_to_image, 'r')
+        image = self.storage.open(path_to_image, 'rb')
         file_ext = path_to_image.rsplit('.')[-1]
         image_format, mime_type = get_image_metadata_from_file_ext(file_ext)
 
@@ -113,7 +118,7 @@ class ProcessedImage(object):
         Saves an image to self.storage at `save_path`.
 
         Arguments:
-            `imagefile`: Raw image data, typically a StringIO instance.
+            `imagefile`: Raw image data, typically a BytesIO instance.
             `save_path`: The path within self.storage where the image should
                          be saved.
             `file_ext`: The file extension of the image-to-be-saved.
@@ -126,7 +131,7 @@ class ProcessedImage(object):
             None,
             'foo.%s' % file_ext,
             mime_type,
-            imagefile.len,
+            None,
             None
         )
         file_to_save.seek(0)

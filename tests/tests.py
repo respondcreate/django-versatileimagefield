@@ -1,7 +1,10 @@
+from __future__ import division
+from __future__ import unicode_literals
+
+from functools import reduce
 import math
 import operator
 import os
-import cPickle as pickle
 from shutil import rmtree
 
 from django.conf import settings
@@ -15,6 +18,7 @@ from django.template.loader import get_template
 from django.test import Client, TestCase
 from django.test.utils import override_settings
 from django.utils._os import upath
+from django.utils.six.moves import cPickle as pickle
 
 from PIL import Image
 from versatileimagefield.files import VersatileImageFileDescriptor
@@ -109,7 +113,7 @@ class VersatileImageFieldTestCase(TestCase):
             reduce(
                 operator.add,
                 map(lambda a, b: (a - b) ** 2, h1, h2)
-            ) / len(h1)
+            ) // len(h1)
         )
         return rms == 0.0
 
@@ -381,21 +385,21 @@ class VersatileImageFieldTestCase(TestCase):
         """
         response = self.client.get('/admin/tests/versatileimagetestmodel/1/')
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(
+        self.assertInHTML(
             (
                 '<img src="/media/__sized__/python-logo-thumbnail-300x300.png"'
                 ' id="image_0_imagepreview" data-hidden_field_id="id_image_1"'
                 ' data-point_stage_id="image_0_point-stage" '
                 'data-ppoi_id="image_0_ppoi" class="sizedimage-preview"/>'
-                in response.content
-            )
+            ),
+            str(response.content)
         )
-        self.assertTrue(
+        self.assertInHTML(
             (
                 '<script type="text/javascript" src="/static/'
                 'versatileimagefield/js/versatileimagefield.js"></script>'
-                in response.content
-            )
+            ),
+            str(response.content)
         )
         self.assertTrue(
             self.png.image.field.storage.exists(
@@ -431,7 +435,7 @@ class VersatileImageFieldTestCase(TestCase):
         del fieldfile_obj.field
         self.jpg.image = fieldfile_obj
         img_path = self.jpg.image.path
-        img_file = file(img_path)
+        img_file = open(img_path, 'rb')
         self.jpg.image = img_file
         django_file = File(img_file)
         self.jpg.image = django_file
@@ -590,10 +594,10 @@ class VersatileImageFieldTestCase(TestCase):
         test_gif.image.ppoi = (0, 0)
         # Vertical w/ PPOI == '0x0'
         vertical_image_crop = test_gif.image.field.storage.open(
-            test_gif.image.crop['10x100'].name
+            test_gif.image.crop['40x100'].name
         )
         vertical_image_crop_control = test_gif.image.field.storage.open(
-            'verify-against/python-logo-crop-c0__0-10x100.gif'
+            'verify-against/python-logo-crop-c0__0-40x100.gif'
         )
         self.assertTrue(
             self.imageEqual(
@@ -603,10 +607,10 @@ class VersatileImageFieldTestCase(TestCase):
         )
         # Horizontal w/ PPOI == '0x0'
         horiz_image_crop = test_gif.image.field.storage.open(
-            test_gif.image.crop['100x10'].name
+            test_gif.image.crop['100x40'].name
         )
         horiz_image_crop_control = test_gif.image.field.storage.open(
-            'verify-against/python-logo-crop-c0__0-100x10.gif'
+            'verify-against/python-logo-crop-c0__0-100x40.gif'
         )
         self.assertTrue(
             self.imageEqual(
@@ -619,10 +623,10 @@ class VersatileImageFieldTestCase(TestCase):
 
         # Vertical w/ PPOI == '1x1'
         vertical_image_crop = test_gif.image.field.storage.open(
-            test_gif.image.crop['10x100'].name
+            test_gif.image.crop['40x100'].name
         )
         vertical_image_crop_control = test_gif.image.field.storage.open(
-            'verify-against/python-logo-crop-c1__1-10x100.gif'
+            'verify-against/python-logo-crop-c1__1-40x100.gif'
         )
         self.assertTrue(
             self.imageEqual(
@@ -632,10 +636,10 @@ class VersatileImageFieldTestCase(TestCase):
         )
         # Horizontal w/ PPOI == '1x1'
         horiz_image_crop = test_gif.image.field.storage.open(
-            test_gif.image.crop['100x10'].name
+            test_gif.image.crop['100x40'].name
         )
         horiz_image_crop_control = test_gif.image.field.storage.open(
-            'verify-against/python-logo-crop-c1__1-100x10.gif'
+            'verify-against/python-logo-crop-c1__1-100x40.gif'
         )
         self.assertTrue(
             self.imageEqual(

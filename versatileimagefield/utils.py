@@ -1,3 +1,6 @@
+from __future__ import unicode_literals
+
+from functools import reduce
 import os
 
 from django.core.exceptions import ImproperlyConfigured

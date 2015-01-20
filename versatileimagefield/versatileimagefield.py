@@ -1,4 +1,7 @@
-import StringIO
+from __future__ import division
+from __future__ import unicode_literals
+
+from django.utils.six import BytesIO
 
 from PIL import Image, ImageOps
 
@@ -56,7 +59,6 @@ class CroppedImage(SizedImage):
         ppoi value as an absolute centerpoint (as opposed as a
         percentage to trim off the 'long sides').
         """
-
         ppoi_x_axis = int(image.size[0] * ppoi[0])
         ppoi_y_axis = int(image.size[1] * ppoi[1])
         center_pixel_coord = (ppoi_x_axis, ppoi_y_axis)
@@ -78,12 +80,14 @@ class CroppedImage(SizedImage):
             orig_crop_height = image.size[1]
             crop_boundary_top = 0
             crop_boundary_bottom = orig_crop_height
-            crop_boundary_left = center_pixel_coord[0] - (orig_crop_width / 2)
+            crop_boundary_left = center_pixel_coord[0] - (orig_crop_width // 2)
+            crop_boundary_right = crop_boundary_left + orig_crop_width
             if crop_boundary_left < 0:
                 crop_boundary_left = 0
-            crop_boundary_right = crop_boundary_left + orig_crop_width
-            if crop_boundary_right > image.size[0]:
+                crop_boundary_right = crop_boundary_left + orig_crop_width
+            elif crop_boundary_right > image.size[0]:
                 crop_boundary_right = image.size[0]
+                crop_boundary_left = image.size[0] - orig_crop_width
 
         else:
             # `image` is taller than what's needed,
@@ -94,12 +98,14 @@ class CroppedImage(SizedImage):
             )
             crop_boundary_left = 0
             crop_boundary_right = orig_crop_width
-            crop_boundary_top = center_pixel_coord[1] - (orig_crop_height / 2)
+            crop_boundary_top = center_pixel_coord[1] - (orig_crop_height // 2)
+            crop_boundary_bottom = crop_boundary_top + orig_crop_height
             if crop_boundary_top < 0:
                 crop_boundary_top = 0
-            crop_boundary_bottom = crop_boundary_top + orig_crop_height
-            if crop_boundary_bottom > image.size[1]:
+                crop_boundary_bottom = crop_boundary_top + orig_crop_height
+            elif crop_boundary_bottom > image.size[1]:
                 crop_boundary_bottom = image.size[1]
+                crop_boundary_top = image.size[1] - orig_crop_height
         # Cropping the image from the original image
         cropped_image = image.crop(
             (
@@ -119,13 +125,13 @@ class CroppedImage(SizedImage):
     def process_image(self, image, image_format, save_kwargs,
                       width, height):
         """
-        Returns a StringIO instance of `image` cropped to `width` and `height`
+        Returns a BytesIO instance of `image` cropped to `width` and `height`
 
         Cropping will first reduce an image down to its longest side
         and then crop inwards centered on the Primary Point of Interest
         (as specified by `self.ppoi`)
         """
-        imagefile = StringIO.StringIO()
+        imagefile = BytesIO()
         palette = image.getpalette()
         cropped_image = self.crop_on_centerpoint(
             image,
@@ -159,10 +165,10 @@ class ThumbnailImage(SizedImage):
     def process_image(self, image, image_format, save_kwargs,
                       width, height):
         """
-        Returns a StringIO instance of `image` that will fit
+        Returns a BytesIO instance of `image` that will fit
         within a bounding box as specified by `width`x`height`
         """
-        imagefile = StringIO.StringIO()
+        imagefile = BytesIO()
         image.thumbnail(
             (width, height),
             Image.ANTIALIAS
@@ -183,9 +189,9 @@ class InvertImage(FilteredImage):
 
     def process_image(self, image, image_format, save_kwargs={}):
         """
-        Returns a StringIO instance of `image` with inverted colors
+        Returns a BytesIO instance of `image` with inverted colors
         """
-        imagefile = StringIO.StringIO()
+        imagefile = BytesIO()
         inv_image = ImageOps.invert(image)
         inv_image.save(
             imagefile,

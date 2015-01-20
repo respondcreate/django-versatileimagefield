@@ -1,3 +1,7 @@
+from __future__ import unicode_literals
+
+from django.utils import six
+
 from rest_framework.serializers import ImageField
 
 from .utils import (
@@ -28,7 +32,7 @@ class VersatileImageFieldSerializer(ImageField):
     read_only = True
 
     def __init__(self, sizes, *args, **kwargs):
-        if isinstance(sizes, basestring):
+        if isinstance(sizes, six.string_types):
             sizes = get_rendition_key_set(sizes)
         self.sizes = validate_versatileimagefield_sizekey_list(sizes)
         super(VersatileImageFieldSerializer, self).__init__(

@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from django.forms.widgets import (
     CheckboxInput, ClearableFileInput,
     HiddenInput, MultiWidget, Select
@@ -147,7 +149,7 @@ class SizedImageCenterpointWidgetMixIn(object):
         if value:
             to_return = [
                 value,
-                u'x'.join(unicode(num) for num in value.ppoi)
+                'x'.join(str(num) for num in value.ppoi)
             ]
         return to_return
 

@@ -1,3 +1,7 @@
+from __future__ import unicode_literals
+
+from django.utils.six import iteritems
+
 from .datastructures import FilterLibrary
 from .registry import autodiscover, versatileimagefield_registry
 from .settings import VERSATILEIMAGEFIELD_CREATE_ON_DEMAND
@@ -70,7 +74,7 @@ class VersatileImageMixIn(object):
         for (
             attr_name,
             sizedimage_cls
-        ) in versatileimagefield_registry._sizedimage_registry.iteritems():
+        ) in iteritems(versatileimagefield_registry._sizedimage_registry):
             setattr(
                 self,
                 attr_name,

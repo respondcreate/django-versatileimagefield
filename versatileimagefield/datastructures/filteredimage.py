@@ -1,4 +1,8 @@
+from __future__ import unicode_literals
+
 from django.conf import settings
+from django.utils.encoding import python_2_unicode_compatible
+from django.utils.six import iteritems
 
 from ..settings import (
     cache,
@@ -13,6 +17,7 @@ class InvalidFilter(Exception):
     pass
 
 
+@python_2_unicode_compatible
 class FilteredImage(ProcessedImage):
     """
     A ProcessedImage subclass that applies a filter to an image.
@@ -58,9 +63,6 @@ class FilteredImage(ProcessedImage):
 
     def __str__(self):
         return self.url
-
-    def __unicode__(self):
-        return unicode(self.__str__())
 
 
 class DummyFilter(object):
@@ -162,7 +164,7 @@ class FilterLibrary(dict):
                 # the prepped_filter instance
                 for (
                         attr_name, sizedimage_cls
-                ) in self.registry._sizedimage_registry.iteritems():
+                ) in iteritems(self.registry._sizedimage_registry):
                     setattr(
                         prepped_filter,
                         attr_name,

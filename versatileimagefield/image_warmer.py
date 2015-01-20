@@ -1,6 +1,12 @@
+from __future__ import unicode_literals
+
+from functools import reduce
 from sys import stdout
+
 from django.db.models import Model
 from django.db.models.query import QuerySet
+from django.utils import six
+
 from .utils import (
     get_rendition_key_set,
     get_url_from_image_key,
@@ -78,7 +84,7 @@ class VersatileImageFieldWarmer(object):
                 "{}".format(self.__class__.__name__)
             )
         self.queryset = queryset
-        if isinstance(rendition_key_set, basestring):
+        if isinstance(rendition_key_set, six.string_types):
             rendition_key_set = get_rendition_key_set(rendition_key_set)
         self.size_key_list = [
             size_key
