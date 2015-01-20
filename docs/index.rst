@@ -78,6 +78,11 @@ Table of Contents
 Release Notes
 =============
 
+0.5
+^^^
+- Added Python 3.3 & 3.4 compatibility
+- Improved cropping with extreme PPOI values
+
 0.4
 ^^^
 - Dropped support for Django 1.5.x
