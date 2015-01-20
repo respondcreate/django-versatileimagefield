@@ -594,10 +594,10 @@ class VersatileImageFieldTestCase(TestCase):
         test_gif.image.ppoi = (0, 0)
         # Vertical w/ PPOI == '0x0'
         vertical_image_crop = test_gif.image.field.storage.open(
-            test_gif.image.crop['40x100'].name
+            test_gif.image.crop['30x100'].name
         )
         vertical_image_crop_control = test_gif.image.field.storage.open(
-            'verify-against/python-logo-crop-c0__0-40x100.gif'
+            'verify-against/python-logo-crop-c0__0-30x100.gif'
         )
         self.assertTrue(
             self.imageEqual(
@@ -607,10 +607,10 @@ class VersatileImageFieldTestCase(TestCase):
         )
         # Horizontal w/ PPOI == '0x0'
         horiz_image_crop = test_gif.image.field.storage.open(
-            test_gif.image.crop['100x40'].name
+            test_gif.image.crop['100x30'].name
         )
         horiz_image_crop_control = test_gif.image.field.storage.open(
-            'verify-against/python-logo-crop-c0__0-100x40.gif'
+            'verify-against/python-logo-crop-c0__0-100x30.gif'
         )
         self.assertTrue(
             self.imageEqual(
@@ -620,13 +620,12 @@ class VersatileImageFieldTestCase(TestCase):
         )
 
         test_gif.image.ppoi = (1, 1)
-
         # Vertical w/ PPOI == '1x1'
         vertical_image_crop = test_gif.image.field.storage.open(
-            test_gif.image.crop['40x100'].name
+            test_gif.image.crop['30x100'].name
         )
         vertical_image_crop_control = test_gif.image.field.storage.open(
-            'verify-against/python-logo-crop-c1__1-40x100.gif'
+            'verify-against/python-logo-crop-c1__1-30x100.gif'
         )
         self.assertTrue(
             self.imageEqual(
@@ -636,10 +635,10 @@ class VersatileImageFieldTestCase(TestCase):
         )
         # Horizontal w/ PPOI == '1x1'
         horiz_image_crop = test_gif.image.field.storage.open(
-            test_gif.image.crop['100x40'].name
+            test_gif.image.crop['100x30'].name
         )
         horiz_image_crop_control = test_gif.image.field.storage.open(
-            'verify-against/python-logo-crop-c1__1-100x40.gif'
+            'verify-against/python-logo-crop-c1__1-100x30.gif'
         )
         self.assertTrue(
             self.imageEqual(
