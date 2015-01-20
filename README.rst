@@ -11,7 +11,7 @@ django-versatileimagefield
     :alt: Coverage Status
 
 .. image:: https://pypip.in/py_versions/django-versatileimagefield/badge.svg?style=flat
-    :target: https://pypi.python.org/pypi/<django-versatileimagefield/
+    :target: https://pypi.python.org/pypi/django-versatileimagefield/
     :alt: Supported Python versions
 
 .. image:: https://pypip.in/download/django-versatileimagefield/badge.svg?style=flat
