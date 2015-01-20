@@ -1,18 +1,12 @@
 from __future__ import unicode_literals
 
-from PIL import Image, ExifTags
+from PIL import Image
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.utils.six import itervalues
 
 from ..utils import get_image_metadata_from_file_ext
 
-ORIENTATION_KEY = 18
-
-for i, x in enumerate(itervalues(ExifTags.TAGS)):
-    if x == 'Orientation':
-        ORIENTATION_KEY = i
-        break
+EXIF_ORIENTATION_KEY = 274
 
 
 class ProcessedImage(object):
@@ -81,7 +75,7 @@ class ProcessedImage(object):
             exif_datadict = image._getexif()  # returns None if no EXIF data
             if exif_datadict is not None:
                 exif = dict(exif_datadict.items())
-                orientation = exif.get(ORIENTATION_KEY, None)
+                orientation = exif.get(EXIF_ORIENTATION_KEY, None)
                 if orientation == 3:
                     image = image.transpose(Image.ROTATE_180)
                 elif orientation == 6:
