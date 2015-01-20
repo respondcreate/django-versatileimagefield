@@ -7,21 +7,26 @@
 Welcome to django-versatileimagefield's documentation!
 ======================================================
 
-.. image:: https://pypip.in/download/django-versatileimagefield/badge.svg
-    :target: https://pypi.python.org/pypi/django-versatileimagefield/
-    :alt: Downloads
-
-.. image:: https://pypip.in/version/django-versatileimagefield/badge.svg
-    :target: https://pypi.python.org/pypi/django-versatileimagefield/
-    :alt: Latest Version
-
 .. image:: https://travis-ci.org/WGBH/django-versatileimagefield.svg?branch=master
     :target: https://travis-ci.org/WGBH/django-versatileimagefield
     :alt: Travis CI Status
 
-.. image:: https://img.shields.io/coveralls/WGBH/django-versatileimagefield.svg
+.. image:: https://img.shields.io/coveralls/WGBH/django-versatileimagefield.svg?style=flat
     :target: https://coveralls.io/r/WGBH/django-versatileimagefield
     :alt: Coverage Status
+
+.. image:: https://pypip.in/py_versions/django-versatileimagefield/badge.svg?style=flat
+    :target: https://pypi.python.org/pypi/<django-versatileimagefield/
+    :alt: Supported Python versions
+
+.. image:: https://pypip.in/download/django-versatileimagefield/badge.svg?style=flat
+    :target: https://pypi.python.org/pypi/django-versatileimagefield/
+    :alt: Downloads
+
+.. image:: https://pypip.in/version/django-versatileimagefield/badge.svg?style=flat
+    :target: https://pypi.python.org/pypi/django-versatileimagefield/
+    :alt: Latest Version
+
 
 ----
 
@@ -134,6 +139,5 @@ Release Notes
 Roadmap to v1.0
 ===============
 
--  Python 3 support
 -  Programmatically delete images created by ``VersatileImageField``
    (including clearing their connected cache keys)

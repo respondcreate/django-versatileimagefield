@@ -7,6 +7,13 @@ Installation is easy with `pip <https://pypi.python.org/pypi/pip>`__:
 
     $ pip install django-versatileimagefield
 
+Python Compatibility
+--------------------
+
+-  2.7.x
+-  3.3.x
+-  3.4.x
+
 Dependencies
 ------------
 
