@@ -78,6 +78,10 @@ Table of Contents
 Release Notes
 =============
 
+0.5.1
+^^^^^
+- Squashed an installation bug with ``pip`` 6+
+
 0.5
 ^^^
 - Added Python 3.3 & 3.4 compatibility
