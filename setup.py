@@ -2,6 +2,7 @@
 from distutils.core import setup
 from pip.req import parse_requirements
 from setuptools import find_packages
+import uuid
 
 setup(
     name='django-versatileimagefield',
@@ -19,7 +20,7 @@ setup(
     zip_safe=False,
     install_requires=[
         str(ir.req)
-        for ir in parse_requirements('requirements.txt')
+        for ir in parse_requirements('requirements.txt', session=uuid.uuid1())
     ],
     package_data={
         'versatileimagefield': [
