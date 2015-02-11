@@ -177,4 +177,11 @@ class PPOIField(CharField):
             value = 'x'.join(str(num) for num in value)
         return value
 
+    def value_to_string(self, obj):
+        """
+        Prepares field for serialization.
+        """
+        value = self._get_val_from_obj(obj)
+        return self.get_prep_value(value)
+
 __all__ = ['VersatileImageField']
