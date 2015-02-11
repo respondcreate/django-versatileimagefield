@@ -13,6 +13,7 @@ from django.core.cache import cache
 from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.core.files import File
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core import serializers
 from django.template import Context
 from django.template.loader import get_template
 from django.test import Client, TestCase
@@ -938,4 +939,32 @@ class VersatileImageFieldTestCase(TestCase):
 </body>
 </html>
             """
+        )
+
+    def test_field_serialization(self):
+        """
+        Ensures VersatileImageField and PPOIField serialize correctly
+        """
+        output = serializers.serialize(
+            'json',
+            VersatileImageTestModel.objects.filter(pk=1),
+            use_natural_foreign_keys=False,
+            use_natural_primary_keys=False
+        )
+        self.assertJSONEqual(
+            output,
+            [
+                {
+                    "fields": {
+                        "img_type": "png",
+                        "ppoi": "0.5x0.5",
+                        "image": "python-logo.png",
+                        "optional_image_3": "",
+                        "optional_image_2": "",
+                        "optional_image": "python-logo.jpg"
+                    },
+                    "model": "tests.versatileimagetestmodel",
+                    "pk": 1
+                }
+            ]
         )
