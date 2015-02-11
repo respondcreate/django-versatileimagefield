@@ -947,9 +947,7 @@ class VersatileImageFieldTestCase(TestCase):
         """
         output = serializers.serialize(
             'json',
-            VersatileImageTestModel.objects.filter(pk=1),
-            use_natural_foreign_keys=False,
-            use_natural_primary_keys=False
+            VersatileImageTestModel.objects.filter(pk=1)
         )
         self.assertJSONEqual(
             output,
