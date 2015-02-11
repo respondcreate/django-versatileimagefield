@@ -78,6 +78,10 @@ Table of Contents
 Release Notes
 =============
 
+0.5.2
+^^^^^
+- Squashed a bug that prevented ``PPOIField`` from serializing correctly
+
 0.5.1
 ^^^^^
 - Squashed an installation bug with ``pip`` 6+
