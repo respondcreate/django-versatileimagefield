@@ -28,6 +28,6 @@ install:
  - pip install flake8
 # Tell Travis how to run the test script itself
 script:
-- flake8 .
+- flake8 versatileimagefield/
 - coverage run --source=versatileimagefield runtests.py
 after_success: coveralls
