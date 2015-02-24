@@ -10,6 +10,7 @@ class VersatileImageTestModelForm(ModelForm):
 
     class Meta:
         model = VersatileImageTestModel
+        fields = '__all__'
         widgets = {
             'optional_image': VersatileImagePPOISelectWidget(),
         }

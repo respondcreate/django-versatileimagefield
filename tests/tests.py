@@ -118,28 +118,6 @@ class VersatileImageFieldTestCase(TestCase):
         )
         return rms == 0.0
 
-    @staticmethod
-    def bad_ppoi():
-        """
-        Accepts a VersatileImageFieldFile instance and attempts to
-        assign a bad PPOI value to it. Should raise a ValidationError
-        """
-        versatileimagefield = VersatileImageTestModel.objects.get(
-            img_type='jpg'
-        ).image
-        versatileimagefield.ppoi = (1.5, 2)
-
-    @staticmethod
-    def bad_ppoi_2():
-        """
-        Accepts a VersatileImageFieldFile instance and attempts to
-        assign a bad PPOI value to it. Should raise a ValidationError
-        """
-        versatileimagefield = VersatileImageTestModel.objects.get(
-            img_type='jpg'
-        ).image
-        versatileimagefield.ppoi = 'picklexcucumber'
-
     def test_check_storage_paths(self):
         """Ensure storage paths are properly set"""
         self.assertEqual(self.jpg.image.name, 'python-logo.jpg')
@@ -175,20 +153,11 @@ class VersatileImageFieldTestCase(TestCase):
             '/media/__filtered__/python-logo__invert__.jpg'
         )
 
-    def invalid_filter_access(self):
-        """
-        Attempts to access a non-existant filter.
-        Should raise InvalidFilter
-        """
-        invalid_filter = self.jpg.image.filters.non_existant.url
-        del invalid_filter
-
     def test_InvalidFilter(self):
         """Ensure InvalidFilter raises"""
-        self.assertRaises(
-            InvalidFilter,
-            self.invalid_filter_access
-        )
+        with self.assertRaises(InvalidFilter):
+            invalid_filter = self.jpg.image.filters.non_existant.url
+            del invalid_filter
 
     def test_invert_plus_thumbnail_sizer_filtered_path(self):
         """Ensure crop Sizer paths are set correctly"""
@@ -251,8 +220,18 @@ class VersatileImageFieldTestCase(TestCase):
             jpg.image.ppoi,
             (0.25, 0.25)
         )
-        self.assertRaises(ValidationError, self.bad_ppoi)
-        self.assertRaises(ValidationError, self.bad_ppoi_2)
+
+        with self.assertRaises(ValidationError):
+            versatileimagefield = VersatileImageTestModel.objects.get(
+                img_type='jpg'
+            ).image
+            versatileimagefield.ppoi = (1.5, 2)
+
+        with self.assertRaises(ValidationError):
+            versatileimagefield = VersatileImageTestModel.objects.get(
+                img_type='jpg'
+            ).image
+            versatileimagefield.ppoi = 'picklexcucumber'
 
     def test_invalid_ppoi_tuple_validation(self):
         """
@@ -262,26 +241,16 @@ class VersatileImageFieldTestCase(TestCase):
             validate_ppoi_tuple((0, 1.5, 6))
         )
 
-    @staticmethod
-    def try_invalid_create_on_demand_set():
-        """
-        Attempts to assign a non-bool value to a VersatileImageField's
-        `create_on_demand` attribute
-        Should raise ValueError
-        """
-        jpg = VersatileImageTestModel.objects.get(img_type='jpg')
-        jpg.image.create_on_demand = 'pickle'
-
     def test_create_on_demand_boolean(self):
         """Ensure create_on_demand boolean is set appropriately"""
         jpg = VersatileImageTestModel.objects.get(img_type='jpg')
         self.assertFalse(jpg.image.create_on_demand)
         jpg.image.create_on_demand = True
         self.assertTrue(jpg.image.create_on_demand)
-        self.assertRaises(
-            ValueError,
-            self.try_invalid_create_on_demand_set
-        )
+
+        with self.assertRaises(ValueError):
+            jpg = VersatileImageTestModel.objects.get(img_type='jpg')
+            jpg.image.create_on_demand = 'pickle'
 
     def test_create_on_demand_functionality(self):
         """Ensures create_on_demand functionality works as advertised"""
@@ -310,22 +279,6 @@ class VersatileImageFieldTestCase(TestCase):
             None
         )
 
-    @staticmethod
-    def invalid_image_warmer():
-        """
-        Instantiates a VersatileImageFieldWarmer with something other than
-        a model instance or queryset.
-        Should raise ValueError
-        """
-        invalid_warmer = VersatileImageFieldWarmer(
-            instance_or_queryset=['invalid'],
-            rendition_key_set=(
-                ('test_thumb', 'thumbnail__100x100'),
-            ),
-            image_attr='image'
-        )
-        del invalid_warmer
-
     def test_image_warmer(self):
         """Ensures VersatileImageFieldWarmer works as advertised."""
         jpg_warmer = VersatileImageFieldWarmer(
@@ -346,10 +299,16 @@ class VersatileImageFieldTestCase(TestCase):
             verbose=True
         )
         num_created, failed_to_create = all_imgs_warmer.warm()
-        self.assertRaises(
-            ValueError,
-            self.invalid_image_warmer
-        )
+
+        with self.assertRaises(ValueError):
+            invalid_warmer = VersatileImageFieldWarmer(
+                instance_or_queryset=['invalid'],
+                rendition_key_set=(
+                    ('test_thumb', 'thumbnail__100x100'),
+                ),
+                image_attr='image'
+            )
+            del invalid_warmer
 
     def test_VersatileImageFieldSerializer_output(self):
         """Ensures VersatileImageFieldSerializer serializes correctly"""
@@ -413,14 +372,6 @@ class VersatileImageFieldTestCase(TestCase):
             )
         )
 
-    def VersatileImageFileDescriptor__get__None(self):
-        """
-        Calls VersatileImageFileDescriptor.__get__ without an instance
-        should raise AttributeError
-        """
-        x = VersatileImageFileDescriptor(self.jpg.image.name)
-        VersatileImageFileDescriptor.__get__(x)
-
     def test_VersatileImageFileDescriptor(self):
         """
         Ensures VersatileImageFileDescriptor works as intended
@@ -445,10 +396,9 @@ class VersatileImageFieldTestCase(TestCase):
         self.jpg.image = img_file
         django_file = File(img_file)
         self.jpg.image = django_file
-        self.assertRaises(
-            AttributeError,
-            self.VersatileImageFileDescriptor__get__None
-        )
+        with self.assertRaises(AttributeError):
+            x = VersatileImageFileDescriptor(self.jpg.image.name)
+            VersatileImageFileDescriptor.__get__(x)
 
     def test_VersatileImageField_picklability(self):
         """
@@ -478,47 +428,19 @@ class VersatileImageFieldTestCase(TestCase):
             }
         )
 
-    @staticmethod
-    def non_existent_rendition_key_set():
-        """
-        Tries to retrieve a non-existent rendition key set.
-        Should raise ImproperlyConfigured
-        """
-        get_rendition_key_set('does_not_exist')
-
-    @staticmethod
-    def invalid_size_key():
-        """
-        Tries to validate a Size Key set with an invalid size key.
-        Should raise InvalidSizeKey
-        """
-        get_rendition_key_set('invalid_size_key')
-
-    @staticmethod
-    def invalid_size_key_set():
-        """
-        Tries to retrieve a non-existent rendition key set.
-        Should raise InvalidSizeKeySet
-        """
-        get_rendition_key_set('invalid_set')
-
     def test_VERSATILEIMAGEFIELD_RENDITION_KEY_SETS_setting(self):
         """
         Ensures VERSATILEIMAGEFIELD_RENDITION_KEY_SETS setting
         validates correctly
         """
-        self.assertRaises(
-            ImproperlyConfigured,
-            self.non_existent_rendition_key_set
-        )
-        self.assertRaises(
-            InvalidSizeKeySet,
-            self.invalid_size_key_set
-        )
-        self.assertRaises(
-            InvalidSizeKey,
-            self.invalid_size_key
-        )
+        with self.assertRaises(ImproperlyConfigured):
+            get_rendition_key_set('does_not_exist')
+
+        with self.assertRaises(InvalidSizeKeySet):
+            get_rendition_key_set('invalid_set')
+
+        with self.assertRaises(InvalidSizeKey):
+            get_rendition_key_set('invalid_size_key')
 
     def __test_exif_orientation_rotate_180(self):
         """
@@ -661,122 +583,53 @@ class VersatileImageFieldTestCase(TestCase):
         test_jpg.optional_image.create_on_demand = True
         test_jpg.optional_image.filters.invert.url
 
-    @staticmethod
-    def assign_crop_key():
-        """
-        Attempts to assign a value to the 'crop' SizedImage subclass
-
-        Should raise NotImplementedError
-        """
-        jpg = VersatileImageTestModel.objects.get(img_type='jpg')
-        jpg.image.crop['100x100'] = None
-
-    @staticmethod
-    def assign_thumbnail_key():
-        """
-        Attempts to assign a value to the 'thumbnail' SizedImage subclass
-
-        Should raise NotImplementedError
-        """
-        jpg = VersatileImageTestModel.objects.get(img_type='jpg')
-        jpg.image.thumbnail['100x100'] = None
-
     def test_crop_and_thumbnail_key_assignment(self):
         """Tests placeholder image functionality for filters"""
-        self.assertRaises(
-            NotImplementedError,
-            self.assign_crop_key
-        )
-        self.assertRaises(
-            NotImplementedError,
-            self.assign_thumbnail_key
-        )
+        with self.assertRaises(NotImplementedError):
+            jpg = VersatileImageTestModel.objects.get(img_type='jpg')
+            jpg.image.crop['100x100'] = None
 
-    def get_bad_sized_image_key(self):
-        """Attempts to retrieve a thumbnail image with a malformed size key"""
-        self.jpg.image.thumbnail['fooxbar']
+        with self.assertRaises(NotImplementedError):
+            jpg = VersatileImageTestModel.objects.get(img_type='jpg')
+            jpg.image.thumbnail['100x100'] = None
 
     def test_MalformedSizedImageKey(self):
         """
         Testing MalformedSizedImageKey exception
         """
-        self.assertRaises(
-            MalformedSizedImageKey,
-            self.get_bad_sized_image_key
-        )
-
-    @staticmethod
-    def register_invalid_sizer():
-        class A(object):
-            pass
-        versatileimagefield_registry.register_sizer('a', A)
-
-    @staticmethod
-    def register_invalid_filter():
-        class A(object):
-            pass
-        versatileimagefield_registry.register_filter('a', A)
-
-    @staticmethod
-    def register_invalid_sizer_name():
-        versatileimagefield_registry.register_sizer('chunks', CroppedImage)
-
-    @staticmethod
-    def register_invalid_filter_name():
-        versatileimagefield_registry.register_filter('_poop', InvertImage)
-
-    @staticmethod
-    def register_with_already_registered_sizer_name():
-        versatileimagefield_registry.register_sizer('crop', CroppedImage)
-
-    @staticmethod
-    def register_with_already_registered_filter_name():
-        versatileimagefield_registry.register_filter('invert', InvertImage)
-
-    @staticmethod
-    def unregister_non_existant_sizer():
-        versatileimagefield_registry.unregister_sizer('poop')
-
-    @staticmethod
-    def unregister_non_existant_filter():
-        versatileimagefield_registry.unregister_filter('poop')
+        with self.assertRaises(MalformedSizedImageKey):
+            self.jpg.image.thumbnail['fooxbar']
 
     def test_registration_exceptions(self):
         """
         Ensures all registration-related exceptions fire as expected
         """
-        self.assertRaises(
-            InvalidSizedImageSubclass,
-            self.register_invalid_sizer
-        )
-        self.assertRaises(
-            InvalidFilteredImageSubclass,
-            self.register_invalid_filter
-        )
-        self.assertRaises(
-            UnallowedSizerName,
-            self.register_invalid_sizer_name
-        )
-        self.assertRaises(
-            UnallowedFilterName,
-            self.register_invalid_filter_name
-        )
-        self.assertRaises(
-            AlreadyRegistered,
-            self.register_with_already_registered_sizer_name
-        )
-        self.assertRaises(
-            AlreadyRegistered,
-            self.register_with_already_registered_filter_name
-        )
-        self.assertRaises(
-            NotRegistered,
-            self.unregister_non_existant_sizer
-        )
-        self.assertRaises(
-            NotRegistered,
-            self.unregister_non_existant_filter
-        )
+        class A(object):
+                pass
+
+        with self.assertRaises(InvalidSizedImageSubclass):
+            versatileimagefield_registry.register_sizer('a', A)
+
+        with self.assertRaises(InvalidFilteredImageSubclass):
+            versatileimagefield_registry.register_filter('a', A)
+
+        with self.assertRaises(UnallowedSizerName):
+            versatileimagefield_registry.register_sizer('chunks', CroppedImage)
+
+        with self.assertRaises(UnallowedFilterName):
+            versatileimagefield_registry.register_filter('_poop', InvertImage)
+
+        with self.assertRaises(AlreadyRegistered):
+            versatileimagefield_registry.register_sizer('crop', CroppedImage)
+
+        with self.assertRaises(AlreadyRegistered):
+            versatileimagefield_registry.register_filter('invert', InvertImage)
+
+        with self.assertRaises(NotRegistered):
+            versatileimagefield_registry.unregister_sizer('poop')
+
+        with self.assertRaises(NotRegistered):
+            versatileimagefield_registry.unregister_filter('poop')
 
     def test_unregister_methods(self):
         """
@@ -855,51 +708,36 @@ class VersatileImageFieldTestCase(TestCase):
         self.assertEqual(instance.optional_image.name, '')
         instance.image.delete()
 
-    @staticmethod
-    def SizedImage_with_no_filename_key():
-        class SizedImageSubclass(SizedImage):
-            pass
-
-        SizedImageSubclass('', '', False)
-
-    @staticmethod
-    def SizedImage_no_process_image():
-        class SizedImageSubclass(SizedImage):
-            filename_key = 'test'
-
-        x = SizedImageSubclass('', '', False)
-        x.process_image(image=None, image_format='JPEG', save_kwargs={},
-                        width=100, height=100)
-
-    def FilteredImage_no_process_image(self):
-        class FilteredImageSubclass(FilteredImage):
-            filename_key = 'test'
-
-        x = FilteredImageSubclass(
-            self.jpg.image.name,
-            self.jpg.image.field.storage,
-            False,
-            filename_key='foo'
-        )
-        x.process_image(image=None, image_format='JPEG', save_kwargs={})
-
     def test_ProcessedImage_subclass_exceptions(self):
         """
         Ensures improperly constructed ProcessedImage subclasses throw
         NotImplementedError when appropriate.
         """
-        self.assertRaises(
-            NotImplementedError,
-            self.SizedImage_with_no_filename_key
-        )
-        self.assertRaises(
-            NotImplementedError,
-            self.SizedImage_no_process_image
-        )
-        self.assertRaises(
-            NotImplementedError,
-            self.FilteredImage_no_process_image
-        )
+        with self.assertRaises(NotImplementedError):
+            class SizedImageSubclass(SizedImage):
+                pass
+
+            SizedImageSubclass('', '', False)
+
+        with self.assertRaises(NotImplementedError):
+            class SizedImageSubclass(SizedImage):
+                filename_key = 'test'
+
+            x = SizedImageSubclass('', '', False)
+            x.process_image(image=None, image_format='JPEG', save_kwargs={},
+                            width=100, height=100)
+
+        with self.assertRaises(NotImplementedError):
+            class FilteredImageSubclass(FilteredImage):
+                filename_key = 'test'
+
+            x = FilteredImageSubclass(
+                self.jpg.image.name,
+                self.jpg.image.field.storage,
+                False,
+                filename_key='foo'
+            )
+            x.process_image(image=None, image_format='JPEG', save_kwargs={})
 
     @override_settings(
         INSTALLED_APPS=('tests.test_autodiscover',)
