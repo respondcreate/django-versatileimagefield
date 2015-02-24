@@ -10,7 +10,6 @@ class VersatileImageTestModelForm(ModelForm):
 
     class Meta:
         model = VersatileImageTestModel
-        exclude = ('ppoi',)
         widgets = {
             'optional_image': VersatileImagePPOISelectWidget(),
         }

@@ -10,7 +10,10 @@ from django.utils.six import add_metaclass
 from django.utils.translation import ugettext_lazy as _
 
 from .files import VersatileImageFieldFile, VersatileImageFileDescriptor
-from .forms import SizedImageCenterpointClickDjangoAdminField
+from .forms import (
+    PPOIAdminField,
+    SizedImageCenterpointClickDjangoAdminField
+)
 from .placeholder import OnStoragePlaceholderImage
 from .settings import VERSATILEIMAGEFIELD_PLACEHOLDER_DIRNAME
 from .validators import validate_ppoi
@@ -183,5 +186,10 @@ class PPOIField(CharField):
         """
         value = self._get_val_from_obj(obj)
         return self.get_prep_value(value)
+
+    def formfield(self, **kwargs):
+        defaults = {'form_class': PPOIAdminField}
+        kwargs.update(defaults)
+        return super(PPOIField, self).formfield(**defaults)
 
 __all__ = ['VersatileImageField']

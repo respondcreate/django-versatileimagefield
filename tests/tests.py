@@ -396,6 +396,11 @@ class VersatileImageFieldTestCase(TestCase):
             str(response.content)
         )
         self.assertInHTML(
+            '<input id="id_ppoi" maxlength="20" name="ppoi" '
+            'type="None" value="0.5x0.5" />',
+            str(response.content)
+        )
+        self.assertInHTML(
             (
                 '<script type="text/javascript" src="/static/'
                 'versatileimagefield/js/versatileimagefield.js"></script>'

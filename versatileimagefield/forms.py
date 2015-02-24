@@ -7,6 +7,7 @@ from django.forms.fields import (
 )
 
 from .widgets import (
+    PPOIFieldWidget,
     VersatileImagePPOIClickWidget,
     SizedImageCenterpointClickDjangoAdminWidget
 )
@@ -40,3 +41,7 @@ class SizedImageCenterpointClickDjangoAdminField(
     # Need to remove `None` and `u''` so required fields will work
     # TODO: Better validation handling
     empty_values = [[], (), {}]
+
+
+class PPOIAdminField(CharField):
+    widget = PPOIFieldWidget
