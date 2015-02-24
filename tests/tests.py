@@ -396,7 +396,7 @@ class VersatileImageFieldTestCase(TestCase):
             str(response.content)
         )
         self.assertInHTML(
-            '<input id="id_ppoi" maxlength="20" name="ppoi" '
+            '<input id="id_ppoi" maxlength="11" name="ppoi" '
             'type="None" value="0.5x0.5" />',
             str(response.content)
         )

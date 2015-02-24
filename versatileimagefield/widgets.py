@@ -263,6 +263,8 @@ class PPOIFieldWidget(Input):
         Converts a PPOI tuple into a string. Example:
         (0.5, 0.5) -> '0.5x0.5'
         """
+        attrs = attrs or {}
+        attrs.update({'maxlength': 11})
         value = 'x'.join([str(seg) for seg in value])
         return super(PPOIFieldWidget, self).render(
             name,
