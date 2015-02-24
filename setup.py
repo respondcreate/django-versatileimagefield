@@ -7,7 +7,7 @@ import uuid
 setup(
     name='django-versatileimagefield',
     packages=find_packages(),
-    version='0.5.2',
+    version='0.5.3',
     author=u'Jonathan Ellenberger',
     author_email='jonathan_ellenberger@wgbh.org',
     url='http://github.com/WGBH/django-versatileimagefield/',

@@ -163,3 +163,5 @@ PPOI value is currently set to on the image:
    :alt: django-versatileimagefield PPOI admin widget example
 
    django-versatileimagefield PPOI admin widget example
+
+.. note:: ``PPOIField`` is not editable so it will be automatically excluded from the admin.
