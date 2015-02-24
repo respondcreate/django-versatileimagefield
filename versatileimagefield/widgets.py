@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
 from django.forms.widgets import (
-    Input, CheckboxInput, ClearableFileInput,
+    CheckboxInput, ClearableFileInput,
     HiddenInput, MultiWidget, Select
 )
 from django.utils.encoding import force_text
@@ -252,22 +252,3 @@ class SizedImageCenterpointClickBootstrap3Widget(
                 'versatileimagefield/css/versatileimagefield-bootstrap3.css',
             ),
         }
-
-
-class PPOIFieldWidget(Input):
-    """
-    The default widget for versatileimagefield.fields.PPOIField
-    """
-    def render(self, name, value, attrs=None):
-        """
-        Converts a PPOI tuple into a string. Example:
-        (0.5, 0.5) -> '0.5x0.5'
-        """
-        attrs = attrs or {}
-        attrs.update({'maxlength': 11})
-        value = 'x'.join([str(seg) for seg in value])
-        return super(PPOIFieldWidget, self).render(
-            name,
-            value,
-            attrs
-        )

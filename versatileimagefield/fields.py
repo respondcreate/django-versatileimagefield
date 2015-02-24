@@ -10,10 +10,7 @@ from django.utils.six import add_metaclass
 from django.utils.translation import ugettext_lazy as _
 
 from .files import VersatileImageFieldFile, VersatileImageFileDescriptor
-from .forms import (
-    PPOIAdminField,
-    SizedImageCenterpointClickDjangoAdminField
-)
+from .forms import SizedImageCenterpointClickDjangoAdminField
 from .placeholder import OnStoragePlaceholderImage
 from .settings import VERSATILEIMAGEFIELD_PLACEHOLDER_DIRNAME
 from .validators import validate_ppoi
@@ -163,7 +160,9 @@ class PPOIField(CharField):
         )
         if 'max_length' not in kwargs:
             kwargs['max_length'] = 20
-
+        # Forcing editable = False since PPOI values are set directly on
+        # VersatileImageField.
+        kwargs['editable'] = False
         super(PPOIField, self).__init__(*args, **kwargs)
         self.validators.append(validate_ppoi)
 
@@ -186,10 +185,5 @@ class PPOIField(CharField):
         """
         value = self._get_val_from_obj(obj)
         return self.get_prep_value(value)
-
-    def formfield(self, **kwargs):
-        defaults = {'form_class': PPOIAdminField}
-        kwargs.update(defaults)
-        return super(PPOIField, self).formfield(**defaults)
 
 __all__ = ['VersatileImageField']
