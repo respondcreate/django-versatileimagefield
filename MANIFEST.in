@@ -1,4 +1,3 @@
 include README.rst
-include requirements.txt
 recursive-include versatileimagefield/static *.css
 recursive-include versatileimagefield/static *.js

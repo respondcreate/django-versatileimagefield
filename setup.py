@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from distutils.core import setup
-from pip.req import parse_requirements
 from setuptools import find_packages
-import uuid
 
 setup(
     name='django-versatileimagefield',
@@ -18,10 +16,7 @@ setup(
                 "field.",
     long_description=open('README.rst').read(),
     zip_safe=False,
-    install_requires=[
-        str(ir.req)
-        for ir in parse_requirements('requirements.txt', session=uuid.uuid1())
-    ],
+    install_requires=['Pillow>=2.4.0'],
     package_data={
         'versatileimagefield': [
             'static/versatileimagefield/css/*.css',
