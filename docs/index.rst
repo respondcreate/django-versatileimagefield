@@ -78,6 +78,11 @@ Table of Contents
 Release Notes
 =============
 
+0.5.4
+^^^^^
+- Squashed a bug that was causing the admin 'click' widget to intermittently fail
+- Simplified requirements installation (which makes django-versatileimagefield installable by ``pip<=1.6``)
+
 0.5.3
 ^^^^^
 - Changed ``PPOIField`` to be ``editable=False`` by default to address `a bug <https://github.com/WGBH/django-versatileimagefield/issues/7>`_ that consistently raised ``ValidationError`` in ModelForms and the admin
