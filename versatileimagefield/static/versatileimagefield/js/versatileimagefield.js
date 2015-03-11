@@ -37,6 +37,6 @@ var jQuery = window.jQuery || django.jQuery;
 
 if (jQuery){
      jQuery(document).ready(function(){
-          jQuery('.sizedimage-preview').load(generateCenterpointWidget);
+        generateCenterpointWidget();
      });
 }
