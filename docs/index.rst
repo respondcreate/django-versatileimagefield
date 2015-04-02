@@ -27,6 +27,10 @@ Welcome to django-versatileimagefield's documentation!
     :target: https://pypi.python.org/pypi/django-versatileimagefield/
     :alt: Latest Version
 
+.. image:: https://pypip.in/wheel/django-versatileimagefield/badge.svg
+    :target: https://pypi.python.org/pypi/django-versatileimagefield/
+    :alt: Wheel Status
+
 
 ----
 
@@ -77,6 +81,12 @@ Table of Contents
 
 Release Notes
 =============
+
+0.6
+^^^
+- Squashed a bug that raised a ``ValueError`` in the admin when editing a model instance with a ``VersatileImageField`` that specified ``ppoi_field``, ``width_field`` and ``height_field``.
+- Admin 'click' widget now works in Firefox.
+- ``django-versatileimagefield`` is now available for installation via `wheel <http://wheel.readthedocs.org/en/latest/>`_.
 
 0.5.4
 ^^^^^
