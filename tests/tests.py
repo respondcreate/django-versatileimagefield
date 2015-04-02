@@ -388,7 +388,6 @@ class VersatileImageFieldTestCase(TestCase):
         self.jpg.image = fieldfile_obj
         img_path = self.jpg.image.path
         img_file = open(img_path, 'rb')
-        self.jpg.image = img_file
         django_file = File(img_file)
         self.jpg.image = django_file
         with self.assertRaises(AttributeError):
@@ -794,6 +793,8 @@ class VersatileImageFieldTestCase(TestCase):
                     "fields": {
                         "img_type": "png",
                         "ppoi": "0.5x0.5",
+                        "width": 601,
+                        "height": 203,
                         "image": "python-logo.png",
                         "optional_image_3": "",
                         "optional_image_2": "",

@@ -18,6 +18,18 @@ class VersatileImageTestModel(models.Model):
     image = VersatileImageField(
         upload_to='./',
         ppoi_field='ppoi',
+        width_field='width',
+        height_field='height'
+    )
+    height = models.PositiveIntegerField(
+        'Image Height',
+        blank=True,
+        null=True
+    )
+    width = models.PositiveIntegerField(
+        'Image Width',
+        blank=True,
+        null=True
     )
     optional_image = VersatileImageField(
         upload_to='./',

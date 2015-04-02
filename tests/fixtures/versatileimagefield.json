@@ -4,7 +4,9 @@
         "img_type": "png",
         "image": "python-logo.png",
         "optional_image": "python-logo.jpg",
-        "ppoi": "0.5x0.5"
+        "ppoi": "0.5x0.5",
+        "width": 0,
+        "height": 0
     },
     "model": "tests.versatileimagetestmodel",
     "pk": 1
@@ -13,7 +15,9 @@
     "fields": {
         "img_type": "jpg",
         "image": "python-logo.jpg",
-        "ppoi": "0.25x0.25"
+        "ppoi": "0.25x0.25",
+        "width": 0,
+        "height": 0
     },
     "model": "tests.versatileimagetestmodel",
     "pk": 2
@@ -22,7 +26,9 @@
     "fields": {
         "img_type": "gif",
         "image": "python-logo.gif",
-        "ppoi": "0.75x0.75"
+        "ppoi": "0.75x0.75",
+        "width": 0,
+        "height": 0
     },
     "model": "tests.versatileimagetestmodel",
     "pk": 3
@@ -31,7 +37,9 @@
     "fields": {
         "img_type": "exif_3",
         "image": "exif-orientation-examples/Landscape_3.jpg",
-        "ppoi": "0.5x0.5"
+        "ppoi": "0.5x0.5",
+        "width": 0,
+        "height": 0
     },
     "model": "tests.versatileimagetestmodel",
     "pk": 4
@@ -40,7 +48,9 @@
     "fields": {
         "img_type": "exif_6",
         "image": "exif-orientation-examples/Landscape_6.jpg",
-        "ppoi": "0.5x0.5"
+        "ppoi": "0.5x0.5",
+        "width": 0,
+        "height": 0
     },
     "model": "tests.versatileimagetestmodel",
     "pk": 5
@@ -49,7 +59,9 @@
     "fields": {
         "img_type": "exif_8",
         "image": "exif-orientation-examples/Landscape_8.jpg",
-        "ppoi": "0.5x0.5"
+        "ppoi": "0.5x0.5",
+        "width": 0,
+        "height": 0
     },
     "model": "tests.versatileimagetestmodel",
     "pk": 6
@@ -58,7 +70,9 @@
     "fields": {
         "img_type": "no_ext",
         "image": "python-logo-no-ext",
-        "ppoi": "0.5x0.5"
+        "ppoi": "0.5x0.5",
+        "width": 0,
+        "height": 0
     },
     "model": "tests.versatileimagetestmodel",
     "pk": 7
@@ -67,7 +81,9 @@
     "fields": {
         "img_type": "tgif",
         "image": "transparent.gif",
-        "ppoi": "1x1"
+        "ppoi": "1x1",
+        "width": 0,
+        "height": 0
     },
     "model": "tests.versatileimagetestmodel",
     "pk": 8
@@ -76,7 +92,9 @@
     "fields": {
         "img_type": "cmyk",
         "image": "cmyk.jpg",
-        "ppoi": "0.5x0.5"
+        "ppoi": "0.5x0.5",
+        "width": 0,
+        "height": 0
     },
     "model": "tests.versatileimagetestmodel",
     "pk": 9
