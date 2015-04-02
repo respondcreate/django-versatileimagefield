@@ -21,15 +21,17 @@ function generateCenterpointWidget(){
     })()}
 
     function cropClick (e) {
-        var x_coord = parseFloat(e.offsetX / this.width).toFixed(2),
-            y_coord = parseFloat(e.offsetY / this.height).toFixed(2),
+        var x = e.offsetX==undefined?e.layerX:e.offsetX,
+            y = e.offsetY==undefined?e.layerY:e.offsetY,
+            x_coord = parseFloat(x / this.width).toFixed(2),
+            y_coord = parseFloat(y / this.height).toFixed(2),
             cropped_image = document.getElementById(this.getAttribute('data-image_preview_id')),
             hidden_input = document.getElementById(cropped_image.getAttribute('data-hidden_field_id')),
             point = document.getElementById(cropped_image.getAttribute('data-ppoi_id')),
             val = x_coord + 'x' + y_coord
         hidden_input.value = val
-        point.style.top = (e.offsetY - (point.offsetWidth / 2)) + 'px'
-        point.style.left = (e.offsetX - (point.offsetHeight / 2)) + 'px'
+        point.style.top = (y - (point.offsetWidth / 2)) + 'px'
+        point.style.left = (x - (point.offsetHeight / 2)) + 'px'
     }
 }
 
