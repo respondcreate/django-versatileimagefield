@@ -18,6 +18,18 @@ class SizedImageCenterpointMixIn(object):
         return tuple(data_list)
 
 
+class VersatileImageFormField(ImageField):
+
+    def to_python(self, data):
+        """
+        Ensures data is prepped properly before handing off to
+        ImageField
+        """
+        if data is not None:
+            data.open()
+            return super(VersatileImageFormField, self).to_python(data)
+
+
 class VersatileImagePPOIClickField(SizedImageCenterpointMixIn,
                                    MultiValueField):
     widget = VersatileImagePPOIClickWidget
@@ -26,7 +38,7 @@ class VersatileImagePPOIClickField(SizedImageCenterpointMixIn,
         max_length = kwargs.pop('max_length', None)
         del max_length
         fields = (
-            ImageField(label='Image'),
+            VersatileImageFormField(label='Image'),
             CharField(required=False)
         )
         super(VersatileImagePPOIClickField, self).__init__(
