@@ -82,6 +82,10 @@ Table of Contents
 Release Notes
 =============
 
+0.6.1
+^^^^^
+- Squashed a bug that was throwing an ``AttributeError`` when uploading new images.
+
 0.6
 ^^^
 - Squashed a bug that raised a ``ValueError`` in the admin when editing a model instance with a ``VersatileImageField`` that specified ``ppoi_field``, ``width_field`` and ``height_field``.
