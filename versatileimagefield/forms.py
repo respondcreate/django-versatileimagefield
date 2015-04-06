@@ -26,7 +26,8 @@ class VersatileImageFormField(ImageField):
         ImageField
         """
         if data is not None:
-            data.open()
+            if hasattr(data, 'open'):
+                data.open()
             return super(VersatileImageFormField, self).to_python(data)
 
 
