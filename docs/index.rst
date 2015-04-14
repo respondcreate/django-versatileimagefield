@@ -82,6 +82,11 @@ Table of Contents
 Release Notes
 =============
 
+0.6.2
+^^^^^
+- Squashed a bug that caused the :ref:`javascript 'click' widget <ppoi-formfield>` to fail to initialize correctly when multiple VersatileImageFields were displayed on the same page in the admin.
+- Added `django.contrib.staticfiles <https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/>`_ integration to widgets.
+
 0.6.1
 ^^^^^
 - Squashed a bug that was throwing an ``AttributeError`` when uploading new images.
