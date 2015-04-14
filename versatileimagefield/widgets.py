@@ -4,6 +4,7 @@ from django.forms.widgets import (
     CheckboxInput, ClearableFileInput,
     HiddenInput, MultiWidget, Select
 )
+from django.contrib.staticfiles.storage import staticfiles_storage
 from django.utils.encoding import force_text
 from django.utils.html import conditional_escape, format_html
 from django.utils.safestring import mark_safe
@@ -186,10 +187,16 @@ class VersatileImagePPOIClickWidget(SizedImageCenterpointWidgetMixIn,
 
     class Media:
         css = {
-            'all': ('versatileimagefield/css/versatileimagefield.css',),
+            'all': (
+                staticfiles_storage.url(
+                    'versatileimagefield/css/versatileimagefield.css'
+                ),
+            ),
         }
         js = (
-            'versatileimagefield/js/versatileimagefield.js',
+            staticfiles_storage.url(
+                'versatileimagefield/js/versatileimagefield.js'
+            ),
         )
 
     def render(self, name, value, attrs=None):
@@ -209,7 +216,10 @@ class SizedImageCenterpointClickDjangoAdminWidget(
     class Media:
         css = {
             'all': (
-                'versatileimagefield/css/versatileimagefield-djangoadmin.css',
+                staticfiles_storage.url(
+                    'versatileimagefield/css/versatileimagefield-'
+                    'djangoadmin.css'
+                ),
             ),
         }
 
@@ -249,6 +259,9 @@ class SizedImageCenterpointClickBootstrap3Widget(
     class Media:
         css = {
             'all': (
-                'versatileimagefield/css/versatileimagefield-bootstrap3.css',
+                staticfiles_storage.url(
+                    'versatileimagefield/css/versatileimagefield-'
+                    'bootstrap3.css'
+                ),
             ),
         }
