@@ -35,10 +35,4 @@ function generateCenterpointWidget(){
     }
 }
 
-var jQuery = window.jQuery || django.jQuery;
-
-if (jQuery){
-     jQuery(document).ready(function(){
-        generateCenterpointWidget();
-     });
-}
+window.addEventListener("load", generateCenterpointWidget);
