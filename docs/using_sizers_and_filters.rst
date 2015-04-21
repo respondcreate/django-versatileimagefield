@@ -105,6 +105,8 @@ Sizers are quick and easy to write, for more information about how it's
 done, see the :ref:`Writing a Custom Sizer <writing-a-custom-sizer>`
 section.
 
+.. _filters:
+
 Filters
 =======
 
