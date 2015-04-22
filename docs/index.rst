@@ -34,7 +34,11 @@ Welcome to django-versatileimagefield's documentation!
 
 ----
 
-``VersatileImageField`` is a drop-in replacement for django's ``ImageField`` that provides a flexible, intuitive and easily-extensible interface for creating new images from the one assigned to the field. For an overview of why you should be using it, :doc:`click here </in_a_nutshell>`.
+.. rst-class:: intro-paragraph
+
+  A drop-in replacement for django's ``ImageField`` that provides a flexible, intuitive and easily-extensible interface for creating new images from the one assigned to the field.
+
+  For a quick overview of why you should be using it, :doc:`click here </in_a_nutshell>`.
 
 
 Table of Contents

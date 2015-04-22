@@ -88,10 +88,10 @@ And here's what it would look like serialized:
         'name_first': 'John',
         'name_last': 'Doe',
         'headshot': {
-            'full_size': '/media/headshots/john_doe_headshot.jpg',
-            'thumbnail': '/media/headshots/john_doe_headshot-thumbnail-400x400.jpg',
-            'medium_square_crop': '/media/headshots/john_doe_headshot-crop-c0-5__0-5-400x400.jpg',
-            'small_square_crop': '/media/headshots/john_doe_headshot-crop-c0-5__0-5-50x50.jpg',
+            'full_size': 'http://api.yoursite.com/media/headshots/john_doe_headshot.jpg',
+            'thumbnail': 'http://api.yoursite.com/media/headshots/john_doe_headshot-thumbnail-400x400.jpg',
+            'medium_square_crop': 'http://api.yoursite.com/media/headshots/john_doe_headshot-crop-c0-5__0-5-400x400.jpg',
+            'small_square_crop': 'http://api.yoursite.com/media/headshots/john_doe_headshot-crop-c0-5__0-5-50x50.jpg',
         }
     }
 

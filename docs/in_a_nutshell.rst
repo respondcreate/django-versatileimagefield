@@ -1,7 +1,7 @@
 In a Nutshell
 =============
 
-You're probably using an ``ImageField``.
+You're probably using an `ImageField <https://docs.djangoproject.com/en/dev/ref/models/fields/#django.db.models.ImageField>`_.
 
 .. code-block:: python
 
@@ -50,7 +50,7 @@ Create Images Wherever You Need Them
 
 A ``VersatileImageField`` can create new images on-demand **both in templates and the shell**.
 
-Let's make a thumbnail image:
+Let's make a thumbnail image that would fit within a 200px by 200px area:
 
 .. list-table::
    :header-rows: 1
@@ -89,22 +89,16 @@ You can use it to create cropped images, too:
 Custom, Per-Image Cropping
 --------------------------
 
-Don't worry! ``VersatileImageField`` can deal with undesirable crops via it's :doc:`Primary Point of Interest (PPOI)</specifying_ppoi>` functionality:
+Don't worry! ``VersatileImageField`` ships with a handy admin-compatible widget that you can use to specify an image's :doc:`Primary Point of Interest (PPOI)</specifying_ppoi>` by clicking on it.
+
+*Note the translucent red square underneath the mouse cursor in the image below:*
 
 .. list-table::
    :header-rows: 1
 
    * - Admin Widget
      - Image
-   * - **Default:**
-
-       .. figure:: /_static/images/ppoi-default.jpg
-            :alt: Centered PPOI
-     - .. figure:: /_static/images/the-dowager-countess-crop-c0-5__0-5-400x400.jpg
-            :alt: Absolute Center Crop
-   * - **Adjusted:**
-
-       .. figure:: /_static/images/ppoi-adjusted.jpg
+   * - .. figure:: /_static/images/ppoi-adjusted.jpg
             :alt: Centered PPOI
      - .. figure:: /_static/images/the-dowager-countess-crop-c0-44__0-22-400x400.jpg
             :alt: Custom PPOI Entered

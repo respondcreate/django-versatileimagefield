@@ -1,1 +1,6 @@
 .wy-nav-content{max-width:1200px;}
+
+p.intro-paragraph {
+    font-size:20px;
+    line-height:32px;
+}
