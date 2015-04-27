@@ -1,3 +1,6 @@
+# Send this build to the travis.ci container-based infrastructure
+# which typically has more capacity than the open-source Linux pool
+sudo: false
 # Tell Travis you want a Python environment to test in
 language: python
 # List the versions of Python you'd like to test against
