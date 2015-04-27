@@ -38,7 +38,12 @@ Welcome to django-versatileimagefield's documentation!
 
   A drop-in replacement for django's ``ImageField`` that provides a flexible, intuitive and easily-extensible interface for creating new images from the one assigned to the field.
 
-  For a quick overview of why you should be using it, :doc:`click here </in_a_nutshell>`.
+  :doc:`Click here </in_a_nutshell>` for a quick overview of what it is, how it works and whether or not it's the right fit for your project.
+
+Code
+====
+
+``django-versatileimagefield`` is hosted on `github <https://github.com/WGBH/django-versatileimagefield>`_.
 
 
 Table of Contents
@@ -153,9 +158,3 @@ Release Notes
 ^^^
 
 -  Initial open source release
-
-Roadmap to v1.0
-===============
-
--  Programmatically delete images created by ``VersatileImageField``
-   (including clearing their connected cache keys)

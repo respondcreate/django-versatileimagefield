@@ -79,7 +79,7 @@ You can use it to create cropped images, too:
    :header-rows: 1
 
    * - Template Code
-     - Image
+     - Default, Absolutely Centered Crop
    * - ``<img src="{{ instance.image.crop.400x400 }}" />``
      - .. figure:: /_static/images/the-dowager-countess-crop-c0-5__0-5-400x400.jpg
             :alt: Absolute Center Crop
@@ -91,13 +91,13 @@ Custom, Per-Image Cropping
 
 Don't worry! ``VersatileImageField`` ships with a handy admin-compatible widget that you can use to specify an image's :doc:`Primary Point of Interest (PPOI)</specifying_ppoi>` by clicking on it.
 
-*Note the translucent red square underneath the mouse cursor in the image below:*
+*Note the translucent red square underneath the mouse cursor in the image within the left column below:*
 
 .. list-table::
    :header-rows: 1
 
-   * - Admin Widget
-     - Image
+   * - Admin Widget PPOI Selection Tool
+     - Resultant Cropped Image
    * - .. figure:: /_static/images/ppoi-adjusted.jpg
             :alt: Centered PPOI
      - .. figure:: /_static/images/the-dowager-countess-crop-c0-44__0-22-400x400.jpg
