@@ -109,6 +109,7 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
             substitutions['initial'] = format_html('<a href="{0}">{1}</a>',
                                                    value.url,
                                                    force_text(value))
+            substitutions['initial_url'] = value.url
             if value.field.ppoi_field:
                 template = self.template_with_initial_and_imagepreview
                 point_stage_id = self.get_point_stage_id(name)
