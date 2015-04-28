@@ -42,10 +42,26 @@ Welcome to django-versatileimagefield's documentation!
 Compatibility
 =============
 
-- Python 2.7, 3.3 or 3.4
-- `Django <https://www.djangoproject.com/>`_ 1.6.x, 1.7.x or 1.8.x
+- Python:
+
+  - 2.7
+  - 3.3
+  - 3.4
+
+- `Django <https://www.djangoproject.com/>`_:
+
+  - 1.6.x
+  - 1.7.x
+  - 1.8.x
+
 - `Pillow <http://pillow.readthedocs.org/en/latest/index.html>`_ >= 2.4.0
-- `Django REST Framework <http://www.django-rest-framework.org/>`_ 2.3.14, 2.4.4, 3.0.x, 3.1.x
+
+- `Django REST Framework <http://www.django-rest-framework.org/>`_:
+
+  - 2.3.14
+  - 2.4.4
+  - 3.0.x
+  - 3.1.x
 
 Code
 ====
