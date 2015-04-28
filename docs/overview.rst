@@ -73,6 +73,9 @@ No crufty templatetags necessary! Here's how you'd do the same in the shell:
     >>> img.image.thumbnail['200x200'].name
     '__sized__/images/test-image-thumbnail-200x200.jpg'
 
+Crop images at specific sizes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 You can use it to create cropped images, too:
 
 .. list-table::

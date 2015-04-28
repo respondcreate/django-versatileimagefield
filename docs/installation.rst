@@ -155,5 +155,5 @@ Using Rendition Key Sets
 
 Rendition Key sets are useful! Read up on how they can help you...
 
-- ... :ref:`serializing VersatileImageField instances <serialization>` within Django REST Framework.
-- ... :doc:`'warm' images to improve performance </improving_performance>`.
+- ... :ref:`serialize VersatileImageField instances <serialization>` with Django REST Framework.
+- ... :doc:`'pre-warm' images to improve performance </improving_performance>`.
