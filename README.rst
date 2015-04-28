@@ -35,9 +35,6 @@ A drop-in replacement for django's ``ImageField`` that provides a flexible, intu
 Compatibility
 =============
 
-Compatibility
-=============
-
 - Python:
 
   - 2.7
