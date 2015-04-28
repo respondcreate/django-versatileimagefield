@@ -1,5 +1,5 @@
-In a Nutshell
-=============
+Overview
+========
 
 You're probably using an `ImageField <https://docs.djangoproject.com/en/dev/ref/models/fields/#django.db.models.ImageField>`_.
 

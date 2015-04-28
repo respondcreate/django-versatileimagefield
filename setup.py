@@ -12,7 +12,7 @@ setup(
     license='MIT License, see LICENSE',
     description="A drop-in replacement for django's ImageField that provides "
                 "a flexible, intuitive and easily-extensible interface for "
-                "quickly creating new images from the one assigned to your "
+                "quickly creating new images from the one assigned to the "
                 "field.",
     long_description=open('README.rst').read(),
     zip_safe=False,
