@@ -11,8 +11,8 @@ Both Sizers and Filters subclass from
 provides a :ref:`preprocessing API <preprocessing-api>` as well as all
 the business logic necessary to retrieve and save images.
 
-The 'meat' of each Sizer & Filter – a.k.a what actually modifies the
-original image – takes place within the ``process_image`` method which
+The 'meat' of each Sizer & Filter – what actually modifies the
+original image – resides within the ``process_image`` method which
 all subclasses must define (not doing so will raise a
 ``NotImplementedError``). Sizers and Filters expect slightly different
 keyword arguments (Sizers required ``width`` and ``height``, for

@@ -14,10 +14,16 @@ Python Compatibility
 -  3.3.x
 -  3.4.x
 
+Django Compatibility
+--------------------
+
+-  1.6.x
+-  1.7.x
+-  1.8.x
+
 Dependencies
 ------------
 
--  ``django``>=1.6.x
 -  ``Pillow`` >= 2.4.x
 
 ``django-versatileimagefield`` depends on the excellent

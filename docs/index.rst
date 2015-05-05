@@ -23,14 +23,6 @@ Welcome to django-versatileimagefield's documentation!
     :target: https://pypi.python.org/pypi/django-versatileimagefield/
     :alt: Latest Version
 
-.. image:: https://pypip.in/py_versions/django-versatileimagefield/badge.svg?style=flat
-    :target: https://pypi.python.org/pypi/django-versatileimagefield/
-    :alt: Supported Python versions
-
-.. image:: https://pypip.in/wheel/django-versatileimagefield/badge.svg
-    :target: https://pypi.python.org/pypi/django-versatileimagefield/
-    :alt: Wheel Status
-
 ----
 
 .. rst-class:: intro-paragraph

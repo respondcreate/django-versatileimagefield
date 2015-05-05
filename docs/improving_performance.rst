@@ -1,7 +1,7 @@
 Improving Performance
 =====================
 
-During development, ``VersatileImageField``'s :ref:`on-demand image creation <on-demand-image-creation>` enables you to quickly iterate but, once your application is deployed, this convenience adds a small bit of overhead that you'll probably want to turn off once your app is in production.
+During development, ``VersatileImageField``'s :ref:`on-demand image creation <on-demand-image-creation>` enables you to quickly iterate but, once your application is deployed into production, this convenience adds a small bit of overhead that you'll probably want to turn off.
 
 Turning off on-demand image creation
 ------------------------------------
@@ -13,7 +13,7 @@ To turn off on-demand image creation just set the ``'create_images_on_demand'`` 
 Ensuring images are created
 ---------------------------
 
-This boost in performance is great but now you'll need to ensure that the images your application links to actually exist. Luckily, ``VersatileImageFieldWarmer`` will help you do just that. Here's an example in the Python shell using the :ref:`example model <example-model>` from the Django REST Framework serialization example:
+This boost in performance is great but now you'll need to ensure that the images your application links-to actually exist. Luckily, ``VersatileImageFieldWarmer`` will help you do just that. Here's an example in the Python shell using the :ref:`example model <example-model>` from the Django REST Framework serialization example:
 
 .. code-block:: python
 

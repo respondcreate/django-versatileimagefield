@@ -13,7 +13,7 @@ The ``crop`` Sizer's core functionality (located in the ``versatileimagefield.ve
 function (by `Kevin Cazabon <http://www.cazabon.com/>`__) which takes an optional
 keyword argument, ``centering``, that expects a 2-tuple comprised of
 floats which are greater than or equal to 0 and less than or equal to 1. These two values
-together form a cartesian coordinate system that dictates what percentage of pixels to 'trim' off each of the long sides (i.e. left/right or top/bottom, depending on the aspect ratio of the cropped size vs. the original size):
+together form a cartesian coordinate system which dictates the percentage of pixels to 'trim' off each of the long sides (i.e. left/right or top/bottom, depending on the aspect ratio of the cropped size vs. the original size):
 
 +----------+--------------+--------------+--------------+
 |          |Left          |Center        |Right         |
@@ -97,10 +97,7 @@ by an 'x' (for instance: ``'0.5x0.5'`` or ``'0.62x0.28'``).
 Setting PPOI
 ============
 
-PPOI is set via the ``ppoi`` attribute on a ``VersatileImageField``. You
-should **always** set an image's PPOI here (as opposed to directly on a
-``PPOIField`` attribute) since a ``VersatileImageField`` will ensure
-updated values are passed-down to all its attached Filters & Sizers.
+PPOI is set via the ``ppoi`` attribute on a ``VersatileImageField``..
 
 When you save a model instance, ``VersatileImageField`` will ensure its
 currently-assigned PPOI value is 'sent' to the ``PPOIField`` associated

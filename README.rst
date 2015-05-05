@@ -18,14 +18,6 @@ django-versatileimagefield
     :target: https://pypi.python.org/pypi/django-versatileimagefield/
     :alt: Latest Version
 
-.. image:: https://pypip.in/py_versions/django-versatileimagefield/badge.svg?style=flat
-    :target: https://pypi.python.org/pypi/django-versatileimagefield/
-    :alt: Supported Python versions
-
-.. image:: https://pypip.in/wheel/django-versatileimagefield/badge.svg
-    :target: https://pypi.python.org/pypi/django-versatileimagefield/
-    :alt: Wheel Status
-
 ----
 
 A drop-in replacement for django's ``ImageField`` that provides a flexible, intuitive and easily-extensible interface for creating new images from the one assigned to the field.
