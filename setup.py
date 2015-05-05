@@ -5,15 +5,14 @@ from setuptools import find_packages
 setup(
     name='django-versatileimagefield',
     packages=find_packages(),
-    version='0.6.2',
+    version='1.0',
     author=u'Jonathan Ellenberger',
     author_email='jonathan_ellenberger@wgbh.org',
     url='http://github.com/WGBH/django-versatileimagefield/',
     license='MIT License, see LICENSE',
     description="A drop-in replacement for django's ImageField that provides "
                 "a flexible, intuitive and easily-extensible interface for "
-                "quickly creating new images from the one assigned to the "
-                "field.",
+                "creating new images from the one assigned to the field.",
     long_description=open('README.rst').read(),
     zip_safe=False,
     install_requires=['Pillow>=2.4.0'],

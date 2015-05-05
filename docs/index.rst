@@ -79,6 +79,11 @@ Table of Contents
 Release Notes
 =============
 
+1.0
+^^^
+- Added support for Django 1.8.
+- Numerous documentation edits/improvements.
+
 0.6.2
 ^^^^^
 - Squashed a bug that caused the :ref:`javascript 'click' widget <ppoi-formfield>` to fail to initialize correctly when multiple VersatileImageFields were displayed on the same page in the admin.
