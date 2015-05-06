@@ -20,7 +20,7 @@ You should :doc:`swap it out</model_integration>` for a ``VersatileImageField``.
 
     from django.db import models
 
-    from versatileimagefield import VersatileImageField
+    from versatileimagefield.fields import VersatileImageField
 
     class ExampleModel(models.Model):
         image = VersatileImageField(
