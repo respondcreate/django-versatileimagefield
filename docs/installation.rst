@@ -129,7 +129,7 @@ Each key in ``VERSATILEIMAGEFIELD_RENDITION_KEY_SETS`` signifies a 'Rendition Ke
 Writing Rendition Keys
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Rendition Keys are intuitive and easy to write, simply swap out double-underscores for the dot-notated paths you'd use :doc:`in the shell </using_sizers_and_filters>` or :ref:`in templates <template-usage>`. Examples:
+Rendition Keys are intuitive and easy to write, simply swap in double-underscores for the dot-notated paths you'd use :doc:`in the shell </using_sizers_and_filters>` or :ref:`in templates <template-usage>`. Examples:
 
 .. list-table::
    :widths: 15 35 25 25
