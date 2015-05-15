@@ -82,7 +82,8 @@ class VersatileImageFieldTestCase(TestCase):
         self.user = user
         self.client = client
 
-    def tearDown(self):
+    @classmethod
+    def tearDownClass(cls):
         """
         Deletes files made by VersatileImageFields during tests
         """
@@ -171,35 +172,42 @@ class VersatileImageFieldTestCase(TestCase):
 
     def test_placeholder_image(self):
         """Ensures placehold.it integration"""
+        self.jpg.optional_image.create_on_demand = True
         self.assertEqual(
             self.jpg.optional_image.crop['100x100'].url,
             '/media/__sized__/__placeholder__/'
-            'placeholder-crop-c0-5__0-5-100x100.gif'
+            'placeholder-crop-c0-5__0-5-100x100.png'
         )
         self.assertEqual(
             self.jpg.optional_image.thumbnail['100x100'].url,
             '/media/__sized__/__placeholder__/'
-            'placeholder-thumbnail-100x100.gif'
+            'placeholder-thumbnail-100x100.png'
         )
         self.assertEqual(
             self.jpg.optional_image.filters.invert.url,
-            '/media/__placeholder__/__filtered__/placeholder__invert__.gif'
+            '/media/__placeholder__/__filtered__/placeholder__invert__.png'
         )
         self.assertEqual(
             self.jpg.optional_image_2.crop['100x100'].url,
             '/media/__sized__/__placeholder__/on-storage-placeholder/'
-            'placeholder-crop-c0-5__0-5-100x100.gif'
+            'placeholder-crop-c0-5__0-5-100x100.png'
         )
         self.assertEqual(
             self.jpg.optional_image_2.thumbnail['100x100'].url,
             '/media/__sized__/__placeholder__/on-storage-placeholder/'
-            'placeholder-thumbnail-100x100.gif'
+            'placeholder-thumbnail-100x100.png'
         )
         self.assertEqual(
             self.jpg.optional_image_2.filters.invert.url,
             '/media/__placeholder__/on-storage-placeholder/__filtered__/'
-            'placeholder__invert__.gif'
+            'placeholder__invert__.png'
         )
+        self.assertFalse(
+            self.jpg.optional_image.field.storage.size(
+                self.jpg.optional_image.name
+            ) is 0
+        )
+        self.jpg.optional_image.create_on_demand = False
 
     def test_setting_ppoi_values(self):
         """Ensure PPOI values are set correctly"""
@@ -571,11 +579,11 @@ class VersatileImageFieldTestCase(TestCase):
 
     def test_DummyFilter(self):
         """Tests placeholder image functionality for filters"""
-        test_jpg = VersatileImageTestModel.objects.get(
+        test_png = VersatileImageTestModel.objects.get(
             img_type='png'
         )
-        test_jpg.optional_image.create_on_demand = True
-        test_jpg.optional_image.filters.invert.url
+        test_png.optional_image.create_on_demand = True
+        test_png.optional_image.filters.invert.url
 
     def test_crop_and_thumbnail_key_assignment(self):
         """Tests placeholder image functionality for filters"""
@@ -772,7 +780,7 @@ class VersatileImageFieldTestCase(TestCase):
 <img id="image-thumbnail" src="/media/__sized__/python-logo-thumbnail-400x400.jpg" />
 <img id="image-invert" src="/media/__filtered__/python-logo__invert__.jpg" />
 <img id="image-invert-crop" src="/media/__sized__/__filtered__/python-logo__invert__-crop-c0-25__0-25-400x400.jpg" />
-<img src="/media/__sized__/__placeholder__/placeholder-crop-c0-5__0-5-400x400.gif" id="optional-image-crop"/>
+<img src="/media/__sized__/__placeholder__/placeholder-crop-c0-5__0-5-400x400.png" id="optional-image-crop"/>
 </body>
 </html>
             """

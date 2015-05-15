@@ -37,7 +37,7 @@ class VersatileImageTestModel(models.Model):
         placeholder_image=OnDiscPlaceholderImage(
             path=os.path.join(
                 os.path.dirname(os.path.abspath(__file__)),
-                'placeholder.gif'
+                'placeholder.png'
             )
         )
     )
@@ -45,7 +45,7 @@ class VersatileImageTestModel(models.Model):
         upload_to='./',
         blank=True,
         placeholder_image=OnStoragePlaceholderImage(
-            path='on-storage-placeholder/placeholder.gif'
+            path='on-storage-placeholder/placeholder.png'
         )
     )
     optional_image_3 = VersatileImageField(
