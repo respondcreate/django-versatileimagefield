@@ -87,6 +87,10 @@ Table of Contents
 Release Notes
 =============
 
+1.0.1
+^^^^^
+- Squashed a `critical bug <https://github.com/WGBH/django-versatileimagefield/issues/13>`_ in `OnDiscPlaceholderImage`
+
 1.0
 ^^^
 - Added support for Django 1.8.
