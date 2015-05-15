@@ -15,13 +15,21 @@ Welcome to django-versatileimagefield's documentation!
     :target: https://coveralls.io/r/WGBH/django-versatileimagefield
     :alt: Coverage Status
 
-.. image:: https://img.shields.io/pypi/dm/django-versatileimagefield.svg?style=flat
+.. image:: https://pypip.in/py_versions/django-versatileimagefield/badge.svg?style=flat
+    :target: https://pypi.python.org/pypi/django-versatileimagefield/
+    :alt: Supported Python versions
+
+.. image:: https://pypip.in/download/django-versatileimagefield/badge.svg?style=flat
     :target: https://pypi.python.org/pypi/django-versatileimagefield/
     :alt: Downloads
 
-.. image:: https://img.shields.io/pypi/v/django-versatileimagefield.svg?style=flat
+.. image:: https://pypip.in/version/django-versatileimagefield/badge.svg?style=flat
     :target: https://pypi.python.org/pypi/django-versatileimagefield/
     :alt: Latest Version
+
+.. image:: https://pypip.in/wheel/django-versatileimagefield/badge.svg
+    :target: https://pypi.python.org/pypi/django-versatileimagefield/
+    :alt: Wheel Status
 
 ----
 
