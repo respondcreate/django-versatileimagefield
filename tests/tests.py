@@ -19,6 +19,7 @@ from django.template.loader import get_template
 from django.test import Client, TestCase
 from django.test.utils import override_settings
 from django.utils._os import upath
+from django.utils import six
 from django.utils.six.moves import cPickle
 
 from PIL import Image
@@ -356,8 +357,10 @@ class VersatileImageFieldTestCase(TestCase):
             '/admin/tests/versatileimagewidgettestmodel/1/'
         )
         self.assertEqual(response.status_code, 200)
-        response_content = str(response.content)
-        print(response_content)
+        if six.PY2:
+            response_content = str(response.content)
+        else:
+            response_content = str(response.content, encoding='utf-8')
         # Test that javascript loads correctly
         self.assertInHTML(
             (
@@ -368,7 +371,6 @@ class VersatileImageFieldTestCase(TestCase):
             response_content
         )
         # Test required field with PPOI
-        """
         self.assertInHTML(
             (
                 '<div class="versatileimagefield">'
@@ -403,9 +405,8 @@ class VersatileImageFieldTestCase(TestCase):
                 '           type="hidden" value="0.5x0.5" />'
                 '</div>'
             ),
-            str(response.content)
+            response_content
         )
-        """
         # Test required field no PPOI
         self.assertInHTML(
             (
@@ -423,7 +424,7 @@ class VersatileImageFieldTestCase(TestCase):
                 '           type="hidden" value="0.5x0.5" />'
                 '</div>'
             ),
-            str(response.content)
+            response_content
         )
         # Test optional image no PPOI
         self.assertInHTML(
@@ -449,7 +450,7 @@ class VersatileImageFieldTestCase(TestCase):
                 '           type="hidden" value="0.5x0.5" />'
                 '</div>'
             ),
-            str(response.content)
+            response_content
         )
         # Test optional image with PPOI
         self.assertInHTML(
@@ -494,7 +495,7 @@ class VersatileImageFieldTestCase(TestCase):
                 '           name="optional_image_with_ppoi_1" type="hidden" value="1.0x1.0" />'
                 '</div>'
             ),
-            str(response.content)
+            response_content
         )
         self.assertTrue(
             self.widget_test.image.field.storage.exists(
