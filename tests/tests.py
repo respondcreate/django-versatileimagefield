@@ -358,136 +358,119 @@ class VersatileImageFieldTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         # Test required field with PPOI
         self.assertInHTML(
-            (
-                """
-<div class="versatileimagefield">
-    <div class="sizedimage-mod initial">
-        <label class="versatileimagefield-label">Currently</label>
-        <a href="/media/python-logo.png">python-logo.png</a>
-    </div>
-
-    <div class="sizedimage-mod preview">
-        <label class="versatileimagefield-label">
-            Primary Point of Interest
-        </label>
-        <div class="image-wrap outer">
-            <div class="point-stage" id="image_0_point-stage"
-                 data-image_preview_id="image_0_imagepreview">
-                <div class="ppoi-point" id="image_0_ppoi"></div>
-            </div>
-            <div class="image-wrap inner">
-                <img src="/media/__sized__/python-logo-thumbnail-300x300.png"
-                     id="image_0_imagepreview"
-                     data-hidden_field_id="id_image_1"
-                     data-point_stage_id="image_0_point-stage"
-                     data-ppoi_id="image_0_ppoi" class="sizedimage-preview"/>
-            </div>
-        </div>
-    </div>
-    <div class="sizedimage-mod new-upload">
-        <label class="versatileimagefield-label">Change</label>
-        <input class="file-chooser" id="id_image_0"
-               name="image_0" type="file" />
-    </div>
-    <input class="ppoi-input" id="id_image_1" name="image_1"
-           type="hidden" value="0.5x0.5" />
-</div>
-                """
-            ),
+            '<div class="versatileimagefield">'
+            '    <div class="sizedimage-mod initial">'
+            '        <label class="versatileimagefield-label">Currently</label>'
+            '        <a href="/media/python-logo.png">python-logo.png</a>'
+            '    </div>'
+            '    <div class="sizedimage-mod preview">'
+            '        <label class="versatileimagefield-label">'
+            '            Primary Point of Interest'
+            '        </label>'
+            '        <div class="image-wrap outer">'
+            '            <div class="point-stage" id="image_0_point-stage"'
+            '                 data-image_preview_id="image_0_imagepreview">'
+            '                <div class="ppoi-point" id="image_0_ppoi"></div>'
+            '            </div>'
+            '            <div class="image-wrap inner">'
+            '                <img src="/media/__sized__/python-logo-thumbnail-300x300.png"'
+            '                     id="image_0_imagepreview"'
+            '                     data-hidden_field_id="id_image_1"'
+            '                     data-point_stage_id="image_0_point-stage"'
+            '                     data-ppoi_id="image_0_ppoi" class="sizedimage-preview"/>'
+            '            </div>'
+            '        </div>'
+            '    </div>'
+            '    <div class="sizedimage-mod new-upload">'
+            '        <label class="versatileimagefield-label">Change</label>'
+            '        <input class="file-chooser" id="id_image_0"'
+            '               name="image_0" type="file" />'
+            '    </div>'
+            '    <input class="ppoi-input" id="id_image_1" name="image_1"'
+            '           type="hidden" value="0.5x0.5" />'
+            '</div>',
             str(response.content)
         )
         # Test required field no PPOI
         self.assertInHTML(
-            (
-                """
-<div class="versatileimagefield">
-    <div class="sizedimage-mod initial">
-        <label class="versatileimagefield-label">Currently:</label>
-        <a href="/media/python-logo.jpg">python-logo.jpg</a>
-    </div>
-    <div class="sizedimage-mod new-upload">
-        <label class="versatileimagefield-label">Change:</label>
-        <input class="file-chooser" id="id_image_no_ppoi_0"
-               name="image_no_ppoi_0" type="file" />
-    </div>
-    <input class="ppoi-input" id="id_image_no_ppoi_1" name="image_no_ppoi_1"
-           type="hidden" value="0.5x0.5" />
-</div>
-                """
-            ),
+            '<div class="versatileimagefield">'
+            '    <div class="sizedimage-mod initial">'
+            '        <label class="versatileimagefield-label">Currently:</label>'
+            '        <a href="/media/python-logo.jpg">python-logo.jpg</a>'
+            '    </div>'
+            '    <div class="sizedimage-mod new-upload">'
+            '        <label class="versatileimagefield-label">Change:</label>'
+            '        <input class="file-chooser" id="id_image_no_ppoi_0"'
+            '               name="image_no_ppoi_0" type="file" />'
+            '    </div>'
+            '    <input class="ppoi-input" id="id_image_no_ppoi_1" name="image_no_ppoi_1"'
+            '           type="hidden" value="0.5x0.5" />'
+            '</div>',
             str(response.content)
         )
         # Test optional image no PPOI
         self.assertInHTML(
-            (
-                """
-<div class="versatileimagefield">
-    <div class="sizedimage-mod initial">
-    <label class="versatileimagefield-label">Currently:</label>
-        <a href="/media/exif-orientation-examples/Landscape_8.jpg">
-        exif-orientation-examples/Landscape_8.jpg</a>
-    </div>
-    <div class="sizedimage-mod clear">
-        <input id="optional_image_0-clear_id" name="optional_image_0-clear"
-               type="checkbox" />
-        <label class="versatileimagefield-label"
-               for="optional_image_0-clear_id">Clear: </label>
-    </div>
-    <div class="sizedimage-mod new-upload">
-    <label class="versatileimagefield-label">Change:</label>
-    <input class="file-chooser" id="id_optional_image_0"
-           name="optional_image_0" type="file" />
-    </div>
-    <input class="ppoi-input" id="id_optional_image_1" name="optional_image_1"
-           type="hidden" value="0.5x0.5" />
-</div>
-                """
-            ),
+            '<div class="versatileimagefield">'
+            '    <div class="sizedimage-mod initial">'
+            '    <label class="versatileimagefield-label">Currently:</label>'
+            '        <a href="/media/exif-orientation-examples/Landscape_8.jpg">'
+            '        exif-orientation-examples/Landscape_8.jpg</a>'
+            '    </div>'
+            '    <div class="sizedimage-mod clear">'
+            '        <input id="optional_image_0-clear_id" name="optional_image_0-clear"'
+            '               type="checkbox" />'
+            '        <label class="versatileimagefield-label"'
+            '               for="optional_image_0-clear_id">Clear: </label>'
+            '    </div>'
+            '    <div class="sizedimage-mod new-upload">'
+            '    <label class="versatileimagefield-label">Change:</label>'
+            '    <input class="file-chooser" id="id_optional_image_0"'
+            '           name="optional_image_0" type="file" />'
+            '    </div>'
+            '    <input class="ppoi-input" id="id_optional_image_1" name="optional_image_1"'
+            '           type="hidden" value="0.5x0.5" />'
+            '</div>',
             str(response.content)
         )
         # Test optional image with PPOI
         self.assertInHTML(
-            (
-                """
-<div class="versatileimagefield">
-    <div class="sizedimage-mod initial">
-        <label class="versatileimagefield-label">Currently</label>
-        <a href="/media/exif-orientation-examples/Landscape_6.jpg">
-        exif-orientation-examples/Landscape_6.jpg</a>
-    </div>
-    <div class="sizedimage-mod clear">
-        <input id="optional_image_with_ppoi_0-clear_id"
-               name="optional_image_with_ppoi_0-clear" type="checkbox" />
-        <label class="versatileimagefield-label" for="optional_image_with_ppoi_0-clear_id">
-        Clear: </label>
-    </div>
-    <div class="sizedimage-mod preview">
-        <label class="versatileimagefield-label">
-            Primary Point of Interest</label>
-        <div class="image-wrap outer">
-            <div class="point-stage"
-                 id="optional_image_with_ppoi_0_point-stage"
-                 data-image_preview_id="optional_image_with_ppoi_0_imagepreview">
-                <div class="ppoi-point" id="optional_image_with_ppoi_0_ppoi"></div>
-            </div>
-            <div class="image-wrap inner">
-                <img src="/media/__sized__/exif-orientation-examples/Landscape_6-thumbnail-300x300.jpg"
-                     id="optional_image_with_ppoi_0_imagepreview"
-                     data-hidden_field_id="id_optional_image_with_ppoi_1"
-                     data-point_stage_id="optional_image_with_ppoi_0_point-stage"
-                     data-ppoi_id="optional_image_with_ppoi_0_ppoi" class="sizedimage-preview"/>
-            </div>
-        </div>
-    </div>
-    <div class="sizedimage-mod new-upload">
-        <label class="versatileimagefield-label">Change</label>
-        <input class="file-chooser" id="id_optional_image_with_ppoi_0" name="optional_image_with_ppoi_0" type="file" />
-    </div>
-    <input class="ppoi-input" id="id_optional_image_with_ppoi_1"
-           name="optional_image_with_ppoi_1" type="hidden" value="1.0x1.0" />
-</div>
-                """
-            ),
+'<div class="versatileimagefield">'
+'    <div class="sizedimage-mod initial">'
+'        <label class="versatileimagefield-label">Currently</label>'
+'        <a href="/media/exif-orientation-examples/Landscape_6.jpg">'
+'        exif-orientation-examples/Landscape_6.jpg</a>'
+'    </div>'
+'    <div class="sizedimage-mod clear">'
+'        <input id="optional_image_with_ppoi_0-clear_id"'
+'               name="optional_image_with_ppoi_0-clear" type="checkbox" />'
+'        <label class="versatileimagefield-label" for="optional_image_with_ppoi_0-clear_id">'
+'        Clear: </label>'
+'    </div>'
+'    <div class="sizedimage-mod preview">'
+'        <label class="versatileimagefield-label">'
+'            Primary Point of Interest</label>'
+'        <div class="image-wrap outer">'
+'            <div class="point-stage"'
+'                 id="optional_image_with_ppoi_0_point-stage"'
+'                 data-image_preview_id="optional_image_with_ppoi_0_imagepreview">'
+'                <div class="ppoi-point" id="optional_image_with_ppoi_0_ppoi"></div>'
+'            </div>'
+'            <div class="image-wrap inner">'
+'                <img src="/media/__sized__/exif-orientation-examples/Landscape_6-thumbnail-300x300.jpg"'
+'                     id="optional_image_with_ppoi_0_imagepreview"'
+'                     data-hidden_field_id="id_optional_image_with_ppoi_1"'
+'                     data-point_stage_id="optional_image_with_ppoi_0_point-stage"'
+'                     data-ppoi_id="optional_image_with_ppoi_0_ppoi" class="sizedimage-preview"/>'
+'            </div>'
+'        </div>'
+'    </div>'
+'    <div class="sizedimage-mod new-upload">'
+'        <label class="versatileimagefield-label">Change</label>'
+'        <input class="file-chooser" id="id_optional_image_with_ppoi_0" name="optional_image_with_ppoi_0" type="file" />'
+'    </div>'
+'    <input class="ppoi-input" id="id_optional_image_with_ppoi_1"'
+'           name="optional_image_with_ppoi_1" type="hidden" value="1.0x1.0" />'
+'</div>',
             str(response.content)
         )
         # Test that javascript loads correctly
