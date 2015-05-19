@@ -53,3 +53,25 @@ class VersatileImageTestModel(models.Model):
         blank=True
     )
     ppoi = PPOIField()
+
+
+class VersatileImageWidgetTestModel(models.Model):
+    """A model for testing VersatileImageField widgets"""
+    image = VersatileImageField(
+        upload_to='./',
+        ppoi_field='ppoi',
+    )
+    image_no_ppoi = VersatileImageField(
+        upload_to='./',
+    )
+    optional_image = VersatileImageField(
+        upload_to='./',
+        blank=True
+    )
+    optional_image_with_ppoi = VersatileImageField(
+        upload_to='./',
+        blank=True,
+        ppoi_field='optional_image_with_ppoi_ppoi'
+    )
+    ppoi = PPOIField()
+    optional_image_with_ppoi_ppoi = PPOIField()

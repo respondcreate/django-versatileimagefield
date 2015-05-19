@@ -25,19 +25,30 @@ CENTERPOINT_CHOICES = (
 
 class ClearableFileInputWithImagePreview(ClearableFileInput):
     ppoi_label = ugettext_lazy('Primary Point of Interest')
+    template_with_initial = (
+        '<div class="sizedimage-mod initial">'
+        '<label class="versatileimagefield-label">'
+        '%(initial_text)s:</label> %(initial)s '
+        '</div>'
+        '%(clear_template)s'
+        '<div class="sizedimage-mod new-upload">'
+        '<label class="versatileimagefield-label">%(input_text)s:</label>'
+        '%(input)s'
+        '</div>'
+    )
     template_with_clear = (
+        '<div class="sizedimage-mod clear">'
         '%(clear)s <label class="versatileimagefield-label" '
         'for="%(clear_checkbox_id)s">'
-        '%(clear_checkbox_label)s</label>'
+        '%(clear_checkbox_label)s: </label>'
+        '</div>'
     )
     template_with_initial_and_imagepreview = """
     <div class="sizedimage-mod initial">
         <label class="versatileimagefield-label">%(initial_text)s</label>
         %(initial)s
     </div>
-    <div class="sizedimage-mod clear">
-        %(clear_template)s
-    </div>
+    %(clear_template)s
     <div class="sizedimage-mod preview">
         <label class="versatileimagefield-label">%(ppoi_label)s</label>
         <div class="image-wrap outer">
@@ -125,7 +136,7 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
             else:
                 template = self.template_with_initial
 
-            if not self.is_required:
+            if value.field.blank:
                 checkbox_name = self.clear_checkbox_name(name)
                 checkbox_id = self.clear_checkbox_id(checkbox_name)
                 substitutions['clear_checkbox_name'] = conditional_escape(

@@ -2,18 +2,15 @@ div.versatileimagefield {
     float:left;
     clear:right;
     display:block;
+    min-width:350px;
 }
 
 label.versatileimagefield-label  {
-    display:block;
+    display:inline;
     float:left;
-    clear:right;
-    font-weight:bold !important;
+    clear:both;
     font-size:1em;
-}
-
-label.versatileimagefield-label:after {
-    content:": ";
+    padding-top:0px;
 }
 
 div.sizedimage-mod {
@@ -26,4 +23,10 @@ div.image-wrap.outer {
 
 div.sizedimage-mod:first-child {
     margin-top:0;
+}
+div.versatileimagefield input[type='file'] {
+    margin-top:0px;
+    margin-bottom:0px;
+    padding-top:0px;
+    padding-bottom:0px;
 }

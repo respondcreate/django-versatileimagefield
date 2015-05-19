@@ -3,7 +3,7 @@ from django.forms import ModelForm
 
 from versatileimagefield.widgets import VersatileImagePPOISelectWidget
 
-from .models import VersatileImageTestModel
+from .models import VersatileImageTestModel, VersatileImageWidgetTestModel
 
 
 class VersatileImageTestModelForm(ModelForm):
@@ -27,3 +27,4 @@ class VersatileImageTestModelAdmin(admin.ModelAdmin):
 
 
 admin.site.register(VersatileImageTestModel, VersatileImageTestModelAdmin)
+admin.site.register(VersatileImageWidgetTestModel)
