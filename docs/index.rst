@@ -87,6 +87,10 @@ Table of Contents
 Release Notes
 =============
 
+1.0.2
+^^^^^
+- Removed clear checkbox from widgets on required fields.
+
 1.0.1
 ^^^^^
 - Squashed a `critical bug <https://github.com/WGBH/django-versatileimagefield/issues/13>`_ in `OnDiscPlaceholderImage`
