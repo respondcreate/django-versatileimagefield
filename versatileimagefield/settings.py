@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django.conf import settings
 from django.core.cache import (
     cache as default_cache,
-    get_cache,
+    caches,
     InvalidCacheBackendError
 )
 
@@ -59,7 +59,7 @@ VERSATILEIMAGEFIELD_CACHE_NAME = VERSATILEIMAGEFIELD_SETTINGS.get(
 )
 
 try:
-    cache = get_cache(VERSATILEIMAGEFIELD_CACHE_NAME)
+    cache = caches[VERSATILEIMAGEFIELD_CACHE_NAME]
 except InvalidCacheBackendError:
     cache = default_cache
 
