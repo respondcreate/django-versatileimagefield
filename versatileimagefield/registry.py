@@ -189,7 +189,7 @@ def autodiscover():
     # "importlib" module which is available in Python 2.7.
     try:
         from importlib import import_module
-    except ImportError:
+    except ImportError:  # pragma: no cover
         from django.utils.importlib import import_module
 
     for app in settings.INSTALLED_APPS:
