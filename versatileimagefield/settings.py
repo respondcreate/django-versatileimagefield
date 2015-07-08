@@ -3,9 +3,14 @@ from __future__ import unicode_literals
 from django.conf import settings
 from django.core.cache import (
     cache as default_cache,
-    get_cache,
     InvalidCacheBackendError
 )
+# Beginning with Django 1.7 'get_cache' is deprecated in favor of 'caches'
+# and will be dropped in Django 1.9
+try:
+    from django.core.cache import caches
+except ImportError:
+    from django.core.cache import get_caches as caches
 
 # Defaults
 QUAL = 70
@@ -59,7 +64,7 @@ VERSATILEIMAGEFIELD_CACHE_NAME = VERSATILEIMAGEFIELD_SETTINGS.get(
 )
 
 try:
-    cache = get_cache(VERSATILEIMAGEFIELD_CACHE_NAME)
+    cache = caches(VERSATILEIMAGEFIELD_CACHE_NAME)
 except InvalidCacheBackendError:
     cache = default_cache
 
