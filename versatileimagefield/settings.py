@@ -10,7 +10,7 @@ from django.core.cache import (
 try:
     from django.core.cache import caches
 except ImportError:
-    from django.core.cache import get_caches as caches
+    from django.core.cache import get_cache as caches
 
 # Defaults
 QUAL = 70
