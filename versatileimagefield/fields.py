@@ -142,7 +142,7 @@ class VersatileImageField(ImageField):
         # This is a fairly standard way to set up some defaults
         # while letting the caller override them.
         defaults = {'form_class': SizedImageCenterpointClickDjangoAdminField}
-        kwargs.update(defaults)
+        defaults.update(kwargs)
         return super(VersatileImageField, self).formfield(**defaults)
 
 
