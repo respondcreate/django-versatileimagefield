@@ -184,8 +184,13 @@ def autodiscover():
 
     import copy
     from django.conf import settings
-    from django.utils.importlib import import_module
     from django.utils.module_loading import module_has_submodule
+    # Django 1.7 drops support for Python 2.6 and deprecates its port of the
+    # "importlib" module which is available in Python 2.7.
+    try:
+        from importlib import import_module
+    except ImportError:  # pragma: no cover
+        from django.utils.importlib import import_module
 
     for app in settings.INSTALLED_APPS:
         mod = import_module(app)
