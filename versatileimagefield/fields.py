@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 import os
 
 from django.conf import settings
+from django.contrib.admin.widgets import AdminFileWidget
 from django.db.models import SubfieldBase
 from django.db.models.fields import CharField
 from django.db.models.fields.files import ImageField
@@ -141,7 +142,26 @@ class VersatileImageField(ImageField):
     def formfield(self, **kwargs):
         # This is a fairly standard way to set up some defaults
         # while letting the caller override them.
-        defaults = {'form_class': SizedImageCenterpointClickDjangoAdminField}
+        defaults = {
+            'form_class': SizedImageCenterpointClickDjangoAdminField
+        }
+        if kwargs.get('widget') is AdminFileWidget:
+            # Ensuring default admin widget is skipped (in favor of using
+            # SizedImageCenterpointClickDjangoAdminField's default widget as
+            # the default widget choice for use in the admin).
+            # This is for two reasons:
+            # 1. To prevent 'typical' admin users (those who want to use
+            #    the PPOI 'click' widget by default) from having to
+            #    specify a formfield_overrides for each ModelAdmin class
+            #    used by each model that has a VersatileImageField.
+            # 2. If a VersatileImageField does not have a ppoi_field specified
+            #    it will 'fall back' to a ClearableFileInput anyways.
+            # If admin users do, in fact, want to force use of the
+            # AdminFileWidget they can simply subclass AdminFileWidget and
+            # specify it in their ModelAdmin.formfield_overrides (though,
+            # if that's the case, why are they using VersatileImageField in
+            # the first place?)
+            del kwargs['widget']
         defaults.update(kwargs)
         return super(VersatileImageField, self).formfield(**defaults)
 
