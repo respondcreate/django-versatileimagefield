@@ -79,6 +79,11 @@ Table of Contents
 Release Notes
 =============
 
+1.0.3
+^^^^^
+- Addressed Django `1.9 deprecation warnings <https://docs.djangoproject.com/en/1.8/internals/deprecation/#deprecation-removed-in-1-9>`_ (``get_cache`` and ``importlib``)
+- Enabled ``VersatileImageField`` formfield to be overriden via ``**kwargs``
+
 1.0.2
 ^^^^^
 - Removed clear checkbox from widgets on required fields.
