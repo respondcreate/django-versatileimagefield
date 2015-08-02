@@ -142,9 +142,9 @@ class VersatileImageField(ImageField):
     def formfield(self, **kwargs):
         # This is a fairly standard way to set up some defaults
         # while letting the caller override them.
-        defaults = {
-            'form_class': SizedImageCenterpointClickDjangoAdminField
-        }
+        defaults = {}
+        if self.ppoi_field:
+            defaults['form_class'] = SizedImageCenterpointClickDjangoAdminField
         if kwargs.get('widget') is AdminFileWidget:
             # Ensuring default admin widget is skipped (in favor of using
             # SizedImageCenterpointClickDjangoAdminField's default widget as
