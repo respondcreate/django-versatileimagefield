@@ -25,17 +25,6 @@ CENTERPOINT_CHOICES = (
 
 class ClearableFileInputWithImagePreview(ClearableFileInput):
     ppoi_label = ugettext_lazy('Primary Point of Interest')
-    template_with_initial = (
-        '<div class="sizedimage-mod initial">'
-        '<label class="versatileimagefield-label">'
-        '%(initial_text)s:</label> %(initial)s '
-        '</div>'
-        '%(clear_template)s'
-        '<div class="sizedimage-mod new-upload">'
-        '<label class="versatileimagefield-label">%(input_text)s:</label>'
-        '%(input)s'
-        '</div>'
-    )
     template_with_clear = (
         '<div class="sizedimage-mod clear">'
         '%(clear)s <label class="versatileimagefield-label" '
@@ -121,20 +110,17 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
                                                    value.url,
                                                    force_text(value))
             substitutions['initial_url'] = value.url
-            if value.field.ppoi_field:
-                template = self.template_with_initial_and_imagepreview
-                point_stage_id = self.get_point_stage_id(name)
-                ppoi_id = self.get_ppoi_id(name)
-                substitutions['point_stage_id'] = point_stage_id
-                substitutions['ppoi_id'] = ppoi_id
-                substitutions['image_preview_id'] = self.image_preview_id(name)
-                image_preview = self.image_preview(
-                    name,
-                    value
-                )
-                substitutions['image_preview'] = image_preview
-            else:
-                template = self.template_with_initial
+            template = self.template_with_initial_and_imagepreview
+            point_stage_id = self.get_point_stage_id(name)
+            ppoi_id = self.get_ppoi_id(name)
+            substitutions['point_stage_id'] = point_stage_id
+            substitutions['ppoi_id'] = ppoi_id
+            substitutions['image_preview_id'] = self.image_preview_id(name)
+            image_preview = self.image_preview(
+                name,
+                value
+            )
+            substitutions['image_preview'] = image_preview
 
             if value.field.blank:
                 checkbox_name = self.clear_checkbox_name(name)

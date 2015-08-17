@@ -818,13 +818,13 @@ class VersatileImageFieldTestCase(TestCase):
                 'img_type': 'xxx',
                 'image_0': '',
                 'image_1': '0.25x0.25',
-                'optional_image_0-clear': 'on'
+                'optional_image-clear': 'on'
             },
             instance=instance
         )
         instance = f2.save()
         self.assertEqual(instance.image.ppoi, (0.25, 0.25))
-        self.assertEqual(instance.optional_image.name, None)
+        self.assertEqual(instance.optional_image.name, '')
         instance.image.delete()
 
     def test_ProcessedImage_subclass_exceptions(self):
