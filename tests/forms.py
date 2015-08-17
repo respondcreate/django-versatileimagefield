@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 
-from .models import VersatileImageTestModel
+from .models import VersatileImageTestModel, VersatileImageWidgetTestModel
 
 
 class VersatileImageTestModelForm(ModelForm):
@@ -14,4 +14,16 @@ class VersatileImageTestModelForm(ModelForm):
             'img_type',
             'image',
             'optional_image'
+        )
+
+
+class VersatileImageWidgetTestModelForm(ModelForm):
+    """
+    A form for testing VersatileImageField widgets
+    """
+
+    class Meta:
+        model = VersatileImageWidgetTestModel
+        fields = (
+            'optional_image_with_ppoi',
         )

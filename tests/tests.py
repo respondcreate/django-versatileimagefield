@@ -52,7 +52,8 @@ from versatileimagefield.utils import (
 from versatileimagefield.validators import validate_ppoi_tuple
 from versatileimagefield.versatileimagefield import CroppedImage, InvertImage
 
-from .forms import VersatileImageTestModelForm
+from .forms import VersatileImageTestModelForm, \
+    VersatileImageWidgetTestModelForm
 from .models import VersatileImageTestModel, VersatileImageWidgetTestModel
 from .serializers import VersatileImageTestModelSerializer
 
@@ -491,6 +492,15 @@ class VersatileImageFieldTestCase(TestCase):
                 self.widget_test.image.thumbnail['300x300'].name
             )
         )
+        f = VersatileImageWidgetTestModelForm(
+            data={
+                'optional_image_with_ppoi_0': '',
+                'optional_image_with_ppoi_0-clear': 'on'
+            },
+            instance=self.widget_test
+        )
+        instance = f.save()
+        self.assertEqual(instance.optional_image_with_ppoi.name, '')
 
     def test_VersatileImageFileDescriptor(self):
         """
