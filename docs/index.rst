@@ -54,6 +54,7 @@ Compatibility
   - 2.4.4
   - 3.0.x
   - 3.1.x
+  - 3.2.x
 
 Code
 ====
@@ -78,6 +79,10 @@ Table of Contents
 
 Release Notes
 =============
+
+1.0.4
+^^^^^
+- Finessed/improved widget functionality for both optional and 'PPOI-less' fields (thanks, `@SebCorbin <https://github.com/SebCorbin>`_!).
 
 1.0.3
 ^^^^^
