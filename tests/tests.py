@@ -410,44 +410,33 @@ class VersatileImageFieldTestCase(TestCase):
         # Test required field no PPOI
         self.assertInHTML(
             (
-                '<div class="versatileimagefield">'
-                '    <div class="sizedimage-mod initial">'
-                '        <label class="versatileimagefield-label">Currently:</label>'
-                '        <a href="/media/python-logo.jpg">python-logo.jpg</a>'
-                '    </div>'
-                '    <div class="sizedimage-mod new-upload">'
-                '        <label class="versatileimagefield-label">Change:</label>'
-                '        <input class="file-chooser" id="id_image_no_ppoi_0"'
-                '               name="image_no_ppoi_0" type="file" />'
-                '    </div>'
-                '    <input class="ppoi-input" id="id_image_no_ppoi_1" name="image_no_ppoi_1"'
-                '           type="hidden" value="0.5x0.5" />'
+                '<div class="form-row field-image_no_ppoi">'
+                '<div>'
+                '<label class="required" for="id_image_no_ppoi">'
+                'Image no ppoi:</label>'
+                'Currently: <a href="/media/python-logo.jpg">python-logo.jpg'
+                '</a> <br />Change: <input id="id_image_no_ppoi" '
+                'name="image_no_ppoi" type="file" />'
+                '</div>'
                 '</div>'
             ),
             response_content
         )
         # Test optional image no PPOI
+
         self.assertInHTML(
             (
-                '<div class="versatileimagefield">'
-                '    <div class="sizedimage-mod initial">'
-                '    <label class="versatileimagefield-label">Currently:</label>'
-                '        <a href="/media/exif-orientation-examples/Landscape_8.jpg">'
-                '        exif-orientation-examples/Landscape_8.jpg</a>'
-                '    </div>'
-                '    <div class="sizedimage-mod clear">'
-                '        <input id="optional_image_0-clear_id" name="optional_image_0-clear"'
-                '               type="checkbox" />'
-                '        <label class="versatileimagefield-label"'
-                '               for="optional_image_0-clear_id">Clear: </label>'
-                '    </div>'
-                '    <div class="sizedimage-mod new-upload">'
-                '    <label class="versatileimagefield-label">Change:</label>'
-                '    <input class="file-chooser" id="id_optional_image_0"'
-                '           name="optional_image_0" type="file" />'
-                '    </div>'
-                '    <input class="ppoi-input" id="id_optional_image_1" name="optional_image_1"'
-                '           type="hidden" value="0.5x0.5" />'
+                '<div class="form-row field-optional_image">'
+                '<div>'
+                '<label for="id_optional_image">Optional image:</label>'
+                'Currently: <a href="/media/exif-orientation-examples/'
+                'Landscape_8.jpg">exif-orientation-examples/Landscape_8.jpg'
+                '</a> <input id="optional_image-clear_id" '
+                'name="optional_image-clear" type="checkbox" /> <label '
+                'for="optional_image-clear_id">Clear</label><br />Change: '
+                '<input id="id_optional_image" name="optional_image" '
+                'type="file" />'
+                '</div>'
                 '</div>'
             ),
             response_content
@@ -807,7 +796,7 @@ class VersatileImageFieldTestCase(TestCase):
             data={'img_type': 'xxx'},
             files={
                 'image_0': SimpleUploadedFile('test.png', image_data),
-                'optional_image_0': SimpleUploadedFile(
+                'optional_image': SimpleUploadedFile(
                     'test2.png', image_data2
                 )
             }
@@ -815,7 +804,7 @@ class VersatileImageFieldTestCase(TestCase):
         self.assertEqual(f.is_valid(), True)
         self.assertEqual(type(f.cleaned_data['image'][0]), SimpleUploadedFile)
         self.assertEqual(
-            type(f.cleaned_data['optional_image'][0]), SimpleUploadedFile
+            type(f.cleaned_data['optional_image']), SimpleUploadedFile
         )
         instance = f.save()
         self.assertEqual(instance.image.name, './test.png')
@@ -835,7 +824,7 @@ class VersatileImageFieldTestCase(TestCase):
         )
         instance = f2.save()
         self.assertEqual(instance.image.ppoi, (0.25, 0.25))
-        self.assertEqual(instance.optional_image.name, '')
+        self.assertEqual(instance.optional_image.name, None)
         instance.image.delete()
 
     def test_ProcessedImage_subclass_exceptions(self):
