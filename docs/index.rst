@@ -80,6 +80,10 @@ Table of Contents
 Release Notes
 =============
 
+1.0.5
+^^^^^
+- Fixed image preview on form validation errors (thanks, `@securedirective <https://github.com/securedirective>`_!).
+
 1.0.4
 ^^^^^
 - Finessed/improved widget functionality for both optional and 'PPOI-less' fields (thanks, `@SebCorbin <https://github.com/SebCorbin>`_!).
