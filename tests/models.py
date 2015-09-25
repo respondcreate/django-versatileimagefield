@@ -73,5 +73,8 @@ class VersatileImageWidgetTestModel(models.Model):
         blank=True,
         ppoi_field='optional_image_with_ppoi_ppoi'
     )
+    required_text_field = models.CharField(
+        max_length=20,
+    )
     ppoi = PPOIField()
     optional_image_with_ppoi_ppoi = PPOIField()

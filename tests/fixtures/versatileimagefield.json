@@ -106,7 +106,8 @@
         "optional_image": "exif-orientation-examples/Landscape_8.jpg",
         "optional_image_with_ppoi": "exif-orientation-examples/Landscape_6.jpg",
         "ppoi": "0.5x0.5",
-        "optional_image_with_ppoi_ppoi": "1.0x1.0"
+        "optional_image_with_ppoi_ppoi": "1.0x1.0",
+        "required_text_field": "boo urns"
     },
     "model": "tests.versatileimagewidgettestmodel",
     "pk": 1

@@ -940,3 +940,27 @@ class VersatileImageFieldTestCase(TestCase):
                 }
             ]
         )
+
+    def test_bound_form_data(self):
+        "Ensure fields return the correct data after form validation errors."
+        response = self.client.post(
+            '/admin/tests/versatileimagewidgettestmodel/1/',
+            {
+                'required_text_field': ''
+            },
+            follow=True
+        )
+        self.assertEqual(response.status_code, 200)
+        if six.PY2:
+            response_content = str(response.content)
+        else:
+            response_content = str(response.content, encoding='utf-8')
+        self.assertInHTML(
+            (
+                '<img src="/media/__sized__/python-logo-thumbnail-300x300.'
+                'png" id="image_0_imagepreview" data-hidden_field_id='
+                '"id_image_1" data-point_stage_id="image_0_point-stage" '
+                'data-ppoi_id="image_0_ppoi" class="sizedimage-preview"/>'
+            ),
+            response_content
+        )

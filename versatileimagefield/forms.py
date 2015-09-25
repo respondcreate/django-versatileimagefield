@@ -46,6 +46,12 @@ class VersatileImagePPOIClickField(SizedImageCenterpointMixIn,
             tuple(fields), *args, **kwargs
         )
 
+    def bound_data(self, data, initial):
+        to_return = data
+        if data[0] is None:
+            to_return = initial
+        return to_return
+
 
 class SizedImageCenterpointClickDjangoAdminField(
         VersatileImagePPOIClickField):
