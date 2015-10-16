@@ -23,6 +23,9 @@ from django.utils import six
 from django.utils.six.moves import cPickle
 
 from PIL import Image
+from rest_framework.request import Request
+from rest_framework.test import APIRequestFactory
+
 from versatileimagefield.files import VersatileImageFileDescriptor
 from versatileimagefield.datastructures.filteredimage import InvalidFilter
 from versatileimagefield.datastructures.sizedimage import \
@@ -323,27 +326,33 @@ class VersatileImageFieldTestCase(TestCase):
 
     def test_VersatileImageFieldSerializer_output(self):
         """Ensures VersatileImageFieldSerializer serializes correctly"""
-        serializer = VersatileImageTestModelSerializer(self.jpg)
+        factory = APIRequestFactory()
+        request = factory.get('/admin/')
+        serializer = VersatileImageTestModelSerializer(
+            self.jpg,
+            context={'request': request}
+        )
         self.assertEqual(
             serializer.data.get('image'),
             {
                 'test_crop': (
-                    '/media/__sized__/python-logo-crop-c0-25__'
-                    '0-25-100x100.jpg'
+                    'http://testserver/media/__sized__/python-logo-crop'
+                    '-c0-25__0-25-100x100.jpg'
                 ),
                 'test_invert_crop': (
-                    '/media/__sized__/__filtered__/python-logo__'
-                    'invert__-crop-c0-25__0-25-100x100.jpg'
+                    'http://testserver/media/__sized__/__filtered__/'
+                    'python-logo__invert__-crop-c0-25__0-25-100x100.jpg'
                 ),
                 'test_invert_thumb': (
-                    '/media/__sized__/__filtered__/python-logo__'
-                    'invert__-thumbnail-100x100.jpg'
+                    'http://testserver/media/__sized__/__filtered__/'
+                    'python-logo__invert__-thumbnail-100x100.jpg'
                 ),
                 'test_invert': (
-                    '/media/__filtered__/python-logo__invert__.jpg'
+                    'http://testserver/media/__filtered__/'
+                    'python-logo__invert__.jpg'
                 ),
                 'test_thumb': (
-                    '/media/__sized__/python-logo-thumbnail'
+                    'http://testserver/media/__sized__/python-logo-thumbnail'
                     '-100x100.jpg'
                 )
             }

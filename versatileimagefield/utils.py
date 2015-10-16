@@ -201,29 +201,32 @@ def get_url_from_image_key(image_instance, image_key):
     return img_url
 
 
-def build_versatileimagefield_url_set(image_instance, size_set):
+def build_versatileimagefield_url_set(image_instance, size_set, request=None):
     """
     Returns a dictionary of urls corresponding to size_set
     - `image_instance`: A VersatileImageFieldFile
     - `size_set`: An iterable of 2-tuples, both strings. Example:
-    [
-        ('large', 'url'),
-        ('medium', 'crop__400x400'),
-        ('small', 'thumbnail__100x100')
-    ]
+        [
+            ('large', 'url'),
+            ('medium', 'crop__400x400'),
+            ('small', 'thumbnail__100x100')
+        ]
 
-    The above would lead to the following response:
-    {
-        'large': 'http://some.url/image.jpg',
-        'medium': 'http://some.url/__sized__/image-crop-400x400.jpg',
-        'small': 'http://some.url/__sized__/image-thumbnail-100x100.jpg',
-    }
+        The above would lead to the following response:
+        {
+            'large': 'http://some.url/image.jpg',
+            'medium': 'http://some.url/__sized__/image-crop-400x400.jpg',
+            'small': 'http://some.url/__sized__/image-thumbnail-100x100.jpg',
+        }
+    - `request`:
     """
     size_set = validate_versatileimagefield_sizekey_list(size_set)
     to_return = {}
     if image_instance:
         for key, image_key in size_set:
             img_url = get_url_from_image_key(image_instance, image_key)
+            if request is not None:
+                img_url = request.build_absolute_uri(img_url)
             to_return[key] = img_url
     return to_return
 
