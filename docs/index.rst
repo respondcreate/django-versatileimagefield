@@ -80,6 +80,13 @@ Table of Contents
 Release Notes
 =============
 
+1.0.6
+^^^^^
+- Updated ``VersatileImageFieldSerializer`` to serve image URLs as absolute URIs (if its associated field's storage class isn't doing so already).
+
+  - Formerly: /media/headshots/jane_doe_headshot.jpg
+  - Now: http://localhost:8000/media/headshots/jane_doe_headshot.jpg
+
 1.0.5
 ^^^^^
 - Fixed image preview on form validation errors (thanks, `@securedirective <https://github.com/securedirective>`_!).
