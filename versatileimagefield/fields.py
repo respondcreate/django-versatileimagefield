@@ -119,7 +119,7 @@ class VersatileImageField(ImageField):
 
         """
         to_assign = data
-        if isinstance(data, tuple):
+        if data and isinstance(data, tuple):
             # This value is coming from a MultiValueField
             if data[0] is None:
                 # This means the file hasn't changed but we need to

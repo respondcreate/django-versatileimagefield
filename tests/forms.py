@@ -1,5 +1,7 @@
 from django.forms import ModelForm
 
+from versatileimagefield.fields import SizedImageCenterpointClickDjangoAdminField
+
 from .models import VersatileImageTestModel, VersatileImageWidgetTestModel
 
 
@@ -7,6 +9,7 @@ class VersatileImageTestModelForm(ModelForm):
     """
     A form for testing VersatileImageFields
     """
+    image = SizedImageCenterpointClickDjangoAdminField(required=False)
 
     class Meta:
         model = VersatileImageTestModel

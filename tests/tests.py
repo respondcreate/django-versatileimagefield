@@ -23,7 +23,6 @@ from django.utils import six
 from django.utils.six.moves import cPickle
 
 from PIL import Image
-from rest_framework.request import Request
 from rest_framework.test import APIRequestFactory
 
 from versatileimagefield.files import VersatileImageFileDescriptor
