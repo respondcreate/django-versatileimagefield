@@ -7,6 +7,7 @@ import operator
 import os
 from shutil import rmtree
 
+from django import VERSION as DJANGO_VERSION
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache import cache
@@ -54,8 +55,11 @@ from versatileimagefield.utils import (
 from versatileimagefield.validators import validate_ppoi_tuple
 from versatileimagefield.versatileimagefield import CroppedImage, InvertImage
 
-from .forms import VersatileImageTestModelForm, \
-    VersatileImageWidgetTestModelForm
+from .forms import (
+    VersatileImageTestModelForm,
+    VersatileImageWidgetTestModelForm,
+    VersatileImageTestModelFormDjango15
+)
 from .models import VersatileImageTestModel, VersatileImageWidgetTestModel
 from .serializers import VersatileImageTestModelSerializer
 
@@ -809,8 +813,12 @@ class VersatileImageFieldTestCase(TestCase):
             'rb'
         ) as fp:
             image_data2 = fp.read()
+        if DJANGO_VERSION[0] == 1 and DJANGO_VERSION[1] == 5:
+            form_class = VersatileImageTestModelFormDjango15
+        else:
+            form_class = VersatileImageTestModelForm
         # Testing new uploads
-        f = VersatileImageTestModelForm(
+        f = form_class(
             data={'img_type': 'xxx'},
             files={
                 'image_0': SimpleUploadedFile('test.png', image_data),
@@ -831,7 +839,7 @@ class VersatileImageFieldTestCase(TestCase):
         # Deleting optional_image file (since it'll be cleared with the
         # next form)
         instance.optional_image.delete()
-        f2 = VersatileImageTestModelForm(
+        f2 = form_class(
             data={
                 'img_type': 'xxx',
                 'image_0': '',

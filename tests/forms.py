@@ -9,7 +9,7 @@ class VersatileImageTestModelForm(ModelForm):
     """
     A form for testing VersatileImageFields
     """
-    image = SizedImageCenterpointClickDjangoAdminField(required=False)
+    image = SizedImageCenterpointClickDjangoAdminField()
 
     class Meta:
         model = VersatileImageTestModel
@@ -18,6 +18,10 @@ class VersatileImageTestModelForm(ModelForm):
             'image',
             'optional_image'
         )
+
+
+class VersatileImageTestModelFormDjango15(VersatileImageTestModelForm):
+    image = SizedImageCenterpointClickDjangoAdminField(required=False)
 
 
 class VersatileImageWidgetTestModelForm(ModelForm):
