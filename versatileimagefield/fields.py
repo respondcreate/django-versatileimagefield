@@ -11,10 +11,7 @@ from django.utils.six import add_metaclass
 from django.utils.translation import ugettext_lazy as _
 
 from .files import VersatileImageFieldFile, VersatileImageFileDescriptor
-from .forms import (
-    SizedImageCenterpointClickDjangoAdminField,
-    SizedImageCenterpointClickDjangoAdminWidget
-)
+from .forms import SizedImageCenterpointClickDjangoAdminField
 from .placeholder import OnStoragePlaceholderImage
 from .settings import VERSATILEIMAGEFIELD_PLACEHOLDER_DIRNAME
 from .validators import validate_ppoi
@@ -148,7 +145,6 @@ class VersatileImageField(ImageField):
         defaults = {}
         if self.ppoi_field:
             defaults['form_class'] = SizedImageCenterpointClickDjangoAdminField
-            defaults['widget'] = SizedImageCenterpointClickDjangoAdminWidget
         if kwargs.get('widget') is AdminFileWidget:
             # Ensuring default admin widget is skipped (in favor of using
             # SizedImageCenterpointClickDjangoAdminField's default widget as
