@@ -162,3 +162,49 @@ PPOI value is currently set to on the image:
    django-versatileimagefield PPOI admin widget example
 
 .. note:: ``PPOIField`` is not editable so it will be automatically excluded from the admin.
+
+.. _django-15-admin-note:
+
+Django 1.5 Admin Integration for required ``VersatileImageField`` fields
+------------------------------------------------------------------------
+
+If you're using a required (i.e. ``blank=False``) ``VersatileImageField`` on a project running Django 1.5 you'll need a custom form class to circumvent an already-fixed-in-Django-1.6 issue (that has to do with required fields associated with a ``MultiValueField``/``MultiWidget`` used in a ``ModelForm``).
+
+The example below uses an example model ``YourModel`` that has a required ``VersatileImageField`` as the ``image`` attribute.
+
+.. code-block:: python
+    :emphasize-lines: 5,10
+
+    # yourapp/forms.py
+
+    from django.forms import ModelForm
+
+    from versatileimagefield.fields import SizedImageCenterpointClickDjangoAdminField
+
+    from .models import YourModel
+
+    class YourModelForm(VersatileImageTestModelForm):
+        image = SizedImageCenterpointClickDjangoAdminField(required=False)
+
+        class Meta:
+            model = YourModel
+            fields = ('image',)
+
+Note the ``required=False`` in the formfield definition in the above example.
+
+Integrating the custom form into the admin:
+
+.. code-block:: python
+    :emphasize-lines: 6,9
+
+    # yourapp/admin.py
+
+    from django.contrib import admin
+
+    from .forms import YourModelForm
+    from .models import YourModel
+
+    class YourModelAdmin(admin.ModelAdmin):
+        form = YourModelForm
+
+    admin.site.register(YourModel, YourModelAdmin)
