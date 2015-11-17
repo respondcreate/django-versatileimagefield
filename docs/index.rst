@@ -42,6 +42,7 @@ Compatibility
 
 - `Django <https://www.djangoproject.com/>`_:
 
+  - 1.5.x (NOTE: Django REST Framework 3.3.x is not compatible with Django 1.5.x)
   - 1.6.x
   - 1.7.x
   - 1.8.x
@@ -55,6 +56,7 @@ Compatibility
   - 3.0.x
   - 3.1.x
   - 3.2.x
+  - 3.3.x (NOTE: Django 1.5.x is not compatible with Django REST Framework 3.3.x)
 
 Code
 ====
@@ -79,6 +81,11 @@ Table of Contents
 
 Release Notes
 =============
+
+1.1
+^^^
+- Re-added support for Django 1.5.x (by request, support for Django 1.5.x was previously dropped in the 0.4 release). If you're using ``django-versatileimagefield`` on a Django 1.5.x project please be sure to read :ref:`this bit of documentation <django-15-admin-note>`.
+- Added support for Django REST Framework 3.3.x.
 
 1.0.6
 ^^^^^
