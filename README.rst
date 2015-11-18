@@ -35,6 +35,7 @@ Compatibility
 
 - `Django <https://www.djangoproject.com/>`_:
 
+  - 1.5.x (NOTE: Django REST Framework 3.3.x is not compatible with Django 1.5.x)
   - 1.6.x
   - 1.7.x
   - 1.8.x
@@ -47,6 +48,8 @@ Compatibility
   - 2.4.4
   - 3.0.x
   - 3.1.x
+  - 3.2.x
+  - 3.3.x (NOTE: Django REST Framework 3.3.x is not compatible with Django 1.5.x)
 
 Documentation
 =============
