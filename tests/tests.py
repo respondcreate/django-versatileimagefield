@@ -63,6 +63,10 @@ from .forms import (
 from .models import VersatileImageTestModel, VersatileImageWidgetTestModel
 from .serializers import VersatileImageTestModelSerializer
 
+ADMIN_URL = '/admin/tests/versatileimagewidgettestmodel/1/'
+if DJANGO_VERSION[0] == 1 and DJANGO_VERSION[1] >= 9:
+    ADMIN_URL = '/admin/tests/versatileimagewidgettestmodel/1/change/'
+
 
 class VersatileImageFieldTestCase(TestCase):
     fixtures = ['versatileimagefield']
@@ -367,7 +371,7 @@ class VersatileImageFieldTestCase(TestCase):
         and its image preview is available
         """
         response = self.client.get(
-            '/admin/tests/versatileimagewidgettestmodel/1/'
+            ADMIN_URL
         )
         self.assertEqual(response.status_code, 200)
         if six.PY2:
@@ -960,7 +964,7 @@ class VersatileImageFieldTestCase(TestCase):
     def test_bound_form_data(self):
         "Ensure fields return the correct data after form validation errors."
         response = self.client.post(
-            '/admin/tests/versatileimagewidgettestmodel/1/',
+            ADMIN_URL,
             {
                 'required_text_field': ''
             },
