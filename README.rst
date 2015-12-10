@@ -33,7 +33,7 @@ Compatibility
   - 3.4
   - 3.5
 
-.. note:: The 1.2 release dropped support for Python 3.3.x.
+**NOTE**: The 1.2 release dropped support for Python 3.3.x.
 
 - `Django <https://www.djangoproject.com/>`_:
 
