@@ -37,15 +37,18 @@ Compatibility
 - Python:
 
   - 2.7
-  - 3.3
   - 3.4
+  - 3.5
+
+.. note:: The 1.2 release dropped support for Python 3.3.x.
 
 - `Django <https://www.djangoproject.com/>`_:
 
-  - 1.5.x (NOTE: Django REST Framework 3.3.x is not compatible with Django 1.5.x)
-  - 1.6.x
+  - 1.5.x
+  - 1.6.x (NOTE: Django REST Framework 3.3.x is not compatible with Django<=1.6.x)
   - 1.7.x
   - 1.8.x
+  - 1.9.x (NOTE: Django REST Framework>=3.1.x is required if using Django 1.9.x)
 
 - `Pillow <http://pillow.readthedocs.org/en/latest/index.html>`_ >= 2.4.0
 
@@ -56,7 +59,7 @@ Compatibility
   - 3.0.x
   - 3.1.x
   - 3.2.x
-  - 3.3.x (NOTE: Django 1.5.x is not compatible with Django REST Framework 3.3.x)
+  - 3.3.x (NOTE: Django REST Framework 3.3.x is not compatible with Django<=1.6.x)
 
 Code
 ====
@@ -81,6 +84,12 @@ Table of Contents
 
 Release Notes
 =============
+
+1.2
+^^^
+- Fixed a bug that caused ``collectstatic`` to fail when using ``ManifestStaticFilesStorage`` (thanks, `@theskumar <https://github.com/theskumar>`_!).
+- Dropped support for Python 3.3.x.
+- Added support for Django 1.9.x.
 
 1.1
 ^^^
@@ -202,7 +211,7 @@ Release Notes
 0.1.2
 ^^^^^
 
--  Removed redundant javascript from ppoi 'click' widget (thanks, `@skumar <https://github.com/theskumar>`_!)
+-  Removed redundant javascript from ppoi 'click' widget (thanks, `@theskumar <https://github.com/theskumar>`_!)
 
 0.1.1
 ^^^^^
