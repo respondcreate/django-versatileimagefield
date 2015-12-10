@@ -88,7 +88,7 @@ class VersatileImageFieldRegistry(object):
         """
         if attr_name.startswith(
             '_'
-        )or attr_name in self.unallowed_sizer_names:
+        ) or attr_name in self.unallowed_sizer_names:
             raise UnallowedSizerName(
                 "`%s` is an unallowed Sizer name. Sizer names cannot begin "
                 "with an underscore or be named any of the "
