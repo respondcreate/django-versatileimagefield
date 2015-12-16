@@ -7,6 +7,7 @@ from django.core.files.storage import default_storage
 
 empty = object()
 
+
 class PlaceholderImage(object):
     """
     A class for configuring images to be used as 'placeholders' for
