@@ -55,6 +55,10 @@ class VersatileImageFileDescriptor(ImageFileDescriptor):
         # in __set__.
         file = instance.__dict__[self.field.name]
 
+        # Call the placeholder procecess method on VersatileImageField.
+        # (This was called inside the VersatileImageField __init__ before) Fixes #28
+        self.field.process_placeholder_image()
+
         # If this value is a string (instance.file = "path/to/file") or None
         # then we simply wrap it with the appropriate attribute class according
         # to the file field. [This is FieldFile for FileFields and

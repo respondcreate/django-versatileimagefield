@@ -39,15 +39,23 @@ class VersatileImageField(ImageField):
         super(VersatileImageField, self).__init__(
             verbose_name, name, width_field, height_field, **kwargs
         )
-        self._process_placeholder_image(placeholder_image)
+        self.placeholder_image = placeholder_image
+        self.placeholder_image_name = None
 
-    def _process_placeholder_image(self, placeholder_image):
+    def process_placeholder_image(self):
         """
         Ensures the placeholder image has been saved to the same storage class
         as the field in a top level folder with a name specified by
         settings.VERSATILEIMAGEFIELD_SETTINGS['placeholder_directory_name']
+
+        This should be called by the VersatileImageFileDescriptor __get__.
+        If self.placeholder_image_name is already set it just returns right away.
         """
+        if self.placeholder_image_name:
+            return
+
         placeholder_image_name = None
+        placeholder_image = self.placeholder_image
         if placeholder_image:
             if isinstance(placeholder_image, OnStoragePlaceholderImage):
                 name = placeholder_image.path
