@@ -32,6 +32,12 @@ class VersatileImageMixIn(object):
         else:
             self.ppoi = (0.5, 0.5)
 
+    def _get_url(self):
+        if not self.name and self.field.placeholder_image_name:
+            return self.storage.url(self.field.placeholder_image_name)
+        return super(VersatileImageMixIn, self)._get_url()
+    url = property(_get_url)
+
     @property
     def create_on_demand(self):
         return self._create_on_demand
