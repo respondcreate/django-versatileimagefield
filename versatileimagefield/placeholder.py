@@ -16,14 +16,6 @@ class PlaceholderImage(object):
 
     _image_data = empty
 
-    def __init__(self, file, name):
-        """
-        `file` - A python file instance.
-        `name` - The desired filename of `file`.
-        """
-        self.file = file
-        self.name = name
-
     def setup(self):
         if isinstance(self.file, ContentFile):
             image_data = self.file
