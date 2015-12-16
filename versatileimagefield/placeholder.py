@@ -5,6 +5,7 @@ import os
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 
+empty = object()
 
 class PlaceholderImage(object):
     """
@@ -12,17 +13,29 @@ class PlaceholderImage(object):
     blank/empty VersatileImageField fields.
     """
 
+    _image_data = empty
+
     def __init__(self, file, name):
         """
         `file` - A python file instance.
         `name` - The desired filename of `file`.
         """
-        if isinstance(file, ContentFile):
-            image_data = file
+        self.file = file
+        self.name = name
+
+    def setup(self):
+        if isinstance(self.file, ContentFile):
+            image_data = self.file
         else:
-            image_data = ContentFile(file.read(), name=name)
-        self.image_data = image_data
-        file.close()
+            image_data = ContentFile(self.file.read(), name=self.name)
+        self._image_data = image_data
+        self.file.close()
+
+    @property
+    def image_data(self):
+        if self._image_data is empty:
+            self.setup()
+        return self._image_data
 
 
 class OnDiscPlaceholderImage(PlaceholderImage):
@@ -35,10 +48,15 @@ class OnDiscPlaceholderImage(PlaceholderImage):
         """
         `path` - An absolute path to an on-disc image.
         """
-        folder, name = os.path.split(path)
-        file = open(path, 'rb')
+        self.path = path
+
+    def setup(self):
+        folder, name = os.path.split(self.path)
+        file = open(self.path, 'rb')
         content_file = ContentFile(file.read(), name=name)
-        super(OnDiscPlaceholderImage, self).__init__(content_file, name)
+        self.file = content_file
+        self.name = name
+        super(OnDiscPlaceholderImage, self).setup()
 
 
 class OnStoragePlaceholderImage(PlaceholderImage):
@@ -53,7 +71,12 @@ class OnStoragePlaceholderImage(PlaceholderImage):
         `storage` - A django storage class.
         """
         self.path = path
-        storage = storage or default_storage
-        file = storage.open(path)
-        folder, name = os.path.split(path)
-        super(OnStoragePlaceholderImage, self).__init__(file, name)
+        self.storage = storage
+
+    def setup(self):
+        storage = self.storage or default_storage
+        file = storage.open(self.path)
+        folder, name = os.path.split(self.path)
+        self.file = file
+        self.name = name
+        super(OnStoragePlaceholderImage, self).setup()
