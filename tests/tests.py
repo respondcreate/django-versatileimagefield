@@ -184,8 +184,12 @@ class VersatileImageFieldTestCase(TestCase):
         )
 
     def test_placeholder_image(self):
-        """Ensures placehold.it integration"""
+        """Ensures placeholder images work as intended."""
         self.jpg.optional_image.create_on_demand = True
+        self.assertEqual(
+            self.jpg.optional_image.url,
+            '/media/__placeholder__/placeholder.png'
+        )
         self.assertEqual(
             self.jpg.optional_image.crop['100x100'].url,
             '/media/__sized__/__placeholder__/'

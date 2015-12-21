@@ -33,6 +33,12 @@ class VersatileImageMixIn(object):
             self.ppoi = (0.5, 0.5)
 
     def _get_url(self):
+        """
+        Returns the appropriate URL based on field conditions:
+            * If empty (not `self.name`) and a placeholder is defined, the
+              URL to the placeholder is returned.
+            * Otherwise, defaults to vanilla ImageFieldFile behavior.
+        """
         if not self.name and self.field.placeholder_image_name:
             return self.storage.url(self.field.placeholder_image_name)
         return super(VersatileImageMixIn, self)._get_url()
