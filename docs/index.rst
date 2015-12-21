@@ -85,6 +85,11 @@ Table of Contents
 Release Notes
 =============
 
+1.2.1
+^^^^^
+- Fixed a bug that caused ``collectstatic`` to fail when using placeholder images with external storage, like Amazon S3 (thanks, `@jelko <https://github.com/jelko>`_!).
+- ``VersatileImageField`` now returns its placeholder URL if ``.url`` is accessed directly (previously only placeholder images were returned if a sizer or filter was accessed). Thanks (again), `@jelko <https://github.com/jelko>`_!
+
 1.2
 ^^^
 - Fixed a bug that caused ``collectstatic`` to fail when using ``ManifestStaticFilesStorage`` (thanks, `@theskumar <https://github.com/theskumar>`_!).
