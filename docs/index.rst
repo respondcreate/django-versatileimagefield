@@ -85,6 +85,10 @@ Table of Contents
 Release Notes
 =============
 
+1.2.2
+^^^^^
+- Fixed a critical bug that broke initial project setup (i.e. when ``django.setup()`` is run) when an `app config <https://docs.djangoproject.com/en/1.9/ref/applications/>`_ path was included in ``INSTALLED_APPS`` (as opposed to a 'vanilla' python module).
+
 1.2.1
 ^^^^^
 - Fixed a bug that caused ``collectstatic`` to fail when using placeholder images with external storage, like Amazon S3 (thanks, `@jelko <https://github.com/jelko>`_!).
