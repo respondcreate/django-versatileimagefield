@@ -75,6 +75,9 @@ class VersatileImageFieldTestCase(TestCase):
         self.jpg = VersatileImageTestModel.objects.get(img_type='jpg')
         self.png = VersatileImageTestModel.objects.get(img_type='png')
         self.gif = VersatileImageTestModel.objects.get(img_type='gif')
+        self.delete_test = VersatileImageTestModel.objects.get(
+            img_type='delete_test'
+        )
         self.widget_test = VersatileImageWidgetTestModel.objects.get(pk=1)
         password = '12345'
         user = User.objects.create_user(
@@ -314,7 +317,9 @@ class VersatileImageFieldTestCase(TestCase):
         num_created, failed_to_create = jpg_warmer.warm()
         self.assertEqual(num_created, 5)
         all_imgs_warmer = VersatileImageFieldWarmer(
-            instance_or_queryset=VersatileImageTestModel.objects.all(),
+            instance_or_queryset=VersatileImageTestModel.objects.exclude(
+                img_type='delete_test'
+            ),
             rendition_key_set=(
                 ('test_thumb', 'thumbnail__100x100'),
                 ('test_crop', 'crop__100x100'),
@@ -329,7 +334,7 @@ class VersatileImageFieldTestCase(TestCase):
             invalid_warmer = VersatileImageFieldWarmer(
                 instance_or_queryset=['invalid'],
                 rendition_key_set=(
-                    ('test_thumb', 'thumbnail__100x100'),
+                    ('test_thumb', 'thumbnail__10x10'),
                 ),
                 image_attr='image'
             )
@@ -987,4 +992,115 @@ class VersatileImageFieldTestCase(TestCase):
                 'data-ppoi_id="image_0_ppoi" class="sizedimage-preview"/>'
             ),
             response_content
+        )
+
+    def test_individual_rendition_cache_clear(self):
+        """
+        Test that VersatileImageField can clear cache entries for individual
+        renditions.
+        """
+        expected_image_url = (
+            '/media/__sized__/python-logo-delete-test-thumbnail-100x100.jpg'
+        )
+        self.assertEqual(
+            cache.get(expected_image_url),
+            None
+        )
+        img = self.delete_test
+        img.image.create_on_demand = True
+        img_url = img.image.thumbnail['100x100'].url
+        del img_url
+        self.assertEqual(
+            cache.get(expected_image_url),
+            1
+        )
+        img.image.thumbnail['100x100'].delete()
+        self.assertEqual(
+            cache.get(expected_image_url),
+            None
+        )
+        self.assertFalse(
+            img.image.field.storage.exists(
+                '__sized__/python-logo-delete-test-thumbnail-100x100.jpg'
+            )
+        )
+
+    def test_rendition_delete(self):
+        """
+        Tests that rendition deletion works as expected.
+        """
+        img = self.delete_test
+        self.assertFalse(
+            img.image.field.storage.exists(
+                '__sized__/python-logo-delete-test-thumbnail-100x100.jpg'
+            )
+        )
+        img.image.create_on_demand = True
+
+        thumb_url = img.image.thumbnail['100x100'].url
+        self.assertEqual(
+            cache.get(thumb_url),
+            1
+        )
+        self.assertTrue(
+            img.image.field.storage.exists(
+                '__sized__/python-logo-delete-test-thumbnail-100x100.jpg'
+            )
+        )
+
+        invert_url = img.image.filters.invert.url
+        self.assertEqual(
+            cache.get(invert_url),
+            1
+        )
+        self.assertTrue(
+            img.image.field.storage.exists(
+                '__filtered__/python-logo-delete-test__invert__.jpg'
+            )
+        )
+
+        invert_and_thumb_url = img.image.filters.invert.thumbnail[
+            '100x100'
+        ].url
+        self.assertEqual(
+            cache.get(invert_and_thumb_url),
+            1
+        )
+        self.assertTrue(
+            img.image.field.storage.exists(
+                '__sized__/__filtered__/python-logo-delete-test__invert__'
+                '-thumbnail-100x100.jpg'
+            )
+        )
+
+        img.image.delete_all_created_images()
+        self.assertEqual(
+            cache.get(thumb_url),
+            None
+        )
+        self.assertFalse(
+            img.image.field.storage.exists(
+                '__sized__/python-logo-delete-test-thumbnail-100x100.jpg'
+            )
+        )
+
+        self.assertEqual(
+            cache.get(invert_url),
+            None
+        )
+        self.assertFalse(
+            img.image.field.storage.exists(
+                '__filtered__/python-logo-delete-test__invert__.jpg'
+            )
+        )
+
+        self.assertEqual(
+            cache.get(invert_and_thumb_url),
+            None
+        )
+        self.assertFalse(
+            img.image.field.storage.exists(
+                '__sized__/__filtered__/python-logo-delete-test__invert__'
+                '-thumbnail-100x100.jpg'
+            )
         )

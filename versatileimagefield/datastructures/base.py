@@ -27,6 +27,8 @@ class ProcessedImage(object):
     Includes a preprocessing API based on image format/file type. See
     the `preprocess` method for more specific information.
     """
+    name = None
+    url = None
 
     def __init__(self, path_to_image, storage, create_on_demand,
                  placeholder_image=None):

@@ -9,6 +9,7 @@ from ..settings import (
 )
 from ..utils import get_resized_path
 from .base import ProcessedImage
+from .mixins import DeleteAndClearCacheMixIn
 
 
 class MalformedSizedImageKey(Exception):
@@ -16,15 +17,16 @@ class MalformedSizedImageKey(Exception):
 
 
 @python_2_unicode_compatible
-class SizedImageInstance(object):
+class SizedImageInstance(DeleteAndClearCacheMixIn):
     """
     A simple class for returning paths-on-storage and URLs
     associated with images created by SizedImage
     """
 
-    def __init__(self, name, url):
+    def __init__(self, name, url, storage):
         self.name = name
         self.url = url
+        self.storage = storage
 
     def __str__(self):
         return self.url
@@ -117,7 +119,11 @@ class SizedImage(ProcessedImage, dict):
                         )
                     # Setting a super-long cache for a resized image (30 Days)
                     cache.set(resized_url, 1, VERSATILEIMAGEFIELD_CACHE_LENGTH)
-        return SizedImageInstance(resized_storage_path, resized_url)
+        return SizedImageInstance(
+            name=resized_storage_path,
+            url=resized_url,
+            storage=self.storage
+        )
 
     def process_image(self, image, image_format, save_kwargs,
                       width, height):

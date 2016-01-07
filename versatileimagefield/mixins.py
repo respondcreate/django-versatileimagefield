@@ -1,15 +1,38 @@
 from __future__ import unicode_literals
 
+import os
+import re
+
 from django.utils.six import iteritems
 
 from .datastructures import FilterLibrary
 from .registry import autodiscover, versatileimagefield_registry
-from .settings import VERSATILEIMAGEFIELD_CREATE_ON_DEMAND
+from .settings import (
+    cache,
+    VERSATILEIMAGEFIELD_CREATE_ON_DEMAND,
+    VERSATILEIMAGEFIELD_SIZED_DIRNAME,
+    VERSATILEIMAGEFIELD_FILTERED_DIRNAME
+)
 from .validators import validate_ppoi
 
-# Finding SizedImage subclasses (stored in sizedimage.py files
-# within apps on settings.INSTALLED_APPS)
 autodiscover()
+
+filter_regex_snippet = r'__({registered_filters})__'.format(
+    registered_filters='|'.join([
+        key
+        for key, filter_cls in iteritems(
+            versatileimagefield_registry._filter_registry
+        )
+    ])
+)
+sizer_regex_snippet = r'-({registered_sizers})-(\d+)x(\d+)'.format(
+    registered_sizers='|'.join([
+        key
+        for key, filter_cls in iteritems(
+            versatileimagefield_registry._sizedimage_registry
+        )
+    ])
+)
 
 
 class VersatileImageMixIn(object):
@@ -31,6 +54,31 @@ class VersatileImageMixIn(object):
             self.ppoi = instance_ppoi_value
         else:
             self.ppoi = (0.5, 0.5)
+        if self.name:
+            filename, ext = os.path.splitext(self.name)
+            self.filter_regex = re.compile(
+                "{filename}{filter_regex_snippet}{ext}".format(
+                    filename=filename,
+                    filter_regex_snippet=filter_regex_snippet,
+                    ext=ext
+                )
+            )
+            self.sizer_regex = re.compile(
+                "{filename}{sizer_regex_snippet}{ext}".format(
+                    filename=filename,
+                    sizer_regex_snippet=sizer_regex_snippet,
+                    ext=ext
+                )
+            )
+            self.filter_and_sizer_regex = re.compile(
+                "{filename}{filter_regex_snippet}"
+                "{sizer_regex_snippet}.{ext}".format(
+                    filename=filename,
+                    filter_regex_snippet=filter_regex_snippet,
+                    sizer_regex_snippet=sizer_regex_snippet,
+                    ext=ext
+                )
+            )
 
     def _get_url(self):
         """
@@ -97,3 +145,64 @@ class VersatileImageMixIn(object):
                     ppoi=ppoi_value
                 )
             )
+
+    def get_split_path(self):
+        return os.path.split(self.name)
+
+    def get_filtered_root_folder(self):
+        folder, filename = self.get_split_path()
+        return os.path.join(folder, VERSATILEIMAGEFIELD_FILTERED_DIRNAME, '')
+
+    def get_sized_root_folder(self):
+        folder, filename = self.get_split_path()
+        return os.path.join(VERSATILEIMAGEFIELD_SIZED_DIRNAME, folder, '')
+
+    def get_filtered_sized_root_folder(self):
+        sized_root_folder = self.get_sized_root_folder()
+        return os.path.join(
+            sized_root_folder,
+            VERSATILEIMAGEFIELD_FILTERED_DIRNAME
+        )
+
+    def delete_matching_files_from_storage(self, root_folder, regex):
+        """
+        Deletes files from `root_folder` on self.storage that match
+        `regex`.
+        """
+        directory_list, file_list = self.storage.listdir(root_folder)
+        for f in file_list:
+            if regex.match(f) is not None:
+                file_location = os.path.join(root_folder, f)
+                self.storage.delete(file_location)
+                cache.delete(
+                    self.storage.url(file_location)
+                )
+                print(
+                    "Deleted {file} (created from: {original})".format(
+                        file=os.path.join(root_folder, f),
+                        original=self.name
+                    )
+                )
+
+    def delete_created_filtered_images(self):
+        self.delete_matching_files_from_storage(
+            self.get_filtered_root_folder(),
+            self.filter_regex
+        )
+
+    def delete_created_sized_images(self):
+        self.delete_matching_files_from_storage(
+            self.get_sized_root_folder(),
+            self.sizer_regex
+        )
+
+    def delete_created_filtered_sized_images(self):
+        self.delete_matching_files_from_storage(
+            self.get_filtered_sized_root_folder(),
+            self.filter_and_sizer_regex
+        )
+
+    def delete_all_created_images(self):
+        self.delete_created_filtered_images()
+        self.delete_created_sized_images()
+        self.delete_created_filtered_sized_images()

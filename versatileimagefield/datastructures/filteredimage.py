@@ -11,6 +11,7 @@ from ..settings import (
 from ..utils import get_filtered_path
 
 from .base import ProcessedImage
+from .mixins import DeleteAndClearCacheMixIn
 
 
 class InvalidFilter(Exception):
@@ -18,7 +19,7 @@ class InvalidFilter(Exception):
 
 
 @python_2_unicode_compatible
-class FilteredImage(ProcessedImage):
+class FilteredImage(DeleteAndClearCacheMixIn, ProcessedImage):
     """
     A ProcessedImage subclass that applies a filter to an image.
 
@@ -32,8 +33,6 @@ class FilteredImage(ProcessedImage):
 
     Subclasses must implement a process_image method.
     """
-    name = None
-    url = None
 
     def __init__(self, path_to_image, storage, create_on_demand, filename_key):
         super(FilteredImage, self).__init__(

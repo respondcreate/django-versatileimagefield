@@ -101,6 +101,17 @@
 },
 {
     "fields": {
+        "img_type": "delete_test",
+        "image": "python-logo-delete-test.jpg",
+        "ppoi": "0.5x0.5",
+        "width": 0,
+        "height": 0
+    },
+    "model": "tests.versatileimagetestmodel",
+    "pk": 10
+},
+{
+    "fields": {
         "image": "python-logo.png",
         "image_no_ppoi": "python-logo.jpg",
         "optional_image": "exif-orientation-examples/Landscape_8.jpg",
