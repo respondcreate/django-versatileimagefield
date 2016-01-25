@@ -193,7 +193,7 @@ class VersatileImageMixIn(object):
                     )
                 )
 
-    def delete_created_filtered_images(self):
+    def delete_filtered_images(self):
         """
         Deletes all filtered images created from `self.name`.
         """
@@ -202,7 +202,7 @@ class VersatileImageMixIn(object):
             self.filter_regex
         )
 
-    def delete_created_sized_images(self):
+    def delete_sized_images(self):
         """
         Deletes all sized images created from `self.name`.
         """
@@ -211,7 +211,7 @@ class VersatileImageMixIn(object):
             self.sizer_regex
         )
 
-    def delete_created_filtered_sized_images(self):
+    def delete_filtered_sized_images(self):
         """
         Deletes all filtered sized images created from `self.name`.
         """
@@ -224,6 +224,6 @@ class VersatileImageMixIn(object):
         """
         Deletes all images created from `self.name`.
         """
-        self.delete_created_filtered_images()
-        self.delete_created_sized_images()
-        self.delete_created_filtered_sized_images()
+        self.delete_filtered_images()
+        self.delete_sized_images()
+        self.delete_filtered_sized_images()
