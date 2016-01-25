@@ -146,18 +146,27 @@ class VersatileImageMixIn(object):
                 )
             )
 
-    def get_split_path(self):
-        return os.path.split(self.name)
-
     def get_filtered_root_folder(self):
-        folder, filename = self.get_split_path()
+        """
+        Returns the folder on `self.storage` where filtered images created
+        from `self.name` are stored.
+        """
+        folder, filename = os.path.split(self.name)
         return os.path.join(folder, VERSATILEIMAGEFIELD_FILTERED_DIRNAME, '')
 
     def get_sized_root_folder(self):
-        folder, filename = self.get_split_path()
+        """
+        Returns the folder on `self.storage` where sized images created
+        from `self.name` are stored.
+        """
+        folder, filename = os.path.split(self.name)
         return os.path.join(VERSATILEIMAGEFIELD_SIZED_DIRNAME, folder, '')
 
     def get_filtered_sized_root_folder(self):
+        """
+        Returns the folder on `self.storage` where filtered sized images
+        created from `self.name` are stored.
+        """
         sized_root_folder = self.get_sized_root_folder()
         return os.path.join(
             sized_root_folder,
@@ -185,24 +194,36 @@ class VersatileImageMixIn(object):
                 )
 
     def delete_created_filtered_images(self):
+        """
+        Deletes all filtered images created from `self.name`.
+        """
         self.delete_matching_files_from_storage(
             self.get_filtered_root_folder(),
             self.filter_regex
         )
 
     def delete_created_sized_images(self):
+        """
+        Deletes all sized images created from `self.name`.
+        """
         self.delete_matching_files_from_storage(
             self.get_sized_root_folder(),
             self.sizer_regex
         )
 
     def delete_created_filtered_sized_images(self):
+        """
+        Deletes all filtered sized images created from `self.name`.
+        """
         self.delete_matching_files_from_storage(
             self.get_filtered_sized_root_folder(),
             self.filter_and_sizer_regex
         )
 
     def delete_all_created_images(self):
+        """
+        Deletes all images created from `self.name`.
+        """
         self.delete_created_filtered_images()
         self.delete_created_sized_images()
         self.delete_created_filtered_sized_images()
