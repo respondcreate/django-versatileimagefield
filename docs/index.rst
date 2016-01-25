@@ -79,6 +79,7 @@ Table of Contents
    specifying_ppoi
    using_sizers_and_filters
    writing_custom_sizers_and_filters
+   deleting_created_images
    drf_integration
    improving_performance
 
