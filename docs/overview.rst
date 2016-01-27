@@ -67,10 +67,10 @@ No crufty templatetags necessary! Here's how you'd do the same in the shell:
     :emphasize-lines: 3
 
     >>> from someapp.models import ExampleModel
-    >>> img = ExampleModel.objects.get()
-    >>> img.image.thumbnail['200x200'].url
+    >>> instance = ExampleModel.objects.all()[0]
+    >>> instance.image.thumbnail['200x200'].url
     '/media/__sized__/images/test-image-thumbnail-200x200.jpg'
-    >>> img.image.thumbnail['200x200'].name
+    >>> instance.image.thumbnail['200x200'].name
     '__sized__/images/test-image-thumbnail-200x200.jpg'
 
 Crop images at specific sizes
@@ -151,7 +151,7 @@ Flexible in development, light-weight in production
 Fully Tested & Python 3 Ready
 -----------------------------
 
-``django-versatileimagefield`` is a rock solid, `fully-tested <https://coveralls.io/r/WGBH/django-versatileimagefield>`_ Django app that is compatible with Python 2.7, 3.3 and 3.4 and works with Django 1.6.x thru 1.8.x
+``django-versatileimagefield`` is a rock solid, `fully-tested <https://coveralls.io/r/WGBH/django-versatileimagefield>`_ Django app that is compatible with Python 2.7, 3.4 and 3.5 and works with Django 1.5.x thru 1.9.x
 
 Get Started
 -----------
