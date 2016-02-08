@@ -40,8 +40,6 @@ class Creator(object):
         self.field = field
 
     def __get__(self, obj, objtype=None):
-        if obj is None:
-            return self
         return obj.__dict__[self.field.name]
 
     def __set__(self, obj, value):
