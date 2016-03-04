@@ -2,12 +2,11 @@ from __future__ import unicode_literals
 
 import os
 
+from django import VERSION as DJANGO_VERSION
 from django.conf import settings
 from django.contrib.admin.widgets import AdminFileWidget
-from django.db.models import SubfieldBase
 from django.db.models.fields import CharField
 from django.db.models.fields.files import ImageField
-from django.utils.six import add_metaclass
 from django.utils.translation import ugettext_lazy as _
 
 from .files import VersatileImageFieldFile, VersatileImageFileDescriptor
@@ -25,6 +24,26 @@ if 'south' in settings.INSTALLED_APPS:
             "^versatileimagefield\.fields\.PPOIField",
         ]
     )
+
+if DJANGO_VERSION < (1, 8):
+    from django.db.models import SubfieldBase
+    BasePPOIField = SubfieldBase(str('BasePPOIField'), (CharField,), {})
+else:
+    BasePPOIField = CharField
+
+
+class Creator(object):
+    """
+    A placeholder class that provides a way to set the attribute on the model.
+    """
+    def __init__(self, field):
+        self.field = field
+
+    def __get__(self, obj, objtype=None):
+        return obj.__dict__[self.field.name]
+
+    def __set__(self, obj, value):
+        obj.__dict__[self.field.name] = self.field.to_python(value)
 
 
 class VersatileImageField(ImageField):
@@ -174,8 +193,7 @@ class VersatileImageField(ImageField):
         return super(VersatileImageField, self).formfield(**defaults)
 
 
-@add_metaclass(SubfieldBase)
-class PPOIField(CharField):
+class PPOIField(BasePPOIField):
 
     def __init__(self, *args, **kwargs):
         if 'default' not in kwargs:
@@ -193,6 +211,13 @@ class PPOIField(CharField):
         kwargs['editable'] = False
         super(PPOIField, self).__init__(*args, **kwargs)
         self.validators.append(validate_ppoi)
+
+    def contribute_to_class(self, cls, name, **kwargs):
+        super(PPOIField, self).contribute_to_class(cls, name, **kwargs)
+        setattr(cls, self.name, Creator(self))
+
+    def from_db_value(self, value, expression, connection, context):
+        return self.to_python(value)
 
     def to_python(self, value):
         if value is None:
