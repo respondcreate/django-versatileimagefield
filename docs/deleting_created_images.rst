@@ -1,6 +1,8 @@
 Deleting Created Images
 =======================
 
+.. note:: The deletion API was added in version 1.3
+
 ``VersatileImageField`` ships with a number of useful methods that make it easy to delete unwanted/stale images and/or clear out their associated cache entries.
 
 The docs below all reference this example model:
