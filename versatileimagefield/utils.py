@@ -8,7 +8,8 @@ from django.core.exceptions import ImproperlyConfigured
 from .settings import (
     VERSATILEIMAGEFIELD_SIZED_DIRNAME,
     VERSATILEIMAGEFIELD_FILTERED_DIRNAME,
-    IMAGE_SETS
+    IMAGE_SETS, 
+    QUAL
 )
 
 # PIL-supported file formats as found here:
@@ -74,12 +75,13 @@ def get_resized_filename(filename, width, height, filename_key):
     except ValueError:
         image_name = filename
         ext = 'jpg'
-    return "%(image_name)s-%(filename_key)s-%(width)dx%(height)d.%(ext)s" % ({
+    return "%(image_name)s-%(filename_key)s-%(width)dx%(height)d-%(quality)d.%(ext)s" % ({
         'image_name': image_name,
         'filename_key': filename_key,
         'width': width,
         'height': height,
-        'ext': ext
+        'ext': ext, 
+        'quality': QUAL
     })
 
 
