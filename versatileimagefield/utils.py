@@ -1,6 +1,8 @@
 from __future__ import unicode_literals
 
 from functools import reduce
+
+import hashlib
 import os
 
 from django.core.exceptions import ImproperlyConfigured
@@ -8,7 +10,8 @@ from django.core.exceptions import ImproperlyConfigured
 from .settings import (
     VERSATILEIMAGEFIELD_SIZED_DIRNAME,
     VERSATILEIMAGEFIELD_FILTERED_DIRNAME,
-    IMAGE_SETS
+    IMAGE_SETS, 
+    QUAL
 )
 
 # PIL-supported file formats as found here:
@@ -74,14 +77,20 @@ def get_resized_filename(filename, width, height, filename_key):
     except ValueError:
         image_name = filename
         ext = 'jpg'
-    return "%(image_name)s-%(filename_key)s-%(width)dx%(height)d.%(ext)s" % ({
-        'image_name': image_name,
+        
+    resized_key = "%(filename_key)s-%(width)dx%(height)d-%(quality)d" % ({
         'filename_key': filename_key,
         'width': width,
         'height': height,
+        'quality': QUAL
+    })
+    
+    return "%(image_name)s-%(image_key)s.%(ext)s" % ({
+        'image_name': image_name,
+        'image_key': get_hash_from_image_key(resized_key),
         'ext': ext
     })
-
+    
 
 def get_resized_path(path_to_image, width, height,
                      filename_key, storage):
@@ -188,6 +197,13 @@ def validate_versatileimagefield_sizekey_list(sizes):
     return list(set(sizes))
 
 
+def get_hash_from_image_key(image_key):
+    """
+    Returns the md5 hash of the image_key
+    """
+    return hashlib.md5(image_key.encode('utf-8')).hexdigest()
+    
+    
 def get_url_from_image_key(image_instance, image_key):
     """"""
     img_key_split = image_key.split('__')
