@@ -94,7 +94,7 @@ Writing a Custom Filter
 
 All Filters should subclass
 ``versatileimagefield.datastructures.filteredimage.FilteredImage`` and
-only need to define a ``process_filter`` method with following
+only need to define a ``process_image`` method with following
 arguments:
 
 -  ``image``: a PIL Image instance
