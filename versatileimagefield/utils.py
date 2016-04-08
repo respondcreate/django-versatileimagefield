@@ -2,16 +2,16 @@ from __future__ import unicode_literals
 
 from functools import reduce
 
-import hashlib
 import os
 
 from django.core.exceptions import ImproperlyConfigured
 
 from .settings import (
+    IMAGE_SETS,
+    QUAL,
+    VERSATILEIMAGEFIELD_POST_PROCESSOR,
     VERSATILEIMAGEFIELD_SIZED_DIRNAME,
-    VERSATILEIMAGEFIELD_FILTERED_DIRNAME,
-    IMAGE_SETS, 
-    QUAL
+    VERSATILEIMAGEFIELD_FILTERED_DIRNAME
 )
 
 # PIL-supported file formats as found here:
@@ -66,9 +66,17 @@ class InvalidSizeKey(Exception):
     pass
 
 
+def post_process_image_key(image_key):
+    """Apply the processor function associated with settings.VER"""
+    if VERSATILEIMAGEFIELD_POST_PROCESSOR is None:
+        return image_key
+    else:
+        return VERSATILEIMAGEFIELD_POST_PROCESSOR(image_key)
+
+
 def get_resized_filename(filename, width, height, filename_key):
     """
-    Returns the 'resized filename' (according to `width`, `height` and
+    Return the 'resized filename' (according to `width`, `height` and
     `filename_key`) in the following format:
     `filename`-`filename_key`-`width`x`height`.ext
     """
@@ -77,25 +85,29 @@ def get_resized_filename(filename, width, height, filename_key):
     except ValueError:
         image_name = filename
         ext = 'jpg'
-        
-    resized_key = "%(filename_key)s-%(width)dx%(height)d-%(quality)d" % ({
+
+    resized_template = "%(filename_key)s-%(width)dx%(height)d"
+    # if ext.lower() in ['jpg', 'jpeg']:
+    #     resized_template = resized_template + "-%(quality)d"
+
+    resized_key = resized_template % ({
         'filename_key': filename_key,
         'width': width,
         'height': height,
         'quality': QUAL
     })
-    
+
     return "%(image_name)s-%(image_key)s.%(ext)s" % ({
         'image_name': image_name,
-        'image_key': get_hash_from_image_key(resized_key),
+        'image_key': post_process_image_key(resized_key),
         'ext': ext
     })
-    
+
 
 def get_resized_path(path_to_image, width, height,
                      filename_key, storage):
     """
-    Returns a 2-tuple to `path_to_image` location on `storage` (position 0)
+    Return a 2-tuple to `path_to_image` location on `storage` (position 0)
     and it's web-accessible URL (position 1) as dictated by `width`, `height`
     and `filename_key`
     """
@@ -122,7 +134,7 @@ def get_resized_path(path_to_image, width, height,
 
 def get_filtered_filename(filename, filename_key):
     """
-    Returns the 'filtered filename' (according to `filename_key`)
+    Return the 'filtered filename' (according to `filename_key`)
     in the following format:
     `filename`__`filename_key`__.ext
     """
@@ -140,7 +152,7 @@ def get_filtered_filename(filename, filename_key):
 
 def get_filtered_path(path_to_image, filename_key, storage):
     """
-    Returns the 'filtered path' & URL of `path_to_image`
+    Return the 'filtered path' & URL of `path_to_image`
     """
     containing_folder, filename = os.path.split(path_to_image)
 
@@ -160,7 +172,7 @@ def get_filtered_path(path_to_image, filename_key, storage):
 
 def get_image_metadata_from_file_ext(file_ext):
     """
-    Receives a valid image file format and returns a 2-tuple of two strings:
+    Receive a valid image file format and returns a 2-tuple of two strings:
         [0]: Image format (i.e. 'jpg', 'gif' or 'png')
         [1]: InMemoryUploadedFile-friendly save format (i.e. 'image/jpeg')
     image_format, in_memory_file_type
@@ -170,6 +182,8 @@ def get_image_metadata_from_file_ext(file_ext):
 
 def validate_versatileimagefield_sizekey_list(sizes):
     """
+    Validate a list of size keys.
+
     `sizes`: An iterable of 2-tuples, both strings. Example:
     [
         ('large', 'url'),
@@ -197,15 +211,8 @@ def validate_versatileimagefield_sizekey_list(sizes):
     return list(set(sizes))
 
 
-def get_hash_from_image_key(image_key):
-    """
-    Returns the md5 hash of the image_key
-    """
-    return hashlib.md5(image_key.encode('utf-8')).hexdigest()
-    
-    
 def get_url_from_image_key(image_instance, image_key):
-    """"""
+    """Build a URL from `image_key`."""
     img_key_split = image_key.split('__')
     if 'x' in img_key_split[-1]:
         size_key = img_key_split.pop(-1)
@@ -219,7 +226,7 @@ def get_url_from_image_key(image_instance, image_key):
 
 def build_versatileimagefield_url_set(image_instance, size_set, request=None):
     """
-    Returns a dictionary of urls corresponding to size_set
+    Return a dictionary of urls corresponding to size_set
     - `image_instance`: A VersatileImageFieldFile
     - `size_set`: An iterable of 2-tuples, both strings. Example:
         [
@@ -249,7 +256,7 @@ def build_versatileimagefield_url_set(image_instance, size_set, request=None):
 
 def get_rendition_key_set(key):
     """
-    Retrieves a validated and prepped Rendition Key Set from
+    Retrieve a validated and prepped Rendition Key Set from
     settings.VERSATILEIMAGEFIELD_RENDITION_KEY_SETS
     """
     try:

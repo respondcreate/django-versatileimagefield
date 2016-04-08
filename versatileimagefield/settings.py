@@ -1,10 +1,13 @@
 from __future__ import unicode_literals
 
+from django.utils.module_loading import import_string
+
 from django.conf import settings
 from django.core.cache import (
     cache as default_cache,
     InvalidCacheBackendError
 )
+from django.core.exceptions import ImproperlyConfigured
 
 # Defaults
 QUAL = 70
@@ -39,7 +42,17 @@ VERSATILEIMAGEFIELD_SETTINGS = {
     # Whether or not to create new images on-the-fly. Set this to `False` for
     # speedy performance but don't forget to 'pre-warm' to ensure they're
     # created and available at the appropriate URL.
-    'create_images_on_demand': VERSATILEIMAGEFIELD_CREATE_ON_DEMAND
+    'create_images_on_demand': VERSATILEIMAGEFIELD_CREATE_ON_DEMAND,
+    # A dot-notated python path string to a function you like to pass sized
+    # image keys before returning file paths. Typically used to md5-ify image
+    # URLs so all image paths are the same length. versatileimagefield ships
+    # with two:
+    # 1. 'versatileimagefield.processors.md5' Returns a full length (32 char)
+    #    md5 hash of `image_key`.
+    # 2. 'versatileimagefield.processors.md5_16' Returns the first 16 chars
+    #    of the md5 hash of `image_key`.
+    # By default, image_keys are unprocessed.
+    'image_key_post_processor': None,
 }
 
 USER_DEFINED = getattr(
@@ -90,3 +103,23 @@ VERSATILEIMAGEFIELD_CREATE_ON_DEMAND = VERSATILEIMAGEFIELD_SETTINGS.get(
 )
 
 IMAGE_SETS = getattr(settings, 'VERSATILEIMAGEFIELD_RENDITION_KEY_SETS', {})
+
+post_processor_string = VERSATILEIMAGEFIELD_SETTINGS.get(
+    'image_key_post_processor',
+    None
+)
+
+if post_processor_string is not None:
+    try:
+        VERSATILEIMAGEFIELD_POST_PROCESSOR = import_string(
+            post_processor_string
+        )
+    except ImportError:
+        raise ImproperlyConfigured(
+            "VERSATILEIMAGEFIELD_SETTINGS['image_key_post_processor'] is set "
+            "incorrectly. {} could not be imported.".format(
+                post_processor_string
+            )
+        )
+else:
+    VERSATILEIMAGEFIELD_POST_PROCESSOR = None
