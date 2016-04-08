@@ -87,8 +87,8 @@ def get_resized_filename(filename, width, height, filename_key):
         ext = 'jpg'
 
     resized_template = "%(filename_key)s-%(width)dx%(height)d"
-    # if ext.lower() in ['jpg', 'jpeg']:
-    #     resized_template = resized_template + "-%(quality)d"
+    if ext.lower() in ['jpg', 'jpeg']:
+        resized_template = resized_template + "-%(quality)d"
 
     resized_key = resized_template % ({
         'filename_key': filename_key,

@@ -145,14 +145,14 @@ class VersatileImageFieldTestCase(TestCase):
         """Ensure thumbnail Sizer paths are set correctly"""
         self.assertEqual(
             self.jpg.image.thumbnail['100x100'].url,
-            '/media/__sized__/python-logo-thumbnail-100x100.jpg'
+            '/media/__sized__/python-logo-thumbnail-100x100-70.jpg'
         )
 
     def test_crop_resized_path(self):
         """Ensure crop Sizer paths are set correctly"""
         self.assertEqual(
             self.jpg.image.crop['100x100'].url,
-            '/media/__sized__/python-logo-crop-c0-25__0-25-100x100.jpg'
+            '/media/__sized__/python-logo-crop-c0-25__0-25-100x100-70.jpg'
         )
         self.assertEqual(
             self.gif.image.crop['100x100'].url,
@@ -182,7 +182,7 @@ class VersatileImageFieldTestCase(TestCase):
             self.jpg.image.filters.invert.thumbnail['100x100'].url,
             (
                 '/media/__sized__/__filtered__/python-logo__invert__'
-                '-thumbnail-100x100.jpg'
+                '-thumbnail-100x100-70.jpg'
             )
         )
 
@@ -353,15 +353,15 @@ class VersatileImageFieldTestCase(TestCase):
             {
                 'test_crop': (
                     'http://testserver/media/__sized__/python-logo-crop'
-                    '-c0-25__0-25-100x100.jpg'
+                    '-c0-25__0-25-100x100-70.jpg'
                 ),
                 'test_invert_crop': (
                     'http://testserver/media/__sized__/__filtered__/'
-                    'python-logo__invert__-crop-c0-25__0-25-100x100.jpg'
+                    'python-logo__invert__-crop-c0-25__0-25-100x100-70.jpg'
                 ),
                 'test_invert_thumb': (
                     'http://testserver/media/__sized__/__filtered__/'
-                    'python-logo__invert__-thumbnail-100x100.jpg'
+                    'python-logo__invert__-thumbnail-100x100-70.jpg'
                 ),
                 'test_invert': (
                     'http://testserver/media/__filtered__/'
@@ -369,7 +369,7 @@ class VersatileImageFieldTestCase(TestCase):
                 ),
                 'test_thumb': (
                     'http://testserver/media/__sized__/python-logo-thumbnail'
-                    '-100x100.jpg'
+                    '-100x100-70.jpg'
                 )
             }
         )
@@ -493,7 +493,7 @@ class VersatileImageFieldTestCase(TestCase):
                 '            </div>'
                 '            <div class="image-wrap inner">'
                 '                <img src="/media/__sized__/exif-orientation-examples/'
-                'Landscape_6-thumbnail-300x300.jpg"'
+                'Landscape_6-thumbnail-300x300-70.jpg"'
                 '                     id="optional_image_with_ppoi_0_imagepreview"'
                 '                     data-hidden_field_id="id_optional_image_with_ppoi_1"'
                 '                     data-point_stage_id="optional_image_with_ppoi_0_point-stage"'
@@ -535,13 +535,13 @@ class VersatileImageFieldTestCase(TestCase):
         self.jpg.save()
         self.assertEqual(
             self.jpg.image.thumbnail['100x100'].url,
-            '/media/__sized__/python-logo-2-thumbnail-100x100.jpg'
+            '/media/__sized__/python-logo-2-thumbnail-100x100-70.jpg'
         )
         self.jpg.image = 'python-logo.jpg'
         self.jpg.save()
         self.assertEqual(
             self.jpg.image.thumbnail['100x100'].url,
-            '/media/__sized__/python-logo-thumbnail-100x100.jpg'
+            '/media/__sized__/python-logo-thumbnail-100x100-70.jpg'
         )
         fieldfile_obj = self.jpg.image
         del fieldfile_obj.field
@@ -568,7 +568,7 @@ class VersatileImageFieldTestCase(TestCase):
         jpg_instance = jpg_unpickled
         self.assertEqual(
             jpg_instance.image.thumbnail['100x100'].url,
-            '/media/__sized__/python-logo-thumbnail-100x100.jpg'
+            '/media/__sized__/python-logo-thumbnail-100x100-70.jpg'
         )
         pickled_state = self.jpg.image.__getstate__()
         self.assertEqual(
@@ -610,7 +610,7 @@ class VersatileImageFieldTestCase(TestCase):
         )
         exif_3_control = exif_3.image.field.storage.open(
             'verify-against/exif-orientation-examples/'
-            'Landscape_3-thumbnail-100x100.jpg'
+            'Landscape_3-thumbnail-100x100-70.jpg'
         )
         img = Image.open(exif_3_img)
         control_img = Image.open(exif_3_control)
@@ -634,7 +634,7 @@ class VersatileImageFieldTestCase(TestCase):
         )
         exif_6_control = exif_6.image.field.storage.open(
             'verify-against/exif-orientation-examples/'
-            'Landscape_6-thumbnail-100x100.jpg'
+            'Landscape_6-thumbnail-100x100-70.jpg'
         )
         self.assertTrue(
             self.imageEqual(
@@ -656,7 +656,7 @@ class VersatileImageFieldTestCase(TestCase):
         )
         exif_8_control = exif_8.image.field.storage.open(
             'verify-against/exif-orientation-examples/'
-            'Landscape_8-thumbnail-100x100.jpg'
+            'Landscape_8-thumbnail-100x100-70.jpg'
         )
         self.assertTrue(
             self.imageEqual(
@@ -932,10 +932,10 @@ class VersatileImageFieldTestCase(TestCase):
             """
 <html>
 <body>
-<img id="image-crop" src="/media/__sized__/python-logo-crop-c0-25__0-25-400x400.jpg" />
-<img id="image-thumbnail" src="/media/__sized__/python-logo-thumbnail-400x400.jpg" />
+<img id="image-crop" src="/media/__sized__/python-logo-crop-c0-25__0-25-400x400-70.jpg" />
+<img id="image-thumbnail" src="/media/__sized__/python-logo-thumbnail-400x400-70.jpg" />
 <img id="image-invert" src="/media/__filtered__/python-logo__invert__.jpg" />
-<img id="image-invert-crop" src="/media/__sized__/__filtered__/python-logo__invert__-crop-c0-25__0-25-400x400.jpg" />
+<img id="image-invert-crop" src="/media/__sized__/__filtered__/python-logo__invert__-crop-c0-25__0-25-400x400-70.jpg" />
 <img src="/media/__sized__/__placeholder__/placeholder-crop-c0-5__0-5-400x400.png" id="optional-image-crop"/>
 </body>
 </html>
@@ -1002,7 +1002,7 @@ class VersatileImageFieldTestCase(TestCase):
         renditions.
         """
         expected_image_url = (
-            '/media/__sized__/python-logo-delete-test-thumbnail-100x100.jpg'
+            '/media/__sized__/python-logo-delete-test-thumbnail-100x100-70.jpg'
         )
         self.assertEqual(
             cache.get(expected_image_url),
@@ -1023,7 +1023,7 @@ class VersatileImageFieldTestCase(TestCase):
         )
         self.assertFalse(
             img.image.field.storage.exists(
-                '__sized__/python-logo-delete-test-thumbnail-100x100.jpg'
+                '__sized__/python-logo-delete-test-thumbnail-100x100-70.jpg'
             )
         )
 
@@ -1034,7 +1034,7 @@ class VersatileImageFieldTestCase(TestCase):
         img = self.delete_test
         self.assertFalse(
             img.image.field.storage.exists(
-                '__sized__/python-logo-delete-test-thumbnail-100x100.jpg'
+                '__sized__/python-logo-delete-test-thumbnail-100x100-70.jpg'
             )
         )
         img.image.create_on_demand = True
@@ -1046,7 +1046,7 @@ class VersatileImageFieldTestCase(TestCase):
         )
         self.assertTrue(
             img.image.field.storage.exists(
-                '__sized__/python-logo-delete-test-thumbnail-100x100.jpg'
+                '__sized__/python-logo-delete-test-thumbnail-100x100-70.jpg'
             )
         )
 
@@ -1071,7 +1071,7 @@ class VersatileImageFieldTestCase(TestCase):
         self.assertTrue(
             img.image.field.storage.exists(
                 '__sized__/__filtered__/python-logo-delete-test__invert__'
-                '-thumbnail-100x100.jpg'
+                '-thumbnail-100x100-70.jpg'
             )
         )
 
@@ -1082,7 +1082,7 @@ class VersatileImageFieldTestCase(TestCase):
         )
         self.assertFalse(
             img.image.field.storage.exists(
-                '__sized__/python-logo-delete-test-thumbnail-100x100.jpg'
+                '__sized__/python-logo-delete-test-thumbnail-100x100-70.jpg'
             )
         )
 
@@ -1103,6 +1103,6 @@ class VersatileImageFieldTestCase(TestCase):
         self.assertFalse(
             img.image.field.storage.exists(
                 '__sized__/__filtered__/python-logo-delete-test__invert__'
-                '-thumbnail-100x100.jpg'
+                '-thumbnail-100x100-70.jpg'
             )
         )

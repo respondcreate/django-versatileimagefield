@@ -25,7 +25,7 @@ filter_regex_snippet = r'__({registered_filters})__'.format(
         )
     ])
 )
-sizer_regex_snippet = r'-({registered_sizers})-(\d+)x(\d+)'.format(
+sizer_regex_snippet = r'-({registered_sizers})-(\d+)x(\d+)(?:-\d+)?'.format(
     registered_sizers='|'.join([
         key
         for key, filter_cls in iteritems(
