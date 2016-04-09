@@ -13,3 +13,7 @@ class VersatileImagePostProcessorTestModel(models.Model):
             path='on-storage-placeholder/placeholder.png'
         )
     )
+
+    class Meta:
+        verbose_name = 'foo'
+        verbose_name_plural = 'foos'
