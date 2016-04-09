@@ -7,26 +7,6 @@ language: python
 matrix:
   include:
     - python: "2.7"
-      env: DJANGO_VERSION=1.5.12 REST_FRAMEWORK_VERSION=2.3.14
-    - python: "2.7"
-      env: DJANGO_VERSION=1.5.12 REST_FRAMEWORK_VERSION=2.4.8
-    - python: "2.7"
-      env: DJANGO_VERSION=1.5.12 REST_FRAMEWORK_VERSION=3.0.5
-    - python: "2.7"
-      env: DJANGO_VERSION=1.5.12 REST_FRAMEWORK_VERSION=3.1.3
-    - python: "2.7"
-      env: DJANGO_VERSION=1.5.12 REST_FRAMEWORK_VERSION=3.2.2
-    - python: "2.7"
-      env: DJANGO_VERSION=1.6.11 REST_FRAMEWORK_VERSION=2.3.14
-    - python: "2.7"
-      env: DJANGO_VERSION=1.6.11 REST_FRAMEWORK_VERSION=2.4.8
-    - python: "2.7"
-      env: DJANGO_VERSION=1.6.11 REST_FRAMEWORK_VERSION=3.0.5
-    - python: "2.7"
-      env: DJANGO_VERSION=1.6.11 REST_FRAMEWORK_VERSION=3.1.3
-    - python: "2.7"
-      env: DJANGO_VERSION=1.6.11 REST_FRAMEWORK_VERSION=3.2.2
-    - python: "2.7"
       env: DJANGO_VERSION=1.7.11 REST_FRAMEWORK_VERSION=2.3.14
     - python: "2.7"
       env: DJANGO_VERSION=1.7.11 REST_FRAMEWORK_VERSION=2.4.8
@@ -56,26 +36,6 @@ matrix:
       env: DJANGO_VERSION=1.9.3 REST_FRAMEWORK_VERSION=3.2.2
     - python: "2.7"
       env: DJANGO_VERSION=1.9.3 REST_FRAMEWORK_VERSION=3.3.1
-    - python: "3.4"
-      env: DJANGO_VERSION=1.5.12 REST_FRAMEWORK_VERSION=2.3.14
-    - python: "3.4"
-      env: DJANGO_VERSION=1.5.12 REST_FRAMEWORK_VERSION=2.4.8
-    - python: "3.4"
-      env: DJANGO_VERSION=1.5.12 REST_FRAMEWORK_VERSION=3.0.5
-    - python: "3.4"
-      env: DJANGO_VERSION=1.5.12 REST_FRAMEWORK_VERSION=3.1.3
-    - python: "3.4"
-      env: DJANGO_VERSION=1.5.12 REST_FRAMEWORK_VERSION=3.2.2
-    - python: "3.4"
-      env: DJANGO_VERSION=1.6.11 REST_FRAMEWORK_VERSION=2.3.14
-    - python: "3.4"
-      env: DJANGO_VERSION=1.6.11 REST_FRAMEWORK_VERSION=2.4.8
-    - python: "3.4"
-      env: DJANGO_VERSION=1.6.11 REST_FRAMEWORK_VERSION=3.0.5
-    - python: "3.4"
-      env: DJANGO_VERSION=1.6.11 REST_FRAMEWORK_VERSION=3.1.3
-    - python: "3.4"
-      env: DJANGO_VERSION=1.6.11 REST_FRAMEWORK_VERSION=3.2.2
     - python: "3.4"
       env: DJANGO_VERSION=1.7.11 REST_FRAMEWORK_VERSION=2.3.14
     - python: "3.4"
@@ -142,4 +102,5 @@ install:
 script:
 - flake8 versatileimagefield/
 - coverage run --source=versatileimagefield runtests.py
+- coverage run --source=versatileimagefield post_processor_runtests.py
 after_success: coveralls
