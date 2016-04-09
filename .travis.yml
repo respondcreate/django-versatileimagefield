@@ -103,4 +103,5 @@ script:
 - flake8 versatileimagefield/
 - coverage run --source=versatileimagefield runtests.py
 - coverage run --source=versatileimagefield post_processor_runtests.py
+- coverage combine
 after_success: coveralls
