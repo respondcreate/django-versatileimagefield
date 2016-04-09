@@ -1,6 +1,6 @@
 from ..settings_base import *
 
-INSTALLED_APPS += ['tests.post_processor']
+INSTALLED_APPS += ['tests', 'tests.post_processor']
 
 VERSATILEIMAGEFIELD_SETTINGS = {
     # The amount of time, in seconds, that references to created images
