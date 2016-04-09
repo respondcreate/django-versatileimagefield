@@ -68,7 +68,31 @@ if DJANGO_VERSION[0] == 1 and DJANGO_VERSION[1] >= 9:
     ADMIN_URL = '/admin/tests/versatileimagewidgettestmodel/1/change/'
 
 
-class VersatileImageFieldTestCase(TestCase):
+class VersatileImageFieldBaseTestCase(TestCase):
+
+    @classmethod
+    def tearDownClass(cls):
+        """
+        Delete files made by VersatileImageFields during tests
+        """
+        filtered_path = os.path.join(
+            settings.MEDIA_ROOT,
+            VERSATILEIMAGEFIELD_FILTERED_DIRNAME
+        )
+        sized_path = os.path.join(
+            settings.MEDIA_ROOT,
+            VERSATILEIMAGEFIELD_SIZED_DIRNAME
+        )
+        placeholder_path = os.path.join(
+            settings.MEDIA_ROOT,
+            VERSATILEIMAGEFIELD_PLACEHOLDER_DIRNAME
+        )
+        rmtree(filtered_path, ignore_errors=True)
+        rmtree(sized_path, ignore_errors=True)
+        rmtree(placeholder_path, ignore_errors=True)
+
+
+class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
     fixtures = ['versatileimagefield']
 
     def setUp(self):
@@ -97,27 +121,6 @@ class VersatileImageFieldTestCase(TestCase):
         self.assertTrue(login)
         self.user = user
         self.client = client
-
-    @classmethod
-    def tearDownClass(cls):
-        """
-        Delete files made by VersatileImageFields during tests
-        """
-        filtered_path = os.path.join(
-            settings.MEDIA_ROOT,
-            VERSATILEIMAGEFIELD_FILTERED_DIRNAME
-        )
-        sized_path = os.path.join(
-            settings.MEDIA_ROOT,
-            VERSATILEIMAGEFIELD_SIZED_DIRNAME
-        )
-        placeholder_path = os.path.join(
-            settings.MEDIA_ROOT,
-            VERSATILEIMAGEFIELD_PLACEHOLDER_DIRNAME
-        )
-        rmtree(filtered_path, ignore_errors=True)
-        rmtree(sized_path, ignore_errors=True)
-        rmtree(placeholder_path, ignore_errors=True)
 
     @staticmethod
     def imageEqual(image1, image2):

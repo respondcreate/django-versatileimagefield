@@ -7,6 +7,7 @@ from django.conf import settings
 sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
 
 if __name__ == "__main__":
+    # Run Main Tests
     os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.test_settings'
     if django.VERSION[1] >= 7:
         django.setup()
