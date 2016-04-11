@@ -13,10 +13,13 @@ class VersatileImageFieldPostProcessorTestCase(
         appropriate exception when trying to import on versatileimage.py
         modules.
         """
-        instance, created = VersatileImagePostProcessorTestModel.\
-            objects.get_or_create(pk=1)
+        instance = VersatileImagePostProcessorTestModel.objects.get(pk=1)
+        instance.create_on_demand = True
         self.assertEqual(
-            instance.optional_image.crop['100x100'].url,
-            '/media/__sized__/__placeholder__/on-storage-placeholder/'
-            'placeholder-c3d14a7758159677.png'
+            instance.image.crop['100x100'].url,
+            '/media/__sized__/python-logo-2c88a725748e22ee.jpg'
         )
+
+    def test_obscured_file_delete(self):
+        instance = VersatileImagePostProcessorTestModel.objects.get(pk=1)
+        self.assert_VersatileImageField_deleted(instance.image)

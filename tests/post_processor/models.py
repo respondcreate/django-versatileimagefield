@@ -6,7 +6,7 @@ from versatileimagefield.placeholder import OnStoragePlaceholderImage
 
 class VersatileImagePostProcessorTestModel(models.Model):
     """A model for testing VersatileImageFields"""
-    optional_image = VersatileImageField(
+    image = VersatileImageField(
         upload_to='./',
         blank=True,
         placeholder_image=OnStoragePlaceholderImage(

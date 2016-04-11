@@ -91,6 +91,44 @@ class VersatileImageFieldBaseTestCase(TestCase):
         rmtree(sized_path, ignore_errors=True)
         rmtree(placeholder_path, ignore_errors=True)
 
+    def assert_VersatileImageField_deleted(self, field_instance):
+        """
+        Assert `field_instance` (VersatileImageField instance) deletes
+        correctly.
+        """
+        img_url = field_instance.crop['100x100'].url
+        self.assertEqual(
+            cache.get(img_url),
+            None
+        )
+        field_instance.create_on_demand = True
+        field_instance.crop['100x100'].url
+        self.assertEqual(
+            cache.get(img_url),
+            1
+        )
+        print(field_instance.crop['100x100'].name)
+        self.assertTrue(
+            field_instance.field.storage.exists(
+                field_instance.crop['100x100'].name
+            )
+        )
+        print(field_instance.crop['100x100'].name)
+        field_instance.field.storage.delete(
+            field_instance.crop['100x100'].name
+        )
+        self.assertFalse(
+            field_instance.field.storage.exists(
+                field_instance.crop['100x100'].name
+            )
+        )
+        print(img_url)
+        cache.delete(img_url)
+        self.assertEqual(
+            cache.get(img_url),
+            None
+        )
+
 
 class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
     fixtures = ['versatileimagefield']
@@ -286,29 +324,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
     def test_create_on_demand_functionality(self):
         """Ensure create_on_demand functionality works as advertised"""
         jpg = VersatileImageTestModel.objects.get(img_type='jpg')
-        img_url = jpg.image.crop['100x100'].url
-        self.assertEqual(
-            cache.get(img_url),
-            None
-        )
-        jpg.image.create_on_demand = True
-        jpg.image.crop['100x100'].url
-        self.assertEqual(
-            cache.get(img_url),
-            1
-        )
-        self.assertTrue(
-            jpg.image.field.storage.exists(jpg.image.crop['100x100'].name)
-        )
-        jpg.image.field.storage.delete(jpg.image.crop['100x100'].name)
-        self.assertFalse(
-            jpg.image.field.storage.exists(jpg.image.crop['100x100'].name)
-        )
-        cache.delete(img_url)
-        self.assertEqual(
-            cache.get(img_url),
-            None
-        )
+        self.assert_VersatileImageField_deleted(jpg.image)
 
     def test_image_warmer(self):
         """Ensure VersatileImageFieldWarmer works as advertised."""

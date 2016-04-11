@@ -1,0 +1,9 @@
+[
+{
+    "fields": {
+        "image": "python-logo.jpg"
+    },
+    "model": "post_processor.versatileimagepostprocessortestmodel",
+    "pk": 1
+}
+]
