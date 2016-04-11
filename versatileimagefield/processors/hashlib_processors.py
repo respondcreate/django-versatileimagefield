@@ -2,9 +2,7 @@ import hashlib
 
 
 def md5(image_key):
-    """
-    Return the md5 hash of image_key.
-    """
+    """Return the md5 hash of image_key."""
     return hashlib.md5(image_key.encode('utf-8')).hexdigest()
 
 

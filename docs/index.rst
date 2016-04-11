@@ -44,11 +44,11 @@ Compatibility
 
 - `Django <https://www.djangoproject.com/>`_:
 
-  - 1.5.x
-  - 1.6.x (NOTE: Django REST Framework 3.3.x is not compatible with Django<=1.6.x)
   - 1.7.x
   - 1.8.x
   - 1.9.x (NOTE: Django REST Framework>=3.1.x is required if using Django 1.9.x)
+
+.. note:: The 1.4 release dropped support for Django 1.5.x & 1.6.x.
 
 - `Pillow <http://pillow.readthedocs.org/en/latest/index.html>`_ >= 2.4.0
 
@@ -85,6 +85,11 @@ Table of Contents
 
 Release Notes
 =============
+
+1.4
+^^^
+- Included JPEG resize quality to sized image keys.
+- Added ``VERSATILEIMAGEFIELD_SETTINGS['image_key_post_processor']`` setting for specifying a function that will post-process sized image keys to create simpler/cleaner filenames. ``django-versatileimagefield`` ships with two built-in post processors: ``'versatileimagefield.processors.md5'`` and ``'versatileimagefield.processors.md5_16'`` (more info here :ref:`here <versatileimagefield-settings>`).
 
 1.3
 ^^^
