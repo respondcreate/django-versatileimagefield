@@ -3,6 +3,7 @@ from django.utils.module_loading import import_string
 
 from django.conf import settings
 from django.core.cache import (
+    caches,
     cache as default_cache,
     InvalidCacheBackendError
 )
@@ -70,14 +71,7 @@ VERSATILEIMAGEFIELD_CACHE_NAME = VERSATILEIMAGEFIELD_SETTINGS.get(
 )
 
 try:
-    # Beginning with Django 1.7 'get_cache' is deprecated in favor of 'caches'
-    # and will be dropped in Django 1.9
-    try:
-        from django.core.cache import caches
-        cache = caches[VERSATILEIMAGEFIELD_CACHE_NAME]
-    except ImportError:
-        from django.core.cache import get_cache
-        cache = get_cache(VERSATILEIMAGEFIELD_CACHE_NAME)
+    cache = caches[VERSATILEIMAGEFIELD_CACHE_NAME]
 except InvalidCacheBackendError:
     cache = default_cache
 
@@ -113,7 +107,7 @@ if post_processor_string is not None:
         VERSATILEIMAGEFIELD_POST_PROCESSOR = import_string(
             post_processor_string
         )
-    except ImportError:
+    except ImportError:  # pragma: no cover
         raise ImproperlyConfigured(
             "VERSATILEIMAGEFIELD_SETTINGS['image_key_post_processor'] is set "
             "incorrectly. {} could not be imported.".format(

@@ -93,7 +93,7 @@ class VersatileImageFieldRegistry(object):
 
     def register_sizer(self, attr_name, sizedimage_cls):
         """
-        Registers a new SizedImage subclass (`sizedimage_cls`) to be used
+        Register a new SizedImage subclass (`sizedimage_cls`) to be used
         via the attribute (`attr_name`)
         """
         if attr_name.startswith(
@@ -127,7 +127,7 @@ class VersatileImageFieldRegistry(object):
 
     def unregister_sizer(self, attr_name):
         """
-        Unregisters the SizedImage subclass currently assigned to `attr_name`.
+        Unregister the SizedImage subclass currently assigned to `attr_name`.
 
         If a SizedImage subclass isn't already registered to `attr_name`
         NotRegistered will raise.
@@ -141,7 +141,7 @@ class VersatileImageFieldRegistry(object):
 
     def register_filter(self, attr_name, filterimage_cls):
         """
-        Registers a new FilteredImage subclass (`filterimage_cls`) to be used
+        Register a new FilteredImage subclass (`filterimage_cls`) to be used
         via the attribute (filters.`attr_name`)
         """
         if attr_name.startswith('_'):
@@ -166,7 +166,7 @@ class VersatileImageFieldRegistry(object):
 
     def unregister_filter(self, attr_name):
         """
-        Unregisters the FilteredImage subclass currently assigned to
+        Unregister the FilteredImage subclass currently assigned to
         `attr_name`.
 
         If a FilteredImage subclass isn't already registered to filters.
@@ -182,51 +182,10 @@ class VersatileImageFieldRegistry(object):
 versatileimagefield_registry = VersatileImageFieldRegistry()
 
 
-def pre_django_17_autodiscover():
+def autodiscover():
     """
-    Iterates over settings.INSTALLED_APPS
-    """
-
-    from django.conf import settings
-    from django.utils.module_loading import module_has_submodule
-    # Django 1.7 drops support for Python 2.6 and deprecates its port of the
-    # "importlib" module which is available in Python 2.7.
-    try:
-        from importlib import import_module
-    except ImportError:  # pragma: no cover
-        from django.utils.importlib import import_module
-
-    for app in settings.INSTALLED_APPS:
-        mod = import_module(app)
-        # Attempt to import the app's versatileimagefield module.
-        try:
-            before_import_sizedimage_registry = copy.copy(
-                versatileimagefield_registry._sizedimage_registry
-            )
-            before_import_filter_registry = copy.copy(
-                versatileimagefield_registry._filter_registry
-            )
-            import_module('%s.versatileimagefield' % app)
-        except:
-            # Reset the versatileimagefield_registry to the state before the
-            # last import as this import will have to reoccur on the next
-            # request and this could raise NotRegistered and AlreadyRegistered
-            # exceptions (see django ticket #8245).
-            versatileimagefield_registry._sizedimage_registry = \
-                before_import_sizedimage_registry
-            versatileimagefield_registry._filter_registry = \
-                before_import_filter_registry
-
-            # Decide whether to bubble up this error. If the app just
-            # doesn't have a sizedimage module, we can ignore the error
-            # attempting to import it, otherwise we want it to bubble up.
-            if module_has_submodule(mod, 'versatileimagefield'):
-                raise
-
-
-def post_django_17_autodiscover():
-    """
-    Iterates over django.apps.get_app_configs()
+    Iterate over django.apps.get_app_configs() and discover
+    versatileimagefield.py modules.
     """
     from importlib import import_module
     from django.apps import apps
@@ -258,17 +217,3 @@ def post_django_17_autodiscover():
             # attempting to import it, otherwise we want it to bubble up.
             if module_has_submodule(app_config.module, 'versatileimagefield'):
                 raise
-
-
-def autodiscover():
-    """
-    Auto-discover INSTALLED_APPS versatileimagefield.py modules and fail
-    silently when not present. This forces an import on them to register
-    any versatileimagefield bits they may want.
-    """
-    from django import VERSION as DJANGO_VERSION
-
-    if DJANGO_VERSION[0] == 1 and DJANGO_VERSION[1] < 7:
-        pre_django_17_autodiscover()
-    else:
-        post_django_17_autodiscover()

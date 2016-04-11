@@ -33,7 +33,7 @@ docs/_build/
 
 # Coverage Reports #
 ##################
-.coverage
+.coverage*
 htmlcov
 htmlcov/*
 
