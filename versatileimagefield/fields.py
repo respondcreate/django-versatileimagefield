@@ -15,16 +15,6 @@ from .placeholder import OnStoragePlaceholderImage
 from .settings import VERSATILEIMAGEFIELD_PLACEHOLDER_DIRNAME
 from .validators import validate_ppoi
 
-if 'south' in settings.INSTALLED_APPS:
-    from south.modelsinspector import add_introspection_rules
-    add_introspection_rules(
-        [],
-        [
-            "^versatileimagefield\.fields\.VersatileImageField",
-            "^versatileimagefield\.fields\.PPOIField",
-        ]
-    )
-
 if DJANGO_VERSION < (1, 8):
     from django.db.models import SubfieldBase
     BasePPOIField = SubfieldBase(str('BasePPOIField'), (CharField,), {})
