@@ -37,11 +37,11 @@ Compatibility
 
 - `Django <https://www.djangoproject.com/>`_:
 
-  - 1.5.x
-  - 1.6.x (NOTE: Django REST Framework 3.3.x is not compatible with Django<=1.6.x)
   - 1.7.x
   - 1.8.x
   - 1.9.x (NOTE: Django REST Framework>=3.1.x is required if using Django 1.9.x)
+
+**NOTE**: The 1.4 release dropped support for Django 1.5.x & 1.6.x.
 
 - `Pillow <http://pillow.readthedocs.org/en/latest/index.html>`_ >= 2.4.0
 
