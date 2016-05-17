@@ -2,12 +2,12 @@
 django-versatileimagefield
 ==========================
 
-.. image:: https://travis-ci.org/WGBH/django-versatileimagefield.svg?branch=master
-    :target: https://travis-ci.org/WGBH/django-versatileimagefield
+.. image:: https://travis-ci.org/respondcreate/django-versatileimagefield.svg?branch=master
+    :target: https://travis-ci.org/respondcreate/django-versatileimagefield
     :alt: Travis CI Status
 
-.. image:: https://img.shields.io/coveralls/WGBH/django-versatileimagefield.svg?style=flat
-    :target: https://coveralls.io/r/WGBH/django-versatileimagefield
+.. image:: https://img.shields.io/coveralls/respondcreate/django-versatileimagefield.svg?style=flat
+    :target: https://coveralls.io/r/respondcreate/django-versatileimagefield
     :alt: Coverage Status
 
 .. image:: https://img.shields.io/pypi/dm/django-versatileimagefield.svg?style=flat
