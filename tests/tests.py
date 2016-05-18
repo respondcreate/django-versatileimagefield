@@ -393,6 +393,41 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
             }
         )
 
+    def test_VersatileImageFieldSerializer_output(self):
+        """Ensure VersatileImageFieldSerializer serializes correctly"""
+        factory = APIRequestFactory()
+        request = factory.get('/admin/')
+        serializer = VersatileImageTestModelSerializer(
+            self.jpg,
+            context={'request': request}
+        )
+
+        self.assertEqual(
+            serializer.data.get('optional_image'),
+            {
+                'test_crop': (
+                    'http://testserver/media/__sized__/__placeholder__/placeholder-crop'
+                    '-c0-5__0-5-100x100.png'
+                ),
+                'test_invert_crop': (
+                    'http://testserver/media/__sized__/__placeholder__/__filtered__/placeholder__invert__'
+                    '-crop-c0-5__0-5-100x100.png'
+                ),
+                'test_invert_thumb': (
+                    'http://testserver/media/__sized__/__placeholder__/__filtered__/placeholder__invert__'
+                    '-thumbnail-100x100.png'
+                ),
+                'test_invert': (
+                    'http://testserver/media/__placeholder__/__filtered__/placeholder'
+                    '__invert__.png'
+                ),
+                'test_thumb': (
+                    'http://testserver/media/__sized__/__placeholder__/placeholder-thumbnail'
+                    '-100x100.png'
+                )
+            }
+        )
+
     def test_widget_javascript(self):
         """
         Ensure the VersatileImagePPOIClickWidget widget loads appropriately
