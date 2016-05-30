@@ -7,12 +7,12 @@
 Welcome to django-versatileimagefield's documentation!
 ======================================================
 
-.. image:: https://travis-ci.org/WGBH/django-versatileimagefield.svg?branch=master
-    :target: https://travis-ci.org/WGBH/django-versatileimagefield
+.. image:: https://travis-ci.org/respondcreate/django-versatileimagefield.svg?branch=master
+    :target: https://travis-ci.org/respondcreate/django-versatileimagefield
     :alt: Travis CI Status
 
-.. image:: https://img.shields.io/coveralls/WGBH/django-versatileimagefield.svg?style=flat
-    :target: https://coveralls.io/r/WGBH/django-versatileimagefield
+.. image:: https://coveralls.io/repos/github/respondcreate/django-versatileimagefield/badge.svg?branch=master
+    :target: https://coveralls.io/github/respondcreate/django-versatileimagefield?branch=master
     :alt: Coverage Status
 
 .. image:: https://img.shields.io/pypi/dm/django-versatileimagefield.svg?style=flat

@@ -10,9 +10,13 @@ class VersatileImageTestModelSerializer(ModelSerializer):
     image = VersatileImageFieldSerializer(
         sizes='test_set'
     )
+    optional_image = VersatileImageFieldSerializer(
+        sizes='test_set'
+    )
 
     class Meta:
         model = VersatileImageTestModel
         fields = (
             'image',
+            'optional_image',
         )
