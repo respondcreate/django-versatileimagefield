@@ -392,16 +392,6 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
                 )
             }
         )
-
-    def test_VersatileImageFieldSerializer_output(self):
-        """Ensure VersatileImageFieldSerializer serializes correctly"""
-        factory = APIRequestFactory()
-        request = factory.get('/admin/')
-        serializer = VersatileImageTestModelSerializer(
-            self.jpg,
-            context={'request': request}
-        )
-
         self.assertEqual(
             serializer.data.get('optional_image'),
             {
@@ -426,7 +416,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
                     '-100x100.png'
                 )
             }
-        )
+        )        
 
     def test_widget_javascript(self):
         """
