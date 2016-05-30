@@ -1,3 +1,4 @@
+"""versatileimagefield settings."""
 from __future__ import unicode_literals
 from django.utils.module_loading import import_string
 
@@ -55,7 +56,10 @@ VERSATILEIMAGEFIELD_SETTINGS = {
     # just define a function (that can be imported from your project's
     # python path) that takes a single argument, `image_key` and returns
     # a string.
-    'image_key_post_processor': None
+    'image_key_post_processor': None,
+    # Whether to create progressive JPEGs. Read more about progressive JPEGs
+    # here: https://optimus.io/support/progressive-jpeg/
+    'progressive_jpeg': False
 }
 
 USER_DEFINED = getattr(
@@ -96,6 +100,10 @@ VERSATILEIMAGEFIELD_PLACEHOLDER_DIRNAME = VERSATILEIMAGEFIELD_SETTINGS.get(
 
 VERSATILEIMAGEFIELD_CREATE_ON_DEMAND = VERSATILEIMAGEFIELD_SETTINGS.get(
     'create_images_on_demand'
+)
+
+VERSATILEIMAGEFIELD_PROGRESSIVE_JPEG = VERSATILEIMAGEFIELD_SETTINGS.get(
+    'progressive_jpeg'
 )
 
 IMAGE_SETS = getattr(settings, 'VERSATILEIMAGEFIELD_RENDITION_KEY_SETS', {})

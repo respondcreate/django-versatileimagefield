@@ -5,7 +5,7 @@ from PIL import Image
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
-from ..settings import QUAL
+from ..settings import QUAL, VERSATILEIMAGEFIELD_PROGRESSIVE_JPEG
 from ..utils import get_image_metadata_from_file_ext
 
 EXIF_ORIENTATION_KEY = 274
@@ -127,9 +127,13 @@ class ProcessedImage(object):
                    defined by the `VERSATILEIMAGEFIELD_JPEG_RESIZE_QUALITY`
                    setting)
         """
+        save_kwargs = {
+            'progressive': VERSATILEIMAGEFIELD_PROGRESSIVE_JPEG,
+            'quality': QUAL
+        }
         if image.mode != 'RGB':
             image = image.convert('RGB')
-        return (image, {'quality': QUAL})
+        return (image, save_kwargs)
 
     def retrieve_image(self, path_to_image):
         """Return a PIL Image instance stored at `path_to_image`."""
