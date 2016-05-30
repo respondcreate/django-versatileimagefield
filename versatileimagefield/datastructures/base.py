@@ -1,9 +1,11 @@
+"""Base datastructures for manipulated images."""
 from __future__ import unicode_literals
 
 from PIL import Image
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
+from ..settings import QUAL
 from ..utils import get_image_metadata_from_file_ext
 
 EXIF_ORIENTATION_KEY = 274
@@ -27,11 +29,13 @@ class ProcessedImage(object):
     Includes a preprocessing API based on image format/file type. See
     the `preprocess` method for more specific information.
     """
+
     name = None
     url = None
 
     def __init__(self, path_to_image, storage, create_on_demand,
                  placeholder_image=None):
+        """Construct a ProcessedImage."""
         self.path_to_image = path_to_image
         self.storage = storage
         self.create_on_demand = create_on_demand
@@ -39,6 +43,8 @@ class ProcessedImage(object):
 
     def process_image(self, image, image_format, **kwargs):
         """
+        Ensure NotImplemented is raised if not overloaded by subclasses.
+
         Arguments:
             * `image`: a PIL Image instance
             * `image_format`: str, a valid PIL format (i.e. 'JPEG' or 'GIF')
@@ -53,7 +59,7 @@ class ProcessedImage(object):
 
     def preprocess(self, image, image_format):
         """
-        Preprocesses an image.
+        Preprocess an image.
 
         An API hook for image pre-processing. Calls any image format specific
         pre-processors (if defined). I.E. If `image_format` is 'JPEG', this
@@ -97,10 +103,36 @@ class ProcessedImage(object):
 
         return image, save_kwargs
 
+    def preprocess_GIF(self, image, **kwargs):
+        """
+        Receive a PIL Image instance of a GIF and return 2-tuple.
+
+        Args:
+            * [0]: Original Image instance (passed to `image`)
+            * [1]: Dict with a transparency key (to GIF transparency layer)
+        """
+        if 'transparency' in image.info:
+            save_kwargs = {'transparency': image.info['transparency']}
+        else:
+            save_kwargs = {}
+        return (image, save_kwargs)
+
+    def preprocess_JPEG(self, image, **kwargs):
+        """
+        Receive a PIL Image instance of a JPEG and returns 2-tuple.
+
+        Args:
+            * [0]: Image instance, converted to RGB
+            * [1]: Dict with a quality key (mapped to the value of `QUAL` as
+                   defined by the `VERSATILEIMAGEFIELD_JPEG_RESIZE_QUALITY`
+                   setting)
+        """
+        if image.mode != 'RGB':
+            image = image.convert('RGB')
+        return (image, {'quality': QUAL})
+
     def retrieve_image(self, path_to_image):
-        """
-        Returns a PIL Image instance stored at `path_to_image`
-        """
+        """Return a PIL Image instance stored at `path_to_image`."""
         image = self.storage.open(path_to_image, 'rb')
         file_ext = path_to_image.rsplit('.')[-1]
         image_format, mime_type = get_image_metadata_from_file_ext(file_ext)
@@ -114,7 +146,7 @@ class ProcessedImage(object):
 
     def save_image(self, imagefile, save_path, file_ext, mime_type):
         """
-        Saves an image to self.storage at `save_path`.
+        Save an image to self.storage at `save_path`.
 
         Arguments:
             `imagefile`: Raw image data, typically a BytesIO instance.
@@ -124,7 +156,6 @@ class ProcessedImage(object):
             `mime_type`: A valid image mime type (as found in
                          versatileimagefield.utils)
         """
-
         file_to_save = InMemoryUploadedFile(
             imagefile,
             None,

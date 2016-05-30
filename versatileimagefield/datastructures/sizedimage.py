@@ -1,9 +1,9 @@
+"""Datastructures for sizing images."""
 from __future__ import unicode_literals
 
 from django.conf import settings
 from django.utils.encoding import python_2_unicode_compatible
 from ..settings import (
-    QUAL,
     cache,
     VERSATILEIMAGEFIELD_CACHE_LENGTH
 )
@@ -13,28 +13,30 @@ from .mixins import DeleteAndClearCacheMixIn
 
 
 class MalformedSizedImageKey(Exception):
+    """An Exception for improperly constructured sized image keys."""
+
     pass
 
 
 @python_2_unicode_compatible
 class SizedImageInstance(DeleteAndClearCacheMixIn):
-    """
-    A simple class for returning paths-on-storage and URLs
-    associated with images created by SizedImage
-    """
+    """A simple class for images created by SizedImage."""
 
     def __init__(self, name, url, storage):
+        """Construct a SizedImageInstance."""
         self.name = name
         self.url = url
         self.storage = storage
 
     def __str__(self):
+        """Return the string representation."""
         return self.url
 
 
 class SizedImage(ProcessedImage, dict):
     """
     A dict subclass that exposes an image sizing API via key access.
+
     Subclasses must implement a `process_image` method.
 
     See versatileimagefield.versatileimagefield.CroppedImage and
@@ -43,6 +45,7 @@ class SizedImage(ProcessedImage, dict):
     """
 
     def __init__(self, path_to_image, storage, create_on_demand, ppoi=None):
+        """Construct a SizedImage."""
         super(SizedImage, self).__init__(
             path_to_image, storage, create_on_demand
         )
@@ -59,12 +62,11 @@ class SizedImage(ProcessedImage, dict):
             del key
 
     def get_filename_key(self):
-        """
-        Returns a string that will be used to identify the resized image.
-        """
+        """Return a string used to identify the resized image."""
         return self.filename_key
 
     def __setitem__(self, key, value):
+        """Ensure attribute assignment is disabled."""
         raise NotImplementedError(
             '%s instances do not allow key'
             ' assignment.' % self.__class__.__name__
@@ -72,7 +74,7 @@ class SizedImage(ProcessedImage, dict):
 
     def __getitem__(self, key):
         """
-        Returns a URL to an image sized according to key.
+        Return a URL to an image sized according to key.
 
         Arguments:
             * `key`: A string in the following format
@@ -128,6 +130,8 @@ class SizedImage(ProcessedImage, dict):
     def process_image(self, image, image_format, save_kwargs,
                       width, height):
         """
+        Process a SizedImage.
+
         Arguments:
             * `image`: a PIL Image instance
             * `image_format`: A valid image mime type (e.g. 'image/jpeg')
@@ -145,34 +149,11 @@ class SizedImage(ProcessedImage, dict):
         raise NotImplementedError(
             'Subclasses MUST provide a `process_image` method.')
 
-    def preprocess_GIF(self, image, **kwargs):
-        """
-        Receives a PIL Image instance of a GIF and returns 2-tuple:
-            * [0]: Original Image instance (passed to `image`)
-            * [1]: Dict with a transparency key (to GIF transparency layer)
-        """
-        if 'transparency' in image.info:
-            save_kwargs = {'transparency': image.info['transparency']}
-        else:
-            save_kwargs = {}
-        return (image, save_kwargs)
-
-    def preprocess_JPEG(self, image, **kwargs):
-        """
-        Receives a PIL Image instance of a JPEG and returns 2-tuple:
-            * [0]: Image instance, converted to RGB
-            * [1]: Dict with a quality key (mapped to the value of `QUAL` as
-                   defined by the `VERSATILEIMAGEFIELD_JPEG_RESIZE_QUALITY`
-                   setting)
-        """
-        if image.mode != 'RGB':
-            image = image.convert('RGB')
-        return (image, {'quality': QUAL})
-
     def create_resized_image(self, path_to_image, save_path_on_storage,
                              width, height):
         """
-        Creates a resized image.
+        Create a resized image.
+
         `path_to_image`: The path to the image with the media directory to
                          resize. If `None`, the
                          VERSATILEIMAGEFIELD_PLACEHOLDER_IMAGE will be used.
