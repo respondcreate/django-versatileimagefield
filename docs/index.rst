@@ -89,6 +89,7 @@ Release Notes
 1.5
 ^^^
 - Fixed a bug that was causing placeholder images to serialize incorrectly with ``VersatileImageFieldSerializer`` (thanks, `@romanosipenko <https://github.com/romanosipenko>`_!).
+- Ensured embedded ICC profiles are preserved when creating new images (thanks, `@gbts <https://github.com/gbts>`_!).
 - Added support for `progressive JPEGs <https://optimus.io/support/progressive-jpeg/>`_ (more info :ref:`here <versatileimagefield-settings>`).
 
 1.4
