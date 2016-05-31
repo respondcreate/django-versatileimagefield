@@ -86,10 +86,15 @@ Table of Contents
 Release Notes
 =============
 
+1.5
+^^^
+- Fixed a bug that was causing placeholder images to serialize incorrectly with ``VersatileImageFieldSerializer`` (thanks, `@romanosipenko <https://github.com/romanosipenko>`_!).
+- Added support for `progressive JPEGs <https://optimus.io/support/progressive-jpeg/>`_ (more info :ref:`here <versatileimagefield-settings>`).
+
 1.4
 ^^^
 - Included JPEG resize quality to sized image keys.
-- Added ``VERSATILEIMAGEFIELD_SETTINGS['image_key_post_processor']`` setting for specifying a function that will post-process sized image keys to create simpler/cleaner filenames. ``django-versatileimagefield`` ships with two built-in post processors: ``'versatileimagefield.processors.md5'`` and ``'versatileimagefield.processors.md5_16'`` (more info here :ref:`here <versatileimagefield-settings>`).
+- Added ``VERSATILEIMAGEFIELD_SETTINGS['image_key_post_processor']`` setting for specifying a function that will post-process sized image keys to create simpler/cleaner filenames. ``django-versatileimagefield`` ships with two built-in post processors: ``'versatileimagefield.processors.md5'`` and ``'versatileimagefield.processors.md5_16'`` (more info :ref:`here <versatileimagefield-settings>`).
 
 1.3
 ^^^
