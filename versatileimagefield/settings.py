@@ -28,7 +28,7 @@ VERSATILEIMAGEFIELD_SETTINGS = {
     # provided, the 'default' cache will be used.
     'cache_name': VERSATILEIMAGEFIELD_CACHE_NAME,
     # The save quality of modified JPEG images. More info here:
-    # http://pillow.readthedocs.org/en/latest/handbook/image-file-formats.html#jpeg
+    # https://pillow.readthedocs.io/en/latest/handbook/image-file-formats.html#jpeg
     # Defaults to 70
     'jpeg_resize_quality': QUAL,
     # The name of the top-level folder within your storage to save all

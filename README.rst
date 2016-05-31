@@ -22,7 +22,7 @@ django-versatileimagefield
 
 A drop-in replacement for django's ``ImageField`` that provides a flexible, intuitive and easily-extensible interface for creating new images from the one assigned to the field.
 
-`Click here for a quick overview <http://django-versatileimagefield.readthedocs.org/en/latest/overview.html>`_ of what it is, how it works and whether or not it's the right fit for your project.
+`Click here for a quick overview <https://django-versatileimagefield.readthedocs.io/en/latest/overview.html>`_ of what it is, how it works and whether or not it's the right fit for your project.
 
 Compatibility
 =============
@@ -43,7 +43,7 @@ Compatibility
 
 **NOTE**: The 1.4 release dropped support for Django 1.5.x & 1.6.x.
 
-- `Pillow <http://pillow.readthedocs.org/en/latest/index.html>`_ >= 2.4.0
+- `Pillow <https://pillow.readthedocs.io/en/latest/index.html>`_ >= 2.4.0
 
 - `Django REST Framework <http://www.django-rest-framework.org/>`_:
 
@@ -57,7 +57,7 @@ Compatibility
 Documentation
 =============
 
-Full documentation available at `Read the Docs <http://django-versatileimagefield.readthedocs.org/en/latest/>`_.
+Full documentation available at `Read the Docs <https://django-versatileimagefield.readthedocs.io/en/latest/>`_.
 
 Code
 ====

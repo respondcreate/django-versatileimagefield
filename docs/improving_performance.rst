@@ -27,7 +27,7 @@ This boost in performance is great but now you'll need to ensure that the images
     ... )
     >>> num_created, failed_to_create = person_img_warmer.warm()
 
-``num_created`` will be an integer of how many images were successfully created and ``failed_to_create`` will be a list of paths to images (on the field's storage class) that could not be created (due to a `PIL/Pillow <https://pillow.readthedocs.org/>`_ error, for example).
+``num_created`` will be an integer of how many images were successfully created and ``failed_to_create`` will be a list of paths to images (on the field's storage class) that could not be created (due to a `PIL/Pillow <https://pillow.readthedocs.io/>`_ error, for example).
 
 This technique is useful if you've recently converted your project's ``models.ImageField`` fields to use ``VersatileImageField`` or if you want to 'pre warm' images as part of a `Fabric <http://www.fabfile.org/>`_ script.
 

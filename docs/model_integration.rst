@@ -261,5 +261,5 @@ Where ``OnStoragePlaceholderImage`` saves images to
 Placeholder images defined by ``OnStoragePlaceholderImage`` will be saved into the placeholder directory (defaults to ``'__placeholder__'`` :ref:`docs <versatileimagefield-settings>`) within the same folder heirarchy as their original storage class. The placeholder image used in the example above would be saved to ``'__placeholder__/image/placeholder.gif``.
 
 .. _django.db.models.ImageField: https://docs.djangoproject.com/en/dev/ref/models/fields/#imagefield
-.. _south: http://south.readthedocs.org/en/latest/index.html
+.. _south: https://south.readthedocs.io/en/latest/index.html
 .. _default_storage: https://docs.djangoproject.com/en/dev/topics/files/#file-storage

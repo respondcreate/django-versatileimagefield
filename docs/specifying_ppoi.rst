@@ -9,7 +9,7 @@ initial inspiration for ``django-versatileimagefield`` came as a result
 of tackling this very problem.
 
 The ``crop`` Sizer's core functionality (located in the ``versatileimagefield.versatileimagefield.CroppedImage.crop_on_centerpoint`` method) was inspired by PIL's
-`ImageOps.fit <http://pillow.readthedocs.org/en/latest/reference/ImageOps.html#PIL.ImageOps.fit>`__
+`ImageOps.fit <https://pillow.readthedocs.io/en/latest/reference/ImageOps.html#PIL.ImageOps.fit>`__
 function (by `Kevin Cazabon <http://www.cazabon.com/>`__) which takes an optional
 keyword argument, ``centering``, that expects a 2-tuple comprised of
 floats which are greater than or equal to 0 and less than or equal to 1. These two values
@@ -84,7 +84,7 @@ model and then include the name of that field in the
 ``VersatileImageField``'s ``ppoi_field`` keyword argument. That's it!
 
 .. note:: ``PPOIField`` is fully-compatible with
-    `south <http://south.readthedocs.org/en/latest/index.html>`_ so
+    `south <https://south.readthedocs.io/en/latest/index.html>`_ so
     migrate to your heart's content!
 
 How PPOI is Stored in the Database

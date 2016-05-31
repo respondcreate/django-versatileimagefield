@@ -27,7 +27,7 @@ Dependencies
 -  ``Pillow`` >= 2.4.x
 
 ``django-versatileimagefield`` depends on the excellent
-`Pillow <http://pillow.readthedocs.org>`__ fork of ``PIL``. If you
+`Pillow <https://pillow.readthedocs.io>`__ fork of ``PIL``. If you
 already have PIL installed, it is recommended you uninstall it prior to
 installing ``django-versatileimagefield``:
 
@@ -71,7 +71,7 @@ A dictionary that allows you to fine-tune how ``django-versatileimagefield`` wor
         # provided, the 'default' cache will be used instead.
         'cache_name': 'versatileimagefield_cache',
         # The save quality of modified JPEG images. More info here:
-        # http://pillow.readthedocs.org/en/latest/handbook/image-file-formats.html#jpeg
+        # https://pillow.readthedocs.io/en/latest/handbook/image-file-formats.html#jpeg
         # Defaults to 70
         'jpeg_resize_quality': 70,
         # The name of the top-level folder within storage classes to save all
