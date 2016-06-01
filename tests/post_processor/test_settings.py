@@ -11,7 +11,7 @@ VERSATILEIMAGEFIELD_SETTINGS = {
     # provided, the 'default' cache will be used instead.
     'cache_name': 'versatileimagefield_cache',
     # The save quality of modified JPEG images. More info here:
-    # http://pillow.readthedocs.org/en/latest/handbook/image-file-formats.html#jpeg
+    # https://pillow.readthedocs.io/en/latest/handbook/image-file-formats.html#jpeg
     # Defaults to 70
     'jpeg_resize_quality': 70,
     # A path on disc to an image that will be used as a 'placeholder'

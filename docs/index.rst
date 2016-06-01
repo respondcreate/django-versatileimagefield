@@ -50,7 +50,7 @@ Compatibility
 
 .. note:: The 1.4 release dropped support for Django 1.5.x & 1.6.x.
 
-- `Pillow <http://pillow.readthedocs.org/en/latest/index.html>`_ >= 2.4.0
+- `Pillow <https://pillow.readthedocs.io/en/latest/index.html>`_ >= 2.4.0
 
 - `Django REST Framework <http://www.django-rest-framework.org/>`_:
 
@@ -167,7 +167,7 @@ Release Notes
 ^^^
 - Squashed a bug that raised a ``ValueError`` in the admin when editing a model instance with a ``VersatileImageField`` that specified ``ppoi_field``, ``width_field`` and ``height_field``.
 - Admin 'click' widget now works in Firefox.
-- ``django-versatileimagefield`` is now available for installation via `wheel <http://wheel.readthedocs.org/en/latest/>`_.
+- ``django-versatileimagefield`` is now available for installation via `wheel <https://wheel.readthedocs.io/en/latest/>`_.
 
 0.5.4
 ^^^^^
