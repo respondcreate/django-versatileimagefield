@@ -16,6 +16,7 @@ class CroppedImage(SizedImage):
     See the `process_image` method for more details.
     """
     filename_key = 'crop'
+    filename_key_regex = r'crop-c[0-9-]+__[0-9-]+'
 
     def ppoi_as_str(self):
         return "%s__%s" % (

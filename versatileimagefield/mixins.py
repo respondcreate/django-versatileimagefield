@@ -27,7 +27,7 @@ filter_regex_snippet = r'__({registered_filters})__'.format(
 )
 sizer_regex_snippet = r'-({registered_sizers})-(\d+)x(\d+)(?:-\d+)?'.format(
     registered_sizers='|'.join([
-        key
+        filter_cls.get_filename_key_regex()
         for key, filter_cls in iteritems(
             versatileimagefield_registry._sizedimage_registry
         )

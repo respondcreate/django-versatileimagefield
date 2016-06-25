@@ -65,6 +65,20 @@ class SizedImage(ProcessedImage, dict):
         """Return a string used to identify the resized image."""
         return self.filename_key
 
+    @classmethod
+    def get_filename_key_regex(cls):
+        try:
+            return cls.filename_key_regex
+        except AttributeError:
+            try:
+                return cls.filename_key
+            except AttributeError:
+                raise NotImplementedError(
+                    'SizedImage subclasses must define a ' +
+                    '`filename_key_regex` attribute or a ' +
+                    '`filename_key` attribute or override the ' +
+                    '`get_filename_key_regex` class method.')
+
     def __setitem__(self, key, value):
         """Ensure attribute assignment is disabled."""
         raise NotImplementedError(
