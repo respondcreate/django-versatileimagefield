@@ -33,6 +33,10 @@ sizer_regex_snippet = r'-({registered_sizers})-(\d+)x(\d+)(?:-\d+)?'.format(
         )
     ])
 )
+filter_regex = re.compile(filter_regex_snippet + '$')
+sizer_regex = re.compile(sizer_regex_snippet + '$')
+filter_and_sizer_regex = re.compile(
+    filter_regex_snippet + sizer_regex_snippet + '$')
 
 
 class VersatileImageMixIn(object):
@@ -54,31 +58,6 @@ class VersatileImageMixIn(object):
             self.ppoi = instance_ppoi_value
         else:
             self.ppoi = (0.5, 0.5)
-        if self.name:
-            filename, ext = os.path.splitext(self.name)
-            self.filter_regex = re.compile(
-                "{filename}{filter_regex_snippet}{ext}".format(
-                    filename=filename,
-                    filter_regex_snippet=filter_regex_snippet,
-                    ext=ext
-                )
-            )
-            self.sizer_regex = re.compile(
-                "{filename}{sizer_regex_snippet}{ext}".format(
-                    filename=filename,
-                    sizer_regex_snippet=sizer_regex_snippet,
-                    ext=ext
-                )
-            )
-            self.filter_and_sizer_regex = re.compile(
-                "{filename}{filter_regex_snippet}"
-                "{sizer_regex_snippet}.{ext}".format(
-                    filename=filename,
-                    filter_regex_snippet=filter_regex_snippet,
-                    sizer_regex_snippet=sizer_regex_snippet,
-                    ext=ext
-                )
-            )
 
     def _get_url(self):
         """
@@ -178,9 +157,17 @@ class VersatileImageMixIn(object):
         Deletes files from `root_folder` on self.storage that match
         `regex`.
         """
+        if not self.name:
+            return
         directory_list, file_list = self.storage.listdir(root_folder)
+        folder, filename = os.path.split(self.name)
+        basename, ext = os.path.splitext(filename)
         for f in file_list:
-            if regex.match(f) is not None:
+            if not f.startswith(basename) or not f.endswith(ext):
+                continue
+            tag = f[len(basename):-len(ext)]
+            assert f == basename + tag + ext
+            if regex.match(tag) is not None:
                 file_location = os.path.join(root_folder, f)
                 self.storage.delete(file_location)
                 cache.delete(
@@ -199,7 +186,7 @@ class VersatileImageMixIn(object):
         """
         self.delete_matching_files_from_storage(
             self.get_filtered_root_folder(),
-            self.filter_regex
+            filter_regex,
         )
 
     def delete_sized_images(self):
@@ -208,7 +195,7 @@ class VersatileImageMixIn(object):
         """
         self.delete_matching_files_from_storage(
             self.get_sized_root_folder(),
-            self.sizer_regex
+            sizer_regex,
         )
 
     def delete_filtered_sized_images(self):
@@ -217,7 +204,7 @@ class VersatileImageMixIn(object):
         """
         self.delete_matching_files_from_storage(
             self.get_filtered_sized_root_folder(),
-            self.filter_and_sizer_regex
+            filter_and_sizer_regex,
         )
 
     def delete_all_created_images(self):
