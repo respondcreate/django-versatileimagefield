@@ -154,8 +154,12 @@ class VersatileImageMixIn(object):
 
     def delete_matching_files_from_storage(self, root_folder, regex):
         """
-        Deletes files from `root_folder` on self.storage that match
-        `regex`.
+        Deletes files from `root_folder` on self.storage named like `self.name`
+        but with an extra part matching `regex` before the extension.
+
+        If `root_folder = 'foo/'`, `self.name = 'bar.jpg'` and
+        `regex = re.compile('baz')`, this method will remove files named
+        `'foo/bar'+X+'.jpg'` where `regex.match(X) is not None`.
         """
         if not self.name:
             return
