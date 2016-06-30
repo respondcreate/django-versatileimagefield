@@ -55,6 +55,12 @@ class VersatileImageTestModel(models.Model):
     ppoi = PPOIField()
 
 
+class VersatileImageTestUploadDirectoryModel(models.Model):
+    image = VersatileImageField(
+        upload_to='./foo/',
+    )
+
+
 class VersatileImageWidgetTestModel(models.Model):
     """A model for testing VersatileImageField widgets"""
     image = VersatileImageField(

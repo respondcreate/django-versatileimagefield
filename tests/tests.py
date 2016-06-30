@@ -60,7 +60,11 @@ from .forms import (
     VersatileImageWidgetTestModelForm,
     VersatileImageTestModelFormDjango15
 )
-from .models import VersatileImageTestModel, VersatileImageWidgetTestModel
+from .models import (
+    VersatileImageTestModel,
+    VersatileImageWidgetTestModel,
+    VersatileImageTestUploadDirectoryModel,
+)
 from .serializers import VersatileImageTestModelSerializer
 
 ADMIN_URL = '/admin/tests/versatileimagewidgettestmodel/1/'
@@ -325,6 +329,19 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         """Ensure create_on_demand functionality works as advertised"""
         jpg = VersatileImageTestModel.objects.get(img_type='jpg')
         self.assert_VersatileImageField_deleted(jpg.image)
+
+    def test_thumbnail_deleted(self):
+        o = VersatileImageTestUploadDirectoryModel.objects.get()
+        field_instance = o.image
+        field_instance.create_on_demand = True
+        path = field_instance.crop['100x100'].name
+        self.assertTrue(
+            field_instance.field.storage.exists(path)
+        )
+        field_instance.delete_sized_images()
+        self.assertFalse(
+            field_instance.field.storage.exists(path)
+        )
 
     def test_image_warmer(self):
         """Ensure VersatileImageFieldWarmer works as advertised."""

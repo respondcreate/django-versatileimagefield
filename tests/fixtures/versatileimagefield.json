@@ -112,6 +112,13 @@
 },
 {
     "fields": {
+        "image": "foo/python-logo.jpg"
+    },
+    "model": "tests.versatileimagetestuploaddirectorymodel",
+    "pk": 1
+},
+{
+    "fields": {
         "image": "python-logo.png",
         "image_no_ppoi": "python-logo.jpg",
         "optional_image": "exif-orientation-examples/Landscape_8.jpg",
