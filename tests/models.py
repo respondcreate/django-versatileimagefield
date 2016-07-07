@@ -60,6 +60,10 @@ class VersatileImageTestUploadDirectoryModel(models.Model):
         upload_to='./foo/',
     )
 
+    class Meta:
+        verbose_name = 'VIF Test Upload Dir Model'
+        verbose_name_plural = 'VIF Test Upload Dir Models'
+
 
 class VersatileImageWidgetTestModel(models.Model):
     """A model for testing VersatileImageField widgets"""
