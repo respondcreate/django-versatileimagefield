@@ -87,6 +87,35 @@ For an example, let's take a look at the ``thumbnail`` Sizer (``versatileimagefi
 
 .. important:: ``process_image`` should *always* return a `StringIO` instance. See :ref:`what-process_image-should-return` for more information.
 
+Ensuring Sized Images Can Be Deleted
+------------------------------------
+
+If your ``SizedImage`` subclass uses more than just ``filename key`` to construct filenames than you'll also want to define the ``filename_key_regex`` attribute.
+
+Confused? Let's take a look at ``CroppedImage`` – which includes individual image PPOI values in the images it creates – as an example:
+
+.. code-block:: python
+    :emphasize-lines: 9,11-16
+
+    class CroppedImage(SizedImage):
+        """
+        A SizedImage subclass that creates a 'cropped' image.
+
+        See the `process_image` method for more details.
+        """
+
+        filename_key = 'crop'
+        filename_key_regex = r'crop-c[0-9-]+__[0-9-]+'
+
+        def get_filename_key(self):
+            """Return the filename key for cropped images."""
+            return "{key}-c{ppoi}".format(
+                key=self.filename_key,
+                ppoi=self.ppoi_as_str()
+            )
+
+The ``get_filename_key`` method above is what is used by the sizer to create a filename fragment when **creating** images. It combines the ``filename_key`` with an individual image's PPOI value which ensures PPOI changes result in newly created images (which makes sense when you're cropping in respect to PPOI). The ``filename_key_regex`` is a regular expression pattern utilized by the :doc:`file deletion API </deleting_created_images>` in order to find cropped images created from the original image.
+
 .. _writing-a-custom-filter:
 
 Writing a Custom Filter
