@@ -1,3 +1,4 @@
+"""Default sizer & filter definitions."""
 from __future__ import division
 from __future__ import unicode_literals
 
@@ -15,16 +16,12 @@ class CroppedImage(SizedImage):
 
     See the `process_image` method for more details.
     """
+
     filename_key = 'crop'
     filename_key_regex = r'crop-c[0-9-]+__[0-9-]+'
 
-    def ppoi_as_str(self):
-        return "%s__%s" % (
-            str(self.ppoi[0]).replace('.', '-'),
-            str(self.ppoi[1]).replace('.', '-')
-        )
-
     def get_filename_key(self):
+        """Return the filename key for cropped images."""
         return "%s-c%s" % (
             self.filename_key,
             self.ppoi_as_str()
@@ -32,11 +29,12 @@ class CroppedImage(SizedImage):
 
     def crop_on_centerpoint(self, image, width, height, ppoi=(0.5, 0.5)):
         """
-        Returns a PIL Image instance cropped from `image` (at the aspect
-        ratio provided by dividing `width` / `height`), sized down
-        to `width`x`height`. Any 'excess pixels' are trimmed away in respect
-        to the pixel of `image` that corresponds to `ppoi` (Primary Point
-        of Interest).
+        Return a PIL Image instance cropped from `image`.
+
+        Image has an aspect ratio provided by dividing `width` / `height`),
+        sized down to `width`x`height`. Any 'excess pixels' are trimmed away
+        in respect to the pixel of `image` that corresponds to `ppoi` (Primary
+        Point of Interest).
 
         `image`: A PIL Image instance
         `width`: Integer, width of the image to return (in pixels)
@@ -126,7 +124,7 @@ class CroppedImage(SizedImage):
     def process_image(self, image, image_format, save_kwargs,
                       width, height):
         """
-        Returns a BytesIO instance of `image` cropped to `width` and `height`
+        Return a BytesIO instance of `image` cropped to `width` and `height`.
 
         Cropping will first reduce an image down to its longest side
         and then crop inwards centered on the Primary Point of Interest
@@ -156,7 +154,7 @@ class CroppedImage(SizedImage):
 
 class ThumbnailImage(SizedImage):
     """
-    Sizes an image down to fit within a bounding box
+    Sizes an image down to fit within a bounding box.
 
     See the `process_image()` method for more information
     """
@@ -166,8 +164,9 @@ class ThumbnailImage(SizedImage):
     def process_image(self, image, image_format, save_kwargs,
                       width, height):
         """
-        Returns a BytesIO instance of `image` that will fit
-        within a bounding box as specified by `width`x`height`
+        Return a BytesIO instance of `image` that fits in a bounding box.
+
+        Bounding box dimensions are `width`x`height`.
         """
         imagefile = BytesIO()
         image.thumbnail(
@@ -183,15 +182,13 @@ class ThumbnailImage(SizedImage):
 
 class InvertImage(FilteredImage):
     """
-    Inverts the colors of an image.
+    Invert the color palette of an image.
 
     See the `process_image()` for more specifics
     """
 
     def process_image(self, image, image_format, save_kwargs={}):
-        """
-        Returns a BytesIO instance of `image` with inverted colors
-        """
+        """Return a BytesIO instance of `image` with inverted colors."""
         imagefile = BytesIO()
         inv_image = ImageOps.invert(image)
         inv_image.save(

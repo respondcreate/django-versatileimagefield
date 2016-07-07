@@ -54,12 +54,19 @@ class SizedImage(ProcessedImage, dict):
             key = self.get_filename_key()
         except AttributeError:
             raise NotImplementedError(
-                'SizedImage subclasses must define a'
-                ' `filename_key` attribute or override the '
+                'SizedImage subclasses must define a '
+                '`filename_key` attribute or override the '
                 '`get_filename_key` method.'
             )
         else:
             del key
+
+    def ppoi_as_str(self):
+        """Return PPOI value as a string."""
+        return "%s__%s" % (
+            str(self.ppoi[0]).replace('.', '-'),
+            str(self.ppoi[1]).replace('.', '-')
+        )
 
     def get_filename_key(self):
         """Return a string used to identify the resized image."""
@@ -67,17 +74,19 @@ class SizedImage(ProcessedImage, dict):
 
     @classmethod
     def get_filename_key_regex(cls):
+        """Return the filename key regex."""
         try:
             return cls.filename_key_regex
         except AttributeError:
             try:
                 return cls.filename_key
-            except AttributeError:
+            except AttributeError:   # pragma: no cover
                 raise NotImplementedError(
-                    'SizedImage subclasses must define a ' +
-                    '`filename_key_regex` attribute or a ' +
-                    '`filename_key` attribute or override the ' +
-                    '`get_filename_key_regex` class method.')
+                    'SizedImage subclasses must define a '
+                    '`filename_key_regex` attribute or a '
+                    '`filename_key` attribute or override the '
+                    '`get_filename_key_regex` class method.'
+                )
 
     def __setitem__(self, key, value):
         """Ensure attribute assignment is disabled."""
@@ -161,7 +170,8 @@ class SizedImage(ProcessedImage, dict):
         Subclasses MUST implement this method.
         """
         raise NotImplementedError(
-            'Subclasses MUST provide a `process_image` method.')
+            'Subclasses MUST provide a `process_image` method.'
+        )
 
     def create_resized_image(self, path_to_image, save_path_on_storage,
                              width, height):

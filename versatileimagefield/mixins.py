@@ -1,3 +1,4 @@
+"""versatileimagefield Field mixins."""
 from __future__ import unicode_literals
 
 import os
@@ -40,12 +41,10 @@ filter_and_sizer_regex = re.compile(
 
 
 class VersatileImageMixIn(object):
-    """
-    A mix-in that provides the filtering/sizing API and crop centering
-    support for django.db.models.fields.files.ImageField
-    """
+    """A mix-in that provides the filtering/sizing API."""
 
     def __init__(self, *args, **kwargs):
+        """Construct PPOI and create_on_demand."""
         self._create_on_demand = VERSATILEIMAGEFIELD_CREATE_ON_DEMAND
         super(VersatileImageMixIn, self).__init__(*args, **kwargs)
         # Setting initial ppoi
@@ -61,7 +60,9 @@ class VersatileImageMixIn(object):
 
     def _get_url(self):
         """
-        Returns the appropriate URL based on field conditions:
+        Return the appropriate URL.
+
+        URL is constructed based on these field conditions:
             * If empty (not `self.name`) and a placeholder is defined, the
               URL to the placeholder is returned.
             * Otherwise, defaults to vanilla ImageFieldFile behavior.
@@ -73,6 +74,7 @@ class VersatileImageMixIn(object):
 
     @property
     def create_on_demand(self):
+        """create_on_demand getter."""
         return self._create_on_demand
 
     @create_on_demand.setter
@@ -87,6 +89,7 @@ class VersatileImageMixIn(object):
 
     @property
     def ppoi(self):
+        """Primary Point of Interest (ppoi) getter."""
         return self._ppoi_value
 
     @ppoi.setter
@@ -100,6 +103,7 @@ class VersatileImageMixIn(object):
             self.build_filters_and_sizers(ppoi, self.create_on_demand)
 
     def build_filters_and_sizers(self, ppoi_value, create_on_demand):
+        """Build the filters and sizers for a field."""
         name = self.name
         if not name and self.field.placeholder_image_name:
             name = self.field.placeholder_image_name
@@ -126,26 +130,17 @@ class VersatileImageMixIn(object):
             )
 
     def get_filtered_root_folder(self):
-        """
-        Returns the folder on `self.storage` where filtered images created
-        from `self.name` are stored.
-        """
+        """Return the location where filtered images are stored."""
         folder, filename = os.path.split(self.name)
         return os.path.join(folder, VERSATILEIMAGEFIELD_FILTERED_DIRNAME, '')
 
     def get_sized_root_folder(self):
-        """
-        Returns the folder on `self.storage` where sized images created
-        from `self.name` are stored.
-        """
+        """Return the location where sized images are stored."""
         folder, filename = os.path.split(self.name)
         return os.path.join(VERSATILEIMAGEFIELD_SIZED_DIRNAME, folder, '')
 
     def get_filtered_sized_root_folder(self):
-        """
-        Returns the folder on `self.storage` where filtered sized images
-        created from `self.name` are stored.
-        """
+        """Return the location where filtered + sized images are stored."""
         sized_root_folder = self.get_sized_root_folder()
         return os.path.join(
             sized_root_folder,
@@ -154,20 +149,24 @@ class VersatileImageMixIn(object):
 
     def delete_matching_files_from_storage(self, root_folder, regex):
         """
-        Deletes files from `root_folder` on self.storage named like `self.name`
-        but with an extra part matching `regex` before the extension.
+        Delete files in `root_folder` which match `regex` before file ext.
 
-        If `root_folder = 'foo/'`, `self.name = 'bar.jpg'` and
-        `regex = re.compile('baz')`, this method will remove files named
-        `'foo/bar'+X+'.jpg'` where `regex.match(X) is not None`.
+        Example values:
+            * root_folder = 'foo/'
+            * self.name = 'bar.jpg'
+            * regex = re.compile('-baz')
+
+            Result:
+                * foo/bar-baz.jpg <- Deleted
+                * foo/bar-biz.jpg <- Not deleted
         """
-        if not self.name:
+        if not self.name:   # pragma: no cover
             return
         directory_list, file_list = self.storage.listdir(root_folder)
         folder, filename = os.path.split(self.name)
         basename, ext = os.path.splitext(filename)
         for f in file_list:
-            if not f.startswith(basename) or not f.endswith(ext):
+            if not f.startswith(basename) or not f.endswith(ext):   # pragma: no cover
                 continue
             tag = f[len(basename):-len(ext)]
             assert f == basename + tag + ext
@@ -185,36 +184,28 @@ class VersatileImageMixIn(object):
                 )
 
     def delete_filtered_images(self):
-        """
-        Deletes all filtered images created from `self.name`.
-        """
+        """Delete all filtered images created from `self.name`."""
         self.delete_matching_files_from_storage(
             self.get_filtered_root_folder(),
             filter_regex,
         )
 
     def delete_sized_images(self):
-        """
-        Deletes all sized images created from `self.name`.
-        """
+        """Delete all sized images created from `self.name`."""
         self.delete_matching_files_from_storage(
             self.get_sized_root_folder(),
             sizer_regex,
         )
 
     def delete_filtered_sized_images(self):
-        """
-        Deletes all filtered sized images created from `self.name`.
-        """
+        """Delete all filtered sized images created from `self.name`."""
         self.delete_matching_files_from_storage(
             self.get_filtered_sized_root_folder(),
             filter_and_sizer_regex,
         )
 
     def delete_all_created_images(self):
-        """
-        Deletes all images created from `self.name`.
-        """
+        """Delete all images created from `self.name`."""
         self.delete_filtered_images()
         self.delete_sized_images()
         self.delete_filtered_sized_images()

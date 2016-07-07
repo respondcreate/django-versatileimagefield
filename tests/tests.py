@@ -1,3 +1,4 @@
+"""versatileimagefield tests."""
 from __future__ import division
 from __future__ import unicode_literals
 
@@ -73,12 +74,11 @@ if DJANGO_VERSION[0] == 1 and DJANGO_VERSION[1] >= 9:
 
 
 class VersatileImageFieldBaseTestCase(TestCase):
+    """Base test case for versatileimagefield."""
 
     @classmethod
     def tearDownClass(cls):
-        """
-        Delete files made by VersatileImageFields during tests
-        """
+        """Delete files made by VersatileImageFields during tests."""
         filtered_path = os.path.join(
             settings.MEDIA_ROOT,
             VERSATILEIMAGEFIELD_FILTERED_DIRNAME
@@ -96,10 +96,7 @@ class VersatileImageFieldBaseTestCase(TestCase):
         rmtree(placeholder_path, ignore_errors=True)
 
     def assert_VersatileImageField_deleted(self, field_instance):
-        """
-        Assert `field_instance` (VersatileImageField instance) deletes
-        correctly.
-        """
+        """Assert `field_instance` (VersatileImageField instance) deletes."""
         img_url = field_instance.crop['100x100'].url
         self.assertEqual(
             cache.get(img_url),
@@ -135,9 +132,12 @@ class VersatileImageFieldBaseTestCase(TestCase):
 
 
 class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
+    """Main test case for versatileimagefield."""
+
     fixtures = ['versatileimagefield']
 
     def setUp(self):
+        """Build test instances, create test client."""
         self.jpg = VersatileImageTestModel.objects.get(img_type='jpg')
         self.png = VersatileImageTestModel.objects.get(img_type='png')
         self.gif = VersatileImageTestModel.objects.get(img_type='gif')
@@ -166,10 +166,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
 
     @staticmethod
     def imageEqual(image1, image2):
-        """
-        Return a bool signifying whether or not `image1` and `image2`
-        are identical
-        """
+        """Return True if `image1` & `image2` are identical images."""
         h1 = image1.histogram()
         h2 = image2.histogram()
         rms = math.sqrt(
@@ -181,20 +178,20 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         return rms == 0.0
 
     def test_check_storage_paths(self):
-        """Ensure storage paths are properly set"""
+        """Ensure storage paths are properly set."""
         self.assertEqual(self.jpg.image.name, 'python-logo.jpg')
         self.assertEqual(self.png.image.name, 'python-logo.png')
         self.assertEqual(self.gif.image.name, 'python-logo.gif')
 
     def test_thumbnail_resized_path(self):
-        """Ensure thumbnail Sizer paths are set correctly"""
+        """Ensure thumbnail Sizer paths are set correctly."""
         self.assertEqual(
             self.jpg.image.thumbnail['100x100'].url,
             '/media/__sized__/python-logo-thumbnail-100x100-70.jpg'
         )
 
     def test_crop_resized_path(self):
-        """Ensure crop Sizer paths are set correctly"""
+        """Ensure crop Sizer paths are set correctly."""
         self.assertEqual(
             self.jpg.image.crop['100x100'].url,
             '/media/__sized__/python-logo-crop-c0-25__0-25-100x100-70.jpg'
@@ -209,20 +206,20 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
 
     def test_invert_filtered_path(self):
-        """Ensure crop Sizer paths are set correctly"""
+        """Ensure crop Sizer paths are set correctly."""
         self.assertEqual(
             self.jpg.image.filters.invert.url,
             '/media/__filtered__/python-logo__invert__.jpg'
         )
 
     def test_InvalidFilter(self):
-        """Ensure InvalidFilter raises"""
+        """Ensure InvalidFilter raises."""
         with self.assertRaises(InvalidFilter):
             invalid_filter = self.jpg.image.filters.non_existant.url
             del invalid_filter
 
     def test_invert_plus_thumbnail_sizer_filtered_path(self):
-        """Ensure crop Sizer paths are set correctly"""
+        """Ensure crop Sizer paths are set correctly."""
         self.assertEqual(
             self.jpg.image.filters.invert.thumbnail['100x100'].url,
             (
@@ -275,7 +272,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         self.jpg.optional_image.create_on_demand = False
 
     def test_setting_ppoi_values(self):
-        """Ensure PPOI values are set correctly"""
+        """Ensure PPOI values are set correctly."""
         jpg = VersatileImageTestModel.objects.get(img_type='jpg')
         self.assertEqual(
             jpg.image.ppoi,
@@ -307,15 +304,13 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
             versatileimagefield.ppoi = 'picklexcucumber'
 
     def test_invalid_ppoi_tuple_validation(self):
-        """
-        Ensure validate_ppoi_tuple works as expected
-        """
+        """Ensure validate_ppoi_tuple works as expected."""
         self.assertFalse(
             validate_ppoi_tuple((0, 1.5, 6))
         )
 
     def test_create_on_demand_boolean(self):
-        """Ensure create_on_demand boolean is set appropriately"""
+        """Ensure create_on_demand boolean is set appropriately."""
         jpg = VersatileImageTestModel.objects.get(img_type='jpg')
         self.assertFalse(jpg.image.create_on_demand)
         jpg.image.create_on_demand = True
@@ -326,11 +321,12 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
             jpg.image.create_on_demand = 'pickle'
 
     def test_create_on_demand_functionality(self):
-        """Ensure create_on_demand functionality works as advertised"""
+        """Ensure create_on_demand functionality works as advertised."""
         jpg = VersatileImageTestModel.objects.get(img_type='jpg')
         self.assert_VersatileImageField_deleted(jpg.image)
 
-    def test_thumbnail_deleted(self):
+    def test_custom_upload_to_thumbnail_deleted(self):
+        """Test custom upload_to deletion works."""
         o = VersatileImageTestUploadDirectoryModel.objects.get()
         field_instance = o.image
         field_instance.create_on_demand = True
@@ -377,7 +373,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
             del invalid_warmer
 
     def test_VersatileImageFieldSerializer_output(self):
-        """Ensure VersatileImageFieldSerializer serializes correctly"""
+        """Ensure VersatileImageFieldSerializer serializes correctly."""
         factory = APIRequestFactory()
         request = factory.get('/admin/')
         serializer = VersatileImageTestModelSerializer(
@@ -433,13 +429,10 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
                     '-100x100.png'
                 )
             }
-        )        
+        )
 
     def test_widget_javascript(self):
-        """
-        Ensure the VersatileImagePPOIClickWidget widget loads appropriately
-        and its image preview is available
-        """
+        """Ensure VersatileImagePPOIClickWidget widget loads appropriately."""
         response = self.client.get(
             ADMIN_URL
         )
@@ -589,9 +582,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         self.assertEqual(instance.optional_image_with_ppoi.name, '')
 
     def test_VersatileImageFileDescriptor(self):
-        """
-        Ensure VersatileImageFileDescriptor works as intended
-        """
+        """Ensure VersatileImageFileDescriptor works as intended."""
         self.jpg.image = 'python-logo-2.jpg'
         self.jpg.save()
         self.assertEqual(
@@ -616,9 +607,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
             VersatileImageFileDescriptor.__get__(x)
 
     def test_VersatileImageField_picklability(self):
-        """
-        Ensure VersatileImageField instances can be pickled/unpickled.
-        """
+        """Ensure VersatileImageField instances can be pickled/unpickled."""
         cPickle.dump(
             self.jpg,
             open("pickletest.p", "wb")
@@ -644,10 +633,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
 
     def test_VERSATILEIMAGEFIELD_RENDITION_KEY_SETS_setting(self):
-        """
-        Ensure VERSATILEIMAGEFIELD_RENDITION_KEY_SETS setting
-        validates correctly
-        """
+        """Ensure VERSATILEIMAGEFIELD_RENDITION_KEY_SETS setting validates."""
         with self.assertRaises(ImproperlyConfigured):
             get_rendition_key_set('does_not_exist')
 
@@ -658,9 +644,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
             get_rendition_key_set('invalid_size_key')
 
     def __test_exif_orientation_rotate_180(self):
-        """
-        Ensure VersatileImageFields process exif orientation==3 data properly
-        """
+        """Ensure exif orientation==3 data processes properly."""
         exif_3 = VersatileImageTestModel.objects.get(
             img_type='exif_3'
         )
@@ -683,9 +667,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
 
     def __test_exif_orientation_rotate_270(self):
-        """
-        Ensure VersatileImageFields process exif orientation==6 data properly
-        """
+        """Ensure exif orientation==6 data processes properly."""
         exif_6 = VersatileImageTestModel.objects.get(
             img_type='exif_6'
         )
@@ -705,9 +687,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
 
     def __test_exif_orientation_rotate_90(self):
-        """
-        Ensure VersatileImageFields process exif orientation==8 data properly
-        """
+        """Ensure exif orientation==8 data processes properly."""
         exif_8 = VersatileImageTestModel.objects.get(
             img_type='exif_8'
         )
@@ -727,9 +707,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
 
     def test_horizontal_and_vertical_crop(self):
-        """
-        Test horizontal and vertical crops with 'extreme' PPOI values
-        """
+        """Test horizontal and vertical crops with 'extreme' PPOI values."""
         test_gif = VersatileImageTestModel.objects.get(
             img_type='gif'
         )
@@ -791,7 +769,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
 
     def test_DummyFilter(self):
-        """Test placeholder image functionality for filters"""
+        """Test placeholder image functionality for filters."""
         test_png = VersatileImageTestModel.objects.get(
             img_type='png'
         )
@@ -799,7 +777,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         test_png.optional_image.filters.invert.url
 
     def test_crop_and_thumbnail_key_assignment(self):
-        """Test placeholder image functionality for filters"""
+        """Test placeholder image functionality for filters."""
         with self.assertRaises(NotImplementedError):
             jpg = VersatileImageTestModel.objects.get(img_type='jpg')
             jpg.image.crop['100x100'] = None
@@ -809,16 +787,12 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
             jpg.image.thumbnail['100x100'] = None
 
     def test_MalformedSizedImageKey(self):
-        """
-        Testing MalformedSizedImageKey exception
-        """
+        """Test MalformedSizedImageKey exception."""
         with self.assertRaises(MalformedSizedImageKey):
             self.jpg.image.thumbnail['fooxbar']
 
     def test_registration_exceptions(self):
-        """
-        Ensure all registration-related exceptions fire as expected
-        """
+        """Ensure all registration-related exceptions fire as expected."""
         class A(object):
                 pass
 
@@ -847,10 +821,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
             versatileimagefield_registry.unregister_filter('poop')
 
     def test_unregister_methods(self):
-        """
-        Ensuring versatileimagefield_registry unregister methods
-        work as expected
-        """
+        """Ensure versatileimagefield_registry unregister methods work."""
         self.assertTrue(
             'crop' in versatileimagefield_registry._sizedimage_registry
         )
@@ -868,9 +839,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
 
     def test_save_form_data(self):
-        """
-        Testing VersatileImageField.save_form_data
-        """
+        """Test VersatileImageField.save_form_data."""
         with open(
             os.path.join(
                 os.path.dirname(upath(__file__)),
@@ -928,10 +897,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         instance.image.delete()
 
     def test_ProcessedImage_subclass_exceptions(self):
-        """
-        Ensure improperly constructed ProcessedImage subclasses throw
-        NotImplementedError when appropriate.
-        """
+        """Ensure ProcessedImage subclasses throw NotImplementedError."""
         with self.assertRaises(NotImplementedError):
             class SizedImageSubclass(SizedImage):
                 pass
@@ -962,11 +928,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         INSTALLED_APPS=('tests.test_autodiscover',)
     )
     def test_autodiscover(self):
-        """
-        Ensure versatileimagefield.registry.autodiscover raises the
-        appropriate exception when trying to import on versatileimage.py
-        modules.
-        """
+        """Test autodiscover ImportError."""
         self.assertRaises(
             ImportError,
             autodiscover
@@ -976,6 +938,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         VERSATILEIMAGEFIELD_USE_PLACEHOLDIT=True
     )
     def test_placeholdit(self):
+        """Test placehold.it integration."""
         jpg = VersatileImageTestModel.objects.get(img_type='jpg')
         self.assertEqual(
             jpg.optional_image_3.filters.invert.crop['400x400'].url,
@@ -983,6 +946,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
 
     def test_template_rendering(self):
+        """Test template rendering of image."""
         t = get_template("test-template.html")
         c = Context({
             'instance': self.jpg
@@ -1004,9 +968,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
 
     def test_field_serialization(self):
-        """
-        Ensure VersatileImageField and PPOIField serialize correctly
-        """
+        """Ensure VersatileImageField and PPOIField serialize correctly."""
         output = serializers.serialize(
             'json',
             VersatileImageTestModel.objects.filter(pk=1)
@@ -1032,9 +994,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
 
     def test_bound_form_data(self):
-        """
-        Ensure fields return the correct data after form validation errors.
-        """
+        """Ensure correct data displays after form validation errors."""
         response = self.client.post(
             ADMIN_URL,
             {
@@ -1058,10 +1018,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
 
     def test_individual_rendition_cache_clear(self):
-        """
-        Test that VersatileImageField can clear cache entries for individual
-        renditions.
-        """
+        """Test that VersatileImageField can clear individual cache entries."""
         expected_image_url = (
             '/media/__sized__/python-logo-delete-test-thumbnail-100x100-70.jpg'
         )
@@ -1089,9 +1046,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
 
     def test_rendition_delete(self):
-        """
-        Test that rendition deletion works as expected.
-        """
+        """Test rendition deletion."""
         img = self.delete_test
         self.assertFalse(
             img.image.field.storage.exists(
