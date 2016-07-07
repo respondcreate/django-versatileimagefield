@@ -28,8 +28,8 @@ filter_regex_snippet = r'__({registered_filters})__'.format(
 )
 sizer_regex_snippet = r'-({registered_sizers})-(\d+)x(\d+)(?:-\d+)?'.format(
     registered_sizers='|'.join([
-        filter_cls.get_filename_key_regex()
-        for key, filter_cls in iteritems(
+        sizer_cls.get_filename_key_regex()
+        for key, sizer_cls in iteritems(
             versatileimagefield_registry._sizedimage_registry
         )
     ])
@@ -37,7 +37,8 @@ sizer_regex_snippet = r'-({registered_sizers})-(\d+)x(\d+)(?:-\d+)?'.format(
 filter_regex = re.compile(filter_regex_snippet + '$')
 sizer_regex = re.compile(sizer_regex_snippet + '$')
 filter_and_sizer_regex = re.compile(
-    filter_regex_snippet + sizer_regex_snippet + '$')
+    filter_regex_snippet + sizer_regex_snippet + '$'
+)
 
 
 class VersatileImageMixIn(object):
@@ -94,6 +95,7 @@ class VersatileImageMixIn(object):
 
     @ppoi.setter
     def ppoi(self, value):
+        """Primary Point of Interest (ppoi) setter."""
         ppoi = validate_ppoi(
             value,
             return_converted_tuple=True
@@ -187,21 +189,21 @@ class VersatileImageMixIn(object):
         """Delete all filtered images created from `self.name`."""
         self.delete_matching_files_from_storage(
             self.get_filtered_root_folder(),
-            filter_regex,
+            filter_regex
         )
 
     def delete_sized_images(self):
         """Delete all sized images created from `self.name`."""
         self.delete_matching_files_from_storage(
             self.get_sized_root_folder(),
-            sizer_regex,
+            sizer_regex
         )
 
     def delete_filtered_sized_images(self):
         """Delete all filtered sized images created from `self.name`."""
         self.delete_matching_files_from_storage(
             self.get_filtered_sized_root_folder(),
-            filter_and_sizer_regex,
+            filter_and_sizer_regex
         )
 
     def delete_all_created_images(self):

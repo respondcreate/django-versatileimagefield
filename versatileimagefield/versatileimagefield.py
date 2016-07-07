@@ -22,9 +22,9 @@ class CroppedImage(SizedImage):
 
     def get_filename_key(self):
         """Return the filename key for cropped images."""
-        return "%s-c%s" % (
-            self.filename_key,
-            self.ppoi_as_str()
+        return "{key}-c{ppoi}".format(
+            key=self.filename_key,
+            ppoi=self.ppoi_as_str()
         )
 
     def crop_on_centerpoint(self, image, width, height, ppoi=(0.5, 0.5)):
