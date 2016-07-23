@@ -44,10 +44,10 @@ class SizedImage(ProcessedImage, dict):
     examples.
     """
 
-    def __init__(self, path_to_image, storage, create_on_demand, ppoi=None):
+    def __init__(self, path_to_image, storage, create_on_demand, ppoi=None, field_instance=None):
         """Construct a SizedImage."""
         super(SizedImage, self).__init__(
-            path_to_image, storage, create_on_demand
+            path_to_image, storage, create_on_demand, field_instance=field_instance,
         )
         self.ppoi = ppoi
         try:

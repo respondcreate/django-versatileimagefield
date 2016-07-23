@@ -83,12 +83,14 @@ class FilterLibrary(dict):
     """
 
     def __init__(self, original_file_location,
-                 storage, registry, ppoi, create_on_demand):
+                 storage, registry, ppoi, create_on_demand,
+                 field_instance=None):
         self.original_file_location = original_file_location
         self.storage = storage
         self.registry = registry
         self.ppoi = ppoi
         self.create_on_demand = create_on_demand
+        self.field_instance = field_instance
 
     def __getattr__(self, key):
         return self[key]

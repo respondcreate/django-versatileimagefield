@@ -129,7 +129,8 @@ class VersatileImageMixIn(object):
             self.storage,
             versatileimagefield_registry,
             ppoi_value,
-            create_on_demand
+            create_on_demand,
+            field_instance=self.instance,
         )
         for (
             attr_name,
@@ -142,7 +143,8 @@ class VersatileImageMixIn(object):
                     path_to_image=name,
                     storage=self.storage,
                     create_on_demand=create_on_demand,
-                    ppoi=ppoi_value
+                    ppoi=ppoi_value,
+                    field_instance=self.instance,
                 )
             )
 

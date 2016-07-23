@@ -34,12 +34,13 @@ class ProcessedImage(object):
     url = None
 
     def __init__(self, path_to_image, storage, create_on_demand,
-                 placeholder_image=None):
+                 placeholder_image=None, field_instance=None):
         """Construct a ProcessedImage."""
         self.path_to_image = path_to_image
         self.storage = storage
         self.create_on_demand = create_on_demand
         self.placeholder_image = placeholder_image
+        self.field_instance = field_instance
 
     def process_image(self, image, image_format, **kwargs):
         """
