@@ -86,6 +86,10 @@ Table of Contents
 Release Notes
 =============
 
+1.6
+^^^
+- Fixed a bug that prevented sized images from deleting properly when the field they were associated with was using a custom ``upload_to`` function. If you are using a custom ``SizedImage`` subclass on your project then be sure to check out :ref:`this section <ensuring-sized-images-deleted>` in the docs.
+
 1.5
 ^^^
 - Fixed a bug that was causing placeholder images to serialize incorrectly with ``VersatileImageFieldSerializer`` (thanks, `@romanosipenko <https://github.com/romanosipenko>`_!).

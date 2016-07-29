@@ -87,10 +87,12 @@ For an example, let's take a look at the ``thumbnail`` Sizer (``versatileimagefi
 
 .. important:: ``process_image`` should *always* return a `StringIO` instance. See :ref:`what-process_image-should-return` for more information.
 
+.. _ensuring-sized-images-deleted:
+
 Ensuring Sized Images Can Be Deleted
 ------------------------------------
 
-If your ``SizedImage`` subclass uses more than just ``filename key`` to construct filenames than you'll also want to define the ``filename_key_regex`` attribute.
+If your ``SizedImage`` subclass uses more than just ``filename_key`` to construct filenames than you'll also want to define the ``filename_key_regex`` attribute.
 
 Confused? Let's take a look at ``CroppedImage`` – which includes individual image PPOI values in the images it creates – as an example:
 
