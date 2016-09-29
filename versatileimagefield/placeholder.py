@@ -45,8 +45,8 @@ class OnDiscPlaceholderImage(PlaceholderImage):
 
     def setup(self):
         folder, name = os.path.split(self.path)
-        file = open(self.path, 'rb')
-        content_file = ContentFile(file.read(), name=name)
+        with open(self.path, 'rb') as file:
+            content_file = ContentFile(file.read(), name=name)
         self.file = content_file
         self.name = name
         super(OnDiscPlaceholderImage, self).setup()
