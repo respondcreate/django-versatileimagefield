@@ -50,7 +50,7 @@ Compatibility
 
 .. note:: The 1.4 release dropped support for Django 1.5.x & 1.6.x.
 
-- `Pillow <https://pillow.readthedocs.io/en/latest/index.html>`_ >= 2.4.0
+- `Pillow <https://pillow.readthedocs.io/en/latest/index.html>`_ >=2.4.0,<=3.3.3
 
 - `Django REST Framework <http://www.django-rest-framework.org/>`_:
 
@@ -60,6 +60,7 @@ Compatibility
   - 3.1.x
   - 3.2.x
   - 3.3.x (NOTE: Django REST Framework 3.3.x is not compatible with Django<=1.6.x)
+  - 3.4.x (NOTE: Django REST Framework 3.4.x is not compatible with Django<=1.6.x)
 
 Code
 ====

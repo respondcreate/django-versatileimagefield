@@ -33,6 +33,8 @@ matrix:
     - python: "2.7"
       env: DJANGO_VERSION=1.8.12 REST_FRAMEWORK_VERSION=3.4.7
     - python: "2.7"
+      env: DJANGO_VERSION=1.8.12 REST_FRAMEWORK_VERSION=3.5.3
+    - python: "2.7"
       env: DJANGO_VERSION=1.9.5 REST_FRAMEWORK_VERSION=3.1.3
     - python: "2.7"
       env: DJANGO_VERSION=1.9.5 REST_FRAMEWORK_VERSION=3.2.5
@@ -40,6 +42,8 @@ matrix:
       env: DJANGO_VERSION=1.9.5 REST_FRAMEWORK_VERSION=3.3.3
     - python: "2.7"
       env: DJANGO_VERSION=1.9.5 REST_FRAMEWORK_VERSION=3.4.7
+    - python: "2.7"
+      env: DJANGO_VERSION=1.9.5 REST_FRAMEWORK_VERSION=3.5.3
     - python: "2.7"
       env: DJANGO_VERSION=1.10 REST_FRAMEWORK_VERSION=3.4.7
     - python: "2.7"
@@ -71,6 +75,8 @@ matrix:
     - python: "3.4"
       env: DJANGO_VERSION=1.8.12 REST_FRAMEWORK_VERSION=3.4.7
     - python: "3.4"
+      env: DJANGO_VERSION=1.8.12 REST_FRAMEWORK_VERSION=3.5.3
+    - python: "3.4"
       env: DJANGO_VERSION=1.9.5 REST_FRAMEWORK_VERSION=3.1.3
     - python: "3.4"
       env: DJANGO_VERSION=1.9.5 REST_FRAMEWORK_VERSION=3.2.5
@@ -78,6 +84,8 @@ matrix:
       env: DJANGO_VERSION=1.9.5 REST_FRAMEWORK_VERSION=3.3.3
     - python: "3.4"
       env: DJANGO_VERSION=1.9.5 REST_FRAMEWORK_VERSION=3.4.7
+    - python: "3.4"
+      env: DJANGO_VERSION=1.9.5 REST_FRAMEWORK_VERSION=3.5.3
     - python: "3.4"
       env: DJANGO_VERSION=1.10 REST_FRAMEWORK_VERSION=3.4.7
     - python: "3.4"
@@ -97,6 +105,8 @@ matrix:
     - python: "3.5"
       env: DJANGO_VERSION=1.8.12 REST_FRAMEWORK_VERSION=3.4.7
     - python: "3.5"
+      env: DJANGO_VERSION=1.8.12 REST_FRAMEWORK_VERSION=3.5.3
+    - python: "3.5"
       env: DJANGO_VERSION=1.9.5 REST_FRAMEWORK_VERSION=3.1.3
     - python: "3.5"
       env: DJANGO_VERSION=1.9.5 REST_FRAMEWORK_VERSION=3.2.5
@@ -104,6 +114,8 @@ matrix:
       env: DJANGO_VERSION=1.9.5 REST_FRAMEWORK_VERSION=3.3.3
     - python: "3.5"
       env: DJANGO_VERSION=1.9.5 REST_FRAMEWORK_VERSION=3.4.7
+    - python: "3.5"
+      env: DJANGO_VERSION=1.9.5 REST_FRAMEWORK_VERSION=3.5.3
     - python: "3.5"
       env: DJANGO_VERSION=1.10 REST_FRAMEWORK_VERSION=3.4.7
     - python: "3.5"
