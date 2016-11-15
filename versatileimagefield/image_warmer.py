@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from functools import reduce
+import logging
 from sys import stdout
 
 from django.db.models import Model
@@ -12,6 +13,8 @@ from .utils import (
     get_url_from_image_key,
     validate_versatileimagefield_sizekey_list
 )
+
+logger = logging.getLogger(__name__)
 
 
 def cli_progress_bar(start, end, bar_length=50):
@@ -115,6 +118,8 @@ class VersatileImageFieldWarmer(object):
         except:
             success = False
             url_or_filepath = versatileimagefieldfile.name
+            logger.exception('Thumbnail generation failed',
+                             extra={'path': url_or_filepath})
         else:
             success = True
             url_or_filepath = url
