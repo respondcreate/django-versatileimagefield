@@ -152,6 +152,6 @@ The rendition deleting and cache clearing functionality was written to address t
         # Deletes Image Renditions
         instance.image.delete_all_created_images()
         # Deletes Original Image
-        instance.image.delete()
+        instance.image.delete(save=False)
 
 .. warning:: There's no undo for deleting images off a storage object so proceed at your own risk!

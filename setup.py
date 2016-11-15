@@ -15,7 +15,7 @@ setup(
                 "creating new images from the one assigned to the field.",
     long_description=open('README.rst').read(),
     zip_safe=False,
-    install_requires=['Pillow>=2.4.0'],
+    install_requires=['Pillow>=2.4.0,<=3.3.3'],
     package_data={
         'versatileimagefield': [
             'static/versatileimagefield/css/*.css',

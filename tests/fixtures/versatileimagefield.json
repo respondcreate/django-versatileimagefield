@@ -102,7 +102,7 @@
 {
     "fields": {
         "img_type": "delete_test",
-        "image": "python-logo-delete-test.jpg",
+        "image": "delete-test/python-logo-delete-test.jpg",
         "ppoi": "0.5x0.5",
         "width": 0,
         "height": 0

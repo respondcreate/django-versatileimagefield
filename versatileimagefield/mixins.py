@@ -164,26 +164,30 @@ class VersatileImageMixIn(object):
         """
         if not self.name:   # pragma: no cover
             return
-        directory_list, file_list = self.storage.listdir(root_folder)
-        folder, filename = os.path.split(self.name)
-        basename, ext = os.path.splitext(filename)
-        for f in file_list:
-            if not f.startswith(basename) or not f.endswith(ext):   # pragma: no cover
-                continue
-            tag = f[len(basename):-len(ext)]
-            assert f == basename + tag + ext
-            if regex.match(tag) is not None:
-                file_location = os.path.join(root_folder, f)
-                self.storage.delete(file_location)
-                cache.delete(
-                    self.storage.url(file_location)
-                )
-                print(
-                    "Deleted {file} (created from: {original})".format(
-                        file=os.path.join(root_folder, f),
-                        original=self.name
+        try:
+            directory_list, file_list = self.storage.listdir(root_folder)
+        except OSError:   # pragma: no cover
+            pass
+        else:
+            folder, filename = os.path.split(self.name)
+            basename, ext = os.path.splitext(filename)
+            for f in file_list:
+                if not f.startswith(basename) or not f.endswith(ext):   # pragma: no cover
+                    continue
+                tag = f[len(basename):-len(ext)]
+                assert f == basename + tag + ext
+                if regex.match(tag) is not None:
+                    file_location = os.path.join(root_folder, f)
+                    self.storage.delete(file_location)
+                    cache.delete(
+                        self.storage.url(file_location)
                     )
-                )
+                    print(
+                        "Deleted {file} (created from: {original})".format(
+                            file=os.path.join(root_folder, f),
+                            original=self.name
+                        )
+                    )
 
     def delete_filtered_images(self):
         """Delete all filtered images created from `self.name`."""

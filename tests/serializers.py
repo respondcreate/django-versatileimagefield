@@ -16,7 +16,10 @@ class VersatileImageTestModelSerializer(ModelSerializer):
 
     class Meta:
         model = VersatileImageTestModel
-        fields = (
-            'image',
-            'optional_image',
+        exclude = (
+            'img_type',
+            'height',
+            'width',
+            'optional_image_2',
+            'optional_image_3'
         )

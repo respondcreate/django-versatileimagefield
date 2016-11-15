@@ -453,36 +453,18 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         # Test required field with PPOI
         self.assertInHTML(
             (
-                '<div class="versatileimagefield">'
-                '    <div class="sizedimage-mod initial">'
-                '        <label class="versatileimagefield-label">Currently</label>'
-                '        <a href="/media/python-logo.png">python-logo.png</a>'
+                '<div class="image-wrap outer">'
+                '   <div class="point-stage" id="image_0_point-stage"'
+                '         data-image_preview_id="image_0_imagepreview">'
+                '        <div class="ppoi-point" id="image_0_ppoi"></div>'
                 '    </div>'
-                '    <div class="sizedimage-mod preview">'
-                '        <label class="versatileimagefield-label">'
-                '            Primary Point of Interest'
-                '        </label>'
-                '        <div class="image-wrap outer">'
-                '            <div class="point-stage" id="image_0_point-stage"'
-                '                 data-image_preview_id="image_0_imagepreview">'
-                '                <div class="ppoi-point" id="image_0_ppoi"></div>'
-                '            </div>'
-                '            <div class="image-wrap inner">'
-                '                <img src="/media/__sized__/python-logo-thumbnail-300x300.png"'
-                '                     id="image_0_imagepreview"'
-                '                     data-hidden_field_id="id_image_1"'
-                '                     data-point_stage_id="image_0_point-stage"'
-                '                     data-ppoi_id="image_0_ppoi" class="sizedimage-preview"/>'
-                '            </div>'
-                '        </div>'
+                '    <div class="image-wrap inner">'
+                '        <img src="/media/__sized__/python-logo-thumbnail-300x300.png"'
+                '             id="image_0_imagepreview"'
+                '             data-hidden_field_id="id_image_1"'
+                '             data-point_stage_id="image_0_point-stage"'
+                '             data-ppoi_id="image_0_ppoi" class="sizedimage-preview"/>'
                 '    </div>'
-                '    <div class="sizedimage-mod new-upload">'
-                '        <label class="versatileimagefield-label">Change</label>'
-                '        <input class="file-chooser" id="id_image_0"'
-                '               name="image_0" type="file" />'
-                '    </div>'
-                '    <input class="ppoi-input" id="id_image_1" name="image_1"'
-                '           type="hidden" value="0.5x0.5" />'
                 '</div>'
             ),
             response_content
@@ -490,15 +472,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         # Test required field no PPOI
         self.assertInHTML(
             (
-                '<div class="form-row field-image_no_ppoi">'
-                '<div>'
-                '<label class="required" for="id_image_no_ppoi">'
-                'Image no ppoi:</label>'
-                'Currently: <a href="/media/python-logo.jpg">python-logo.jpg'
-                '</a> <br />Change: <input id="id_image_no_ppoi" '
-                'name="image_no_ppoi" type="file" />'
-                '</div>'
-                '</div>'
+                '<a href="/media/python-logo.jpg">python-logo.jpg</a>'
             ),
             response_content
         )
@@ -876,8 +850,11 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
             type(f.cleaned_data['optional_image']), SimpleUploadedFile
         )
         instance = f.save()
-        self.assertEqual(instance.image.name, './test.png')
-        self.assertEqual(instance.optional_image.name, './test2.png')
+        self.assertEqual(instance.image.name.lstrip('./'), 'test.png')
+        self.assertEqual(
+            instance.optional_image.name.lstrip('./'),
+            'test2.png'
+        )
         # Testing updating files / PPOI values
         # Deleting optional_image file (since it'll be cleared with the
         # next form)
@@ -894,7 +871,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         instance = f2.save()
         self.assertEqual(instance.image.ppoi, (0.25, 0.25))
         self.assertEqual(instance.optional_image.name, '')
-        instance.image.delete()
+        instance.image.delete(save=False)
 
     def test_ProcessedImage_subclass_exceptions(self):
         """Ensure ProcessedImage subclasses throw NotImplementedError."""
@@ -1020,7 +997,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
     def test_individual_rendition_cache_clear(self):
         """Test that VersatileImageField can clear individual cache entries."""
         expected_image_url = (
-            '/media/__sized__/python-logo-delete-test-thumbnail-100x100-70.jpg'
+            '/media/__sized__/delete-test/python-logo-delete-test-thumbnail-100x100-70.jpg'
         )
         self.assertEqual(
             cache.get(expected_image_url),
@@ -1041,7 +1018,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
         self.assertFalse(
             img.image.field.storage.exists(
-                '__sized__/python-logo-delete-test-thumbnail-100x100-70.jpg'
+                '__sized__/delete-test/python-logo-delete-test-thumbnail-100x100-70.jpg'
             )
         )
 
@@ -1050,7 +1027,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         img = self.delete_test
         self.assertFalse(
             img.image.field.storage.exists(
-                '__sized__/python-logo-delete-test-thumbnail-100x100-70.jpg'
+                '__sized__/delete-test/python-logo-delete-test-thumbnail-100x100-70.jpg'
             )
         )
         img.image.create_on_demand = True
@@ -1062,10 +1039,10 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
         self.assertTrue(
             img.image.field.storage.exists(
-                '__sized__/python-logo-delete-test-thumbnail-100x100-70.jpg'
+                '__sized__/delete-test/python-logo-delete-test-thumbnail-100x100-70.jpg'
             )
         )
-
+        img.image.delete_all_created_images()
         invert_url = img.image.filters.invert.url
         self.assertEqual(
             cache.get(invert_url),
@@ -1073,7 +1050,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
         self.assertTrue(
             img.image.field.storage.exists(
-                '__filtered__/python-logo-delete-test__invert__.jpg'
+                'delete-test/__filtered__/python-logo-delete-test__invert__.jpg'
             )
         )
 
@@ -1086,7 +1063,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
         self.assertTrue(
             img.image.field.storage.exists(
-                '__sized__/__filtered__/python-logo-delete-test__invert__'
+                '__sized__/delete-test/__filtered__/python-logo-delete-test__invert__'
                 '-thumbnail-100x100-70.jpg'
             )
         )
@@ -1098,7 +1075,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
         self.assertFalse(
             img.image.field.storage.exists(
-                '__sized__/python-logo-delete-test-thumbnail-100x100-70.jpg'
+                '__sized__/delete-test/python-logo-delete-test-thumbnail-100x100-70.jpg'
             )
         )
 
@@ -1108,7 +1085,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
         self.assertFalse(
             img.image.field.storage.exists(
-                '__filtered__/python-logo-delete-test__invert__.jpg'
+                'delete-test/__filtered__/python-logo-delete-test__invert__.jpg'
             )
         )
 
@@ -1118,7 +1095,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
         self.assertFalse(
             img.image.field.storage.exists(
-                '__sized__/__filtered__/python-logo-delete-test__invert__'
+                '__sized__/delete-test/__filtered__/python-logo-delete-test__invert__'
                 '-thumbnail-100x100-70.jpg'
             )
         )
