@@ -997,7 +997,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
     def test_individual_rendition_cache_clear(self):
         """Test that VersatileImageField can clear individual cache entries."""
         expected_image_url = (
-            '/media/__sized__/python-logo-delete-test-thumbnail-100x100-70.jpg'
+            '/media/__sized__/delete-test/python-logo-delete-test-thumbnail-100x100-70.jpg'
         )
         self.assertEqual(
             cache.get(expected_image_url),
@@ -1018,7 +1018,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
         self.assertFalse(
             img.image.field.storage.exists(
-                '__sized__/python-logo-delete-test-thumbnail-100x100-70.jpg'
+                '__sized__/delete-test/python-logo-delete-test-thumbnail-100x100-70.jpg'
             )
         )
 
@@ -1027,7 +1027,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         img = self.delete_test
         self.assertFalse(
             img.image.field.storage.exists(
-                '__sized__/python-logo-delete-test-thumbnail-100x100-70.jpg'
+                '__sized__/delete-test/python-logo-delete-test-thumbnail-100x100-70.jpg'
             )
         )
         img.image.create_on_demand = True
@@ -1039,10 +1039,10 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
         self.assertTrue(
             img.image.field.storage.exists(
-                '__sized__/python-logo-delete-test-thumbnail-100x100-70.jpg'
+                '__sized__/delete-test/python-logo-delete-test-thumbnail-100x100-70.jpg'
             )
         )
-
+        img.image.delete_all_created_images()
         invert_url = img.image.filters.invert.url
         self.assertEqual(
             cache.get(invert_url),
@@ -1050,7 +1050,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
         self.assertTrue(
             img.image.field.storage.exists(
-                '__filtered__/python-logo-delete-test__invert__.jpg'
+                'delete-test/__filtered__/python-logo-delete-test__invert__.jpg'
             )
         )
 
@@ -1063,7 +1063,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
         self.assertTrue(
             img.image.field.storage.exists(
-                '__sized__/__filtered__/python-logo-delete-test__invert__'
+                '__sized__/delete-test/__filtered__/python-logo-delete-test__invert__'
                 '-thumbnail-100x100-70.jpg'
             )
         )
@@ -1075,7 +1075,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
         self.assertFalse(
             img.image.field.storage.exists(
-                '__sized__/python-logo-delete-test-thumbnail-100x100-70.jpg'
+                '__sized__/delete-test/python-logo-delete-test-thumbnail-100x100-70.jpg'
             )
         )
 
@@ -1085,7 +1085,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
         self.assertFalse(
             img.image.field.storage.exists(
-                '__filtered__/python-logo-delete-test__invert__.jpg'
+                'delete-test/__filtered__/python-logo-delete-test__invert__.jpg'
             )
         )
 
@@ -1095,7 +1095,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
         self.assertFalse(
             img.image.field.storage.exists(
-                '__sized__/__filtered__/python-logo-delete-test__invert__'
+                '__sized__/delete-test/__filtered__/python-logo-delete-test__invert__'
                 '-thumbnail-100x100-70.jpg'
             )
         )
