@@ -89,8 +89,8 @@ Table of Contents
 Release Notes
 =============
 
-1.7
-^^^
+1.6.1
+^^^^^
 - Logs are now created when thumbnail generation fails (thanks, `@artursmet <https://github.com/artursmet>`_!!!).
 - Added support for Django 1.10.x and djangorestframework 3.5.x.
 - Fixed a bug that caused :ref:`delete_all_created_images() <deleting-multiple-renditions>` to fail on field instances that didn't have filtered, sized & filtered+sized images. 
