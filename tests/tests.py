@@ -871,7 +871,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         instance = f2.save()
         self.assertEqual(instance.image.ppoi, (0.25, 0.25))
         self.assertEqual(instance.optional_image.name, '')
-        instance.image.delete()
+        instance.image.delete(save=False)
 
     def test_ProcessedImage_subclass_exceptions(self):
         """Ensure ProcessedImage subclasses throw NotImplementedError."""
