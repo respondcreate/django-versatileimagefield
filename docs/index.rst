@@ -46,7 +46,8 @@ Compatibility
 
   - 1.7.x
   - 1.8.x
-  - 1.9.x (NOTE: Django REST Framework>=3.1.x is required if using Django 1.9.x)
+  - 1.9.x
+  - 1.10.x
 
 .. note:: The 1.4 release dropped support for Django 1.5.x & 1.6.x.
 
@@ -61,6 +62,7 @@ Compatibility
   - 3.2.x
   - 3.3.x (NOTE: Django REST Framework 3.3.x is not compatible with Django<=1.6.x)
   - 3.4.x (NOTE: Django REST Framework 3.4.x is not compatible with Django<=1.6.x)
+  - 3.5.x (NOTE: Django REST Framework 3.4.x is not compatible with Django<=1.7.x)
 
 Code
 ====
@@ -86,6 +88,12 @@ Table of Contents
 
 Release Notes
 =============
+
+1.7
+^^^
+- Logs are now created when thumbnail generation fails (thanks, `@artursmet <https://github.com/artursmet>`_!!!).
+- Added support for Django 1.10.x and djangorestframework 3.5.x.
+- Fixed a bug that caused :ref:`delete_all_created_images() <deleting-multiple-renditions>` to fail on field instances that didn't have filtered, sized & filtered+sized images. 
 
 1.6
 ^^^
