@@ -89,6 +89,10 @@ Table of Contents
 Release Notes
 =============
 
+1.6.2
+^^^^^
+- Added support for Pillow 3.4.2
+
 1.6.1
 ^^^^^
 - Logs are now created when thumbnail generation fails (thanks, `@artursmet <https://github.com/artursmet>`_!!!).

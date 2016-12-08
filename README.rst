@@ -40,6 +40,7 @@ Compatibility
   - 1.7.x
   - 1.8.x
   - 1.9.x (NOTE: Django REST Framework>=3.1.x is required if using Django 1.9.x)
+  - 1.10.x
 
 **NOTE**: The 1.4 release dropped support for Django 1.5.x & 1.6.x.
 
@@ -53,6 +54,8 @@ Compatibility
   - 3.1.x
   - 3.2.x
   - 3.3.x (NOTE: Django REST Framework 3.3.x is not compatible with Django<=1.6.x)
+  - 3.4.x
+  - 3.5.x
 
 Documentation
 =============
