@@ -1,5 +1,5 @@
 Django==1.9.6
-Pillow==3.2
+Pillow==3.4.2
 Sphinx==1.2.3
 coverage==3.7.1
 coveralls==0.5
