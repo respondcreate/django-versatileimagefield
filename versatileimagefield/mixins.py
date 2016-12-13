@@ -182,12 +182,6 @@ class VersatileImageMixIn(object):
                     cache.delete(
                         self.storage.url(file_location)
                     )
-                    print(
-                        "Deleted {file} (created from: {original})".format(
-                            file=os.path.join(root_folder, f),
-                            original=self.name
-                        )
-                    )
 
     def delete_filtered_images(self):
         """Delete all filtered images created from `self.name`."""
