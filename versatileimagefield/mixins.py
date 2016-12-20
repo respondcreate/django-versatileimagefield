@@ -134,7 +134,7 @@ class VersatileImageMixIn(object):
     def get_filtered_root_folder(self):
         """Return the location where filtered images are stored."""
         folder, filename = os.path.split(self.name)
-        return os.path.join(folder, VERSATILEIMAGEFIELD_FILTERED_DIRNAME, '')
+        return os.path.join(VERSATILEIMAGEFIELD_FILTERED_DIRNAME, folder, '')
 
     def get_sized_root_folder(self):
         """Return the location where sized images are stored."""
