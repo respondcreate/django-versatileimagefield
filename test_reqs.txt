@@ -1,9 +1,9 @@
-Django==1.9.6
-Pillow==3.4.2
+Django==1.10.5
+Pillow==4.0.0
 Sphinx==1.2.3
 coverage==3.7.1
 coveralls==0.5
-djangorestframework==3.3.3
+djangorestframework==3.5.3
 flake8==2.2.5
 requests==2.5.1
 sphinx-rtd-theme==0.1.6

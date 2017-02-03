@@ -51,7 +51,7 @@ Compatibility
 
 .. note:: The 1.4 release dropped support for Django 1.5.x & 1.6.x.
 
-- `Pillow <https://pillow.readthedocs.io/en/latest/index.html>`_ >=2.4.0,<=3.4.2
+- `Pillow <https://pillow.readthedocs.io/en/latest/index.html>`_ >=2.4.0,<=4.0.0
 
 - `Django REST Framework <http://www.django-rest-framework.org/>`_:
 
