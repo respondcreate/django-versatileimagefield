@@ -321,7 +321,7 @@ is registered (see the highlighted lines in the following code block for the rel
 
     # Registering the ThumbnailSizer to be available on VersatileImageField
     # via the `thumbnail` attribute
-    versatileimagefield_registry.register_sizer('thumbnail', ThumbnailImage)]
+    versatileimagefield_registry.register_sizer('thumbnail', ThumbnailImage)
 
 All Sizers are registered via the ``versatileimagefield_registry.register_sizer`` method. The first
 argument is the attribute you want to make the Sizer available at and
