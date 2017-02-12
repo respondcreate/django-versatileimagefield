@@ -39,6 +39,7 @@ Compatibility
   - 2.7
   - 3.4
   - 3.5
+  - 3.6
 
 .. note:: The 1.2 release dropped support for Python 3.3.x.
 
@@ -88,6 +89,11 @@ Table of Contents
 
 Release Notes
 =============
+
+1.6.3
+^^^^^
+- Added support for Pillow 4.0 and Python 3.6 (thanks, `@aleksihakli <https://github.com/aleksihakli>`_!)
+- Improved docs for writing custom sizers and filters (thanks, `@njamaleddine <https://github.com/njamaleddine>`_!)
 
 1.6.2
 ^^^^^

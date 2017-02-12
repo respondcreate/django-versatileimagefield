@@ -32,6 +32,7 @@ Compatibility
   - 2.7
   - 3.4
   - 3.5
+  - 3.6  
 
 **NOTE**: The 1.2 release dropped support for Python 3.3.x.
 
