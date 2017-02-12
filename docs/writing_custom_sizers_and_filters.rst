@@ -52,8 +52,8 @@ For an example, let's take a look at the ``thumbnail`` Sizer (``versatileimagefi
 
 .. code-block:: python
     :emphasize-lines: 14,16-31
-
-    import StringIO
+    
+    from django.utils.six import BytesIO
 
     from PIL import Image
 
@@ -71,10 +71,10 @@ For an example, let's take a look at the ``thumbnail`` Sizer (``versatileimagefi
         def process_image(self, image, image_format, save_kwargs,
                           width, height):
             """
-            Returns a StringIO instance of `image` that will fit
+            Returns a BytesIO instance of `image` that will fit
             within a bounding box as specified by `width`x`height`
             """
-            imagefile = StringIO.StringIO()
+            imagefile = BytesIO()
             image.thumbnail(
                 (width, height),
                 Image.ANTIALIAS
@@ -85,7 +85,7 @@ For an example, let's take a look at the ``thumbnail`` Sizer (``versatileimagefi
             )
             return imagefile
 
-.. important:: ``process_image`` should *always* return a `StringIO` instance. See :ref:`what-process_image-should-return` for more information.
+.. important:: ``process_image`` should *always* return a ``BytesIO`` instance. See :ref:`what-process_image-should-return` for more information.
 
 .. _ensuring-sized-images-deleted:
 
@@ -141,7 +141,7 @@ For an example, let's take a look at the ``invert`` Filter
 .. code-block:: python
     :emphasize-lines: 14-24
 
-    import StringIO
+    from django.utils.six import BytesIO
 
     from PIL import ImageOps
 
@@ -156,9 +156,9 @@ For an example, let's take a look at the ``invert`` Filter
 
         def process_image(self, image, image_format, save_kwargs={}):
             """
-            Returns a StringIO instance of `image` with inverted colors
+            Returns a BytesIO instance of `image` with inverted colors
             """
-            imagefile = StringIO.StringIO()
+            imagefile = BytesIO()
             inv_image = ImageOps.invert(image)
             inv_image.save(
                 imagefile,
@@ -166,7 +166,7 @@ For an example, let's take a look at the ``invert`` Filter
             )
             return imagefile
 
-.. important:: ``process_image`` should **always** return a ``StringIO`` instance. See :ref:`what-process_image-should-return` for more information.
+.. important:: ``process_image`` should **always** return a ``BytesIO`` instance. See :ref:`what-process_image-should-return` for more information.
 
 .. _what-process_image-should-return:
 
@@ -174,7 +174,7 @@ What ``process_image`` should return
 ====================================
 
 Any ``process_image`` method you write should *always* return a
-``StringIO`` instance comprised of raw image data. The actual image file
+``BytesIO`` instance comprised of raw image data. The actual image file
 will be written to your field's storage class via the ``save_image``
 method. Note how ``save_kwargs`` is passed into PIL's ``Image.save``
 method in the examples above, this ensures PIL knows how to write this
@@ -285,7 +285,7 @@ is registered (see the highlighted lines in the following code block for the rel
     :emphasize-lines: 7,36-38
 
     # versatileimagefield/versatileimagefield.py
-    import StringIO
+    from django.utils.six import BytesIO
 
     from PIL import Image
 
@@ -305,10 +305,10 @@ is registered (see the highlighted lines in the following code block for the rel
         def process_image(self, image, image_format, save_kwargs,
                           width, height):
             """
-            Returns a StringIO instance of `image` that will fit
+            Returns a BytesIO instance of `image` that will fit
             within a bounding box as specified by `width`x`height`
             """
-            imagefile = StringIO.StringIO()
+            imagefile = BytesIO()
             image.thumbnail(
                 (width, height),
                 Image.ANTIALIAS
@@ -332,7 +332,7 @@ Filters are just as easy. Here's how the ``InvertImage`` filter is registered (s
 .. code-block:: python
     :emphasize-lines: 6,28
 
-    import StringIO
+    from django.utils.six import BytesIO
 
     from PIL import ImageOps
 
@@ -349,9 +349,9 @@ Filters are just as easy. Here's how the ``InvertImage`` filter is registered (s
 
         def process_image(self, image, image_format, save_kwargs={}):
             """
-            Returns a StringIO instance of `image` with inverted colors
+            Returns a BytesIO instance of `image` with inverted colors
             """
-            imagefile = StringIO.StringIO()
+            imagefile = BytesIO()
             inv_image = ImageOps.invert(image)
             inv_image.save(
                 imagefile,
