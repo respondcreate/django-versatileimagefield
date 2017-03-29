@@ -148,6 +148,8 @@ matrix:
       env: DJANGO_VERSION=1.10 REST_FRAMEWORK_VERSION=3.4.7
     - python: "3.6"
       env: DJANGO_VERSION=1.10 REST_FRAMEWORK_VERSION=3.5.3
+    - python: "3.6"
+      env: DJANGO_VERSION=1.11rc1 REST_FRAMEWORK_VERSION=3.6.2
 before_install:
   - export DJANGO_SETTINGS_MODULE=tests.test_settings
 # Tell it the things it will need to install when it boots
