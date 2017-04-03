@@ -149,7 +149,7 @@ class VersatileImageFieldWarmer(object):
                 else:
                     failed_to_create_image_path_list.append(url_or_filepath)
 
-                if a * b == total:
+                if a * b == total and self.verbose:
                     stdout.write('\n')
 
         stdout.flush()
