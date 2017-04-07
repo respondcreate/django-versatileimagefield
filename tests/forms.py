@@ -1,15 +1,17 @@
 from django.forms import ModelForm
 
-from versatileimagefield.fields import SizedImageCenterpointClickDjangoAdminField
+from versatileimagefield.forms import (
+    SizedImageCenterpointClickDjangoAdminField, SizedImageCenterpointClickBootstrap3Field
+)
 
 from .models import VersatileImageTestModel, VersatileImageWidgetTestModel
 
 
 class VersatileImageTestModelForm(ModelForm):
-    """
-    A form for testing VersatileImageFields
-    """
+    """A form for testing VersatileImageFields."""
+
     image = SizedImageCenterpointClickDjangoAdminField()
+    optional_image = SizedImageCenterpointClickBootstrap3Field()
 
     class Meta:
         model = VersatileImageTestModel
@@ -20,17 +22,9 @@ class VersatileImageTestModelForm(ModelForm):
         )
 
 
-class VersatileImageTestModelFormDjango15(VersatileImageTestModelForm):
-    image = SizedImageCenterpointClickDjangoAdminField(required=False)
-
-
 class VersatileImageWidgetTestModelForm(ModelForm):
-    """
-    A form for testing VersatileImageField widgets
-    """
+    """A form for testing VersatileImageField widgets."""
 
     class Meta:
         model = VersatileImageWidgetTestModel
-        fields = (
-            'optional_image_with_ppoi',
-        )
+        fields = ('optional_image_with_ppoi',)

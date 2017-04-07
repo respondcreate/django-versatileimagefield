@@ -9,8 +9,7 @@ sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
 if __name__ == "__main__":
     # Run Main Tests
     os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.test_settings'
-    if django.VERSION[1] >= 7:
-        django.setup()
+    django.setup()
     from django.test.utils import get_runner
     TestRunner = get_runner(settings)
     test_runner = TestRunner()

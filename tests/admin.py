@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.forms import ModelForm
 
-from versatileimagefield.widgets import VersatileImagePPOISelectWidget
+from versatileimagefield.widgets import ClearableFileInputWithImagePreview, VersatileImagePPOISelectWidget
 
 from .models import VersatileImageTestModel, VersatileImageWidgetTestModel
 
@@ -22,9 +22,22 @@ class VersatileImageTestModelForm(ModelForm):
         }
 
 
+class VersatileImageWidgetTestModelForm(ModelForm):
+
+    class Meta:
+        model = VersatileImageWidgetTestModel
+        fields = '__all__'
+        widgets = {
+            'optional_image_2': ClearableFileInputWithImagePreview(),
+        }
+
+
 class VersatileImageTestModelAdmin(admin.ModelAdmin):
     form = VersatileImageTestModelForm
 
 
+class VersatileImageWidgetTestModelAdmin(admin.ModelAdmin):
+    form = VersatileImageWidgetTestModelForm
+
 admin.site.register(VersatileImageTestModel, VersatileImageTestModelAdmin)
-admin.site.register(VersatileImageWidgetTestModel)
+admin.site.register(VersatileImageWidgetTestModel, VersatileImageWidgetTestModelAdmin)

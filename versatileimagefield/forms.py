@@ -1,14 +1,10 @@
 from __future__ import unicode_literals
 
-from django.forms.fields import (
-    MultiValueField,
-    CharField,
-    ImageField
-)
+from django.forms.fields import MultiValueField, CharField, ImageField
 
 from .widgets import (
-    VersatileImagePPOIClickWidget,
-    SizedImageCenterpointClickDjangoAdminWidget
+    SizedImageCenterpointClickDjangoAdminWidget, SizedImageCenterpointClickBootstrap3Widget,
+    VersatileImagePPOIClickWidget
 )
 
 
@@ -21,18 +17,15 @@ class SizedImageCenterpointMixIn(object):
 class VersatileImageFormField(ImageField):
 
     def to_python(self, data):
-        """
-        Ensures data is prepped properly before handing off to
-        ImageField
-        """
+        """Ensure data is prepped properly before handing off to ImageField."""
         if data is not None:
             if hasattr(data, 'open'):
                 data.open()
             return super(VersatileImageFormField, self).to_python(data)
 
 
-class VersatileImagePPOIClickField(SizedImageCenterpointMixIn,
-                                   MultiValueField):
+class VersatileImagePPOIClickField(SizedImageCenterpointMixIn, MultiValueField):
+
     widget = VersatileImagePPOIClickWidget
 
     def __init__(self, *args, **kwargs):
@@ -53,9 +46,14 @@ class VersatileImagePPOIClickField(SizedImageCenterpointMixIn,
         return to_return
 
 
-class SizedImageCenterpointClickDjangoAdminField(
-        VersatileImagePPOIClickField):
+class SizedImageCenterpointClickDjangoAdminField(VersatileImagePPOIClickField):
+
     widget = SizedImageCenterpointClickDjangoAdminWidget
     # Need to remove `None` and `u''` so required fields will work
     # TODO: Better validation handling
     empty_values = [[], (), {}]
+
+
+class SizedImageCenterpointClickBootstrap3Field(SizedImageCenterpointClickDjangoAdminField):
+
+    widget = SizedImageCenterpointClickBootstrap3Widget

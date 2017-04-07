@@ -49,8 +49,10 @@ Compatibility
   - 1.8.x
   - 1.9.x
   - 1.10.x
+  - 1.11.x
 
 .. note:: The 1.4 release dropped support for Django 1.5.x & 1.6.x.
+.. note:: The 1.7 release dropped support for Django 1.7.x.
 
 - `Pillow <https://pillow.readthedocs.io/en/latest/index.html>`_ >=2.4.0,<=4.0.0
 
@@ -64,6 +66,7 @@ Compatibility
   - 3.3.x (NOTE: Django REST Framework 3.3.x is not compatible with Django<=1.6.x)
   - 3.4.x (NOTE: Django REST Framework 3.4.x is not compatible with Django<=1.6.x)
   - 3.5.x (NOTE: Django REST Framework 3.4.x is not compatible with Django<=1.7.x)
+  - 3.6.x
 
 Code
 ====
@@ -89,6 +92,10 @@ Table of Contents
 
 Release Notes
 =============
+
+1.7.0
+^^^^^
+- Added support for Django 1.11.
 
 1.6.3
 ^^^^^

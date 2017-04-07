@@ -13,13 +13,16 @@ Python Compatibility
 -  2.7.x
 -  3.3.x
 -  3.4.x
+-  3.5.x
+-  3.6.x
 
 Django Compatibility
 --------------------
 
--  1.6.x
--  1.7.x
 -  1.8.x
+-  1.9.x
+-  1.10.x
+-  1.11.x
 
 Dependencies
 ------------

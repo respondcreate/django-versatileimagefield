@@ -2,7 +2,6 @@ from __future__ import unicode_literals
 
 import os
 
-from django import VERSION as DJANGO_VERSION
 from django.contrib.admin.widgets import AdminFileWidget
 from django.db.models.fields import CharField
 from django.db.models.fields.files import ImageField
@@ -13,12 +12,6 @@ from .forms import SizedImageCenterpointClickDjangoAdminField
 from .placeholder import OnStoragePlaceholderImage
 from .settings import VERSATILEIMAGEFIELD_PLACEHOLDER_DIRNAME
 from .validators import validate_ppoi
-
-if DJANGO_VERSION < (1, 8):
-    from django.db.models import SubfieldBase
-    BasePPOIField = SubfieldBase(str('BasePPOIField'), (CharField,), {})
-else:
-    BasePPOIField = CharField
 
 
 class Creator(object):
@@ -182,7 +175,7 @@ class VersatileImageField(ImageField):
         return super(VersatileImageField, self).formfield(**defaults)
 
 
-class PPOIField(BasePPOIField):
+class PPOIField(CharField):
 
     def __init__(self, *args, **kwargs):
         if 'default' not in kwargs:

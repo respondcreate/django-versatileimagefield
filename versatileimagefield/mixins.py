@@ -70,7 +70,14 @@ class VersatileImageMixIn(object):
         """
         if not self.name and self.field.placeholder_image_name:
             return self.storage.url(self.field.placeholder_image_name)
-        return super(VersatileImageMixIn, self)._get_url()
+
+        cls = super(VersatileImageMixIn, self)
+
+        if hasattr(cls, '_get_url'):
+            # Django earlier than 1.11
+            return cls._get_url()
+        else:
+            return cls.url
     url = property(_get_url)
 
     @property
