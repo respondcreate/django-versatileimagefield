@@ -23,4 +23,4 @@ class VersatileImageFieldPostProcessorTestCase(VersatileImageFieldBaseTestCase):
         )
 
     def test_obscured_file_delete(self):
-        self.assert_versatile_image_field_deleted(self.instance.image)
+        self.assertImageDeleted(self.instance.image)

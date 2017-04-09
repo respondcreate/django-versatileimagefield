@@ -71,7 +71,7 @@ class VersatileImageFieldBaseTestCase(TestCase):
         rmtree(sized_path, ignore_errors=True)
         rmtree(placeholder_path, ignore_errors=True)
 
-    def assert_versatile_image_field_deleted(self, field_instance):
+    def assertImageDeleted(self, field_instance):
         """Assert `field_instance` (VersatileImageField instance) deletes."""
         img_url = field_instance.crop['100x100'].url
         self.assertEqual(cache.get(img_url), None)
@@ -286,7 +286,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
 
     def test_create_on_demand_functionality(self):
         """Ensure create_on_demand functionality works as advertised."""
-        self.assert_versatile_image_field_deleted(self.jpg.image)
+        self.assertImageDeleted(self.jpg.image)
 
     def test_custom_upload_to_thumbnail_deleted(self):
         """Test custom upload_to deletion works."""
