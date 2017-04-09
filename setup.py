@@ -16,12 +16,7 @@ setup(
     long_description=open('README.rst').read(),
     zip_safe=False,
     install_requires=['Pillow>=2.4.0,<=4.0.0'],
-    package_data={
-        'versatileimagefield': [
-            'static/versatileimagefield/css/*.css',
-            'static/versatileimagefield/js/*.js',
-        ]
-    },
+    include_package_data=True,
     keywords=[
         'django',
     ],

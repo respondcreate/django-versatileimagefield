@@ -59,7 +59,8 @@ class VersatileImageMixIn(object):
         else:
             self.ppoi = (0.5, 0.5)
 
-    def _get_url(self):
+    @property
+    def url(self):
         """
         Return the appropriate URL.
 
@@ -71,14 +72,7 @@ class VersatileImageMixIn(object):
         if not self.name and self.field.placeholder_image_name:
             return self.storage.url(self.field.placeholder_image_name)
 
-        cls = super(VersatileImageMixIn, self)
-
-        if hasattr(cls, '_get_url'):
-            # Django earlier than 1.11
-            return cls._get_url()
-        else:
-            return cls.url
-    url = property(_get_url)
+        return super(VersatileImageMixIn, self).url
 
     @property
     def create_on_demand(self):
