@@ -151,7 +151,7 @@ class SizedImageCenterpointClickDjangoAdminWidget(VersatileImagePPOIClickWidget)
 class Bootstrap3ClearableFileInputWithImagePreview(ClearableFileInputWithImagePreview):
     """A Bootstrap 3 version of the clearable file input with image preview."""
 
-    template_name = 'versatileimagefield/forms/widgets/versatile_image.html'
+    template_name = 'versatileimagefield/forms/widgets/versatile_image_bootstrap.html'
 
 
 class SizedImageCenterpointClickBootstrap3Widget(VersatileImagePPOIClickWidget):
