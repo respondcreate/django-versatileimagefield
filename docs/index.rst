@@ -95,7 +95,7 @@ Release Notes
 
 1.7.0
 ^^^^^
-- Added support for Django 1.11.
+- Added support for Django 1.11 (thanks, `@slurms <https://github.com/slurms>`_ and `@matthiask <https://github.com/matthiask>`_!).
 
 1.6.3
 ^^^^^
