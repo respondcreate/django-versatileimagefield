@@ -32,3 +32,7 @@ VERSATILEIMAGEFIELD_SETTINGS = {
     # created and available at the appropriate URL.
     'create_images_on_demand': False
 }
+
+#VERSATILEIMAGEFIELD_USE_PLACEHOLDIT=True
+#VERSATILEIMAGEFIELD_USE_PLACEHOLDIT_URL="http://placehold.it/%dx%d/ce8585/000000/?text=Some+Text"
+
