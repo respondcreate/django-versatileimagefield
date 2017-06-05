@@ -487,31 +487,6 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         instance = form.save(commit=False)
         self.assertEqual(instance.optional_image_with_ppoi.name, '')
 
-    def test_versatile_image_file_descriptor(self):
-        """Ensure VersatileImageFileDescriptor works as intended."""
-        self.jpg.image = 'python-logo-2.jpg'
-        self.jpg.save()
-        self.assertEqual(
-            self.jpg.image.thumbnail['100x100'].url,
-            '/media/__sized__/python-logo-2-thumbnail-100x100-70.jpg'
-        )
-        self.jpg.image = 'python-logo.jpg'
-        self.jpg.save()
-        self.assertEqual(
-            self.jpg.image.thumbnail['100x100'].url,
-            '/media/__sized__/python-logo-thumbnail-100x100-70.jpg'
-        )
-        fieldfile_obj = self.jpg.image
-        del fieldfile_obj.field
-        self.jpg.image = fieldfile_obj
-        img_path = self.jpg.image.path
-        img_file = open(img_path, 'rb')
-        django_file = File(img_file)
-        self.jpg.image = django_file
-        with self.assertRaises(AttributeError):
-            x = VersatileImageFileDescriptor(self.jpg.image.name)
-            VersatileImageFileDescriptor.__get__(x)
-
     def test_versatile_image_field_picklability(self):
         """Ensure VersatileImageField instances can be pickled/unpickled."""
         cPickle.dump(self.jpg, open("pickletest.p", "wb"))
