@@ -37,9 +37,7 @@ class VersatileImageFileDescriptor(ImageFileDescriptor):
 
     def __get__(self, instance=None, owner=None):
         if instance is None:
-            raise AttributeError(
-                "The '%s' attribute can only be accessed from %s instances."
-                % (self.field.name, owner.__name__))
+            return self
 
         # This is slightly complicated, so worth an explanation.
         # instance.file`needs to ultimately return some instance of `File`,
