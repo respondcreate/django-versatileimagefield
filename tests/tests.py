@@ -12,7 +12,6 @@ from django.contrib.auth.models import User
 from django.core import serializers
 from django.core.cache import cache
 from django.core.exceptions import ImproperlyConfigured, ValidationError
-from django.core.files import File
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
 from django.template.loader import get_template
@@ -24,7 +23,6 @@ from django.utils.six.moves import cPickle
 from PIL import Image
 from rest_framework.test import APIRequestFactory
 
-from versatileimagefield.files import VersatileImageFileDescriptor
 from versatileimagefield.datastructures.base import ProcessedImage
 from versatileimagefield.datastructures.filteredimage import InvalidFilter
 from versatileimagefield.datastructures.sizedimage import MalformedSizedImageKey, SizedImage
@@ -45,9 +43,12 @@ from versatileimagefield.validators import validate_ppoi_tuple
 from versatileimagefield.versatileimagefield import CroppedImage, InvertImage
 
 from .forms import VersatileImageTestModelForm, VersatileImageWidgetTestModelForm
-from .models import (VersatileImageTestModel,
-                     VersatileImageTestUploadDirectoryModel,
-                     VersatileImageWidgetTestModel, MaybeVersatileImageModel)
+from .models import (
+    VersatileImageTestModel,
+    VersatileImageTestUploadDirectoryModel,
+    VersatileImageWidgetTestModel,
+    MaybeVersatileImageModel
+)
 from .serializers import VersatileImageTestModelSerializer
 
 
