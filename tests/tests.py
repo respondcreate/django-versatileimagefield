@@ -45,7 +45,9 @@ from versatileimagefield.validators import validate_ppoi_tuple
 from versatileimagefield.versatileimagefield import CroppedImage, InvertImage
 
 from .forms import VersatileImageTestModelForm, VersatileImageWidgetTestModelForm
-from .models import VersatileImageTestModel, VersatileImageTestUploadDirectoryModel, VersatileImageWidgetTestModel
+from .models import (VersatileImageTestModel,
+                     VersatileImageTestUploadDirectoryModel,
+                     VersatileImageWidgetTestModel, MaybeVersatileImageModel)
 from .serializers import VersatileImageTestModelSerializer
 
 
@@ -159,6 +161,10 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
             ) // len(h1)
         )
         self.assertEqual(rms, 0.0)
+
+    def test_field_can_be_null(self):
+        obj = MaybeVersatileImageModel(pk=34, name='foo')
+        obj.save()
 
     def test_check_storage_paths(self):
         """Ensure storage paths are properly set."""
