@@ -6,6 +6,11 @@ from versatileimagefield.fields import VersatileImageField, PPOIField
 from versatileimagefield.placeholder import OnDiscPlaceholderImage, OnStoragePlaceholderImage
 
 
+class MaybeVersatileImageModel(models.Model):
+    name = models.CharField(max_length=30)
+    image = VersatileImageField(upload_to='./', blank=True, null=True)
+
+
 class VersatileImageTestModel(models.Model):
     """A model for testing VersatileImageFields."""
 
