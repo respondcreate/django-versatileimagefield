@@ -45,7 +45,6 @@ Compatibility
 
 - `Django <https://www.djangoproject.com/>`_:
 
-  - 1.7.x
   - 1.8.x
   - 1.9.x
   - 1.10.x
@@ -58,14 +57,8 @@ Compatibility
 
 - `Django REST Framework <http://www.django-rest-framework.org/>`_:
 
-  - 2.3.14
-  - 2.4.4
-  - 3.0.x
-  - 3.1.x
-  - 3.2.x
-  - 3.3.x (NOTE: Django REST Framework 3.3.x is not compatible with Django<=1.6.x)
-  - 3.4.x (NOTE: Django REST Framework 3.4.x is not compatible with Django<=1.6.x)
-  - 3.5.x (NOTE: Django REST Framework 3.4.x is not compatible with Django<=1.7.x)
+  - 3.4.x
+  - 3.5.x
   - 3.6.x
 
 Code
@@ -92,6 +85,10 @@ Table of Contents
 
 Release Notes
 =============
+
+1.7.1
+^^^^^
+- Fixed a bug that prevented VersatileImageField from working when ``null=True`` with Django 1.11 (thanks, `@szewczykmira <https://github.com/szewczykmira>`_!).
 
 1.7.0
 ^^^^^
