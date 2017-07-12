@@ -15,10 +15,6 @@ Welcome to django-versatileimagefield's documentation!
     :target: https://coveralls.io/github/respondcreate/django-versatileimagefield?branch=master
     :alt: Coverage Status
 
-.. image:: https://img.shields.io/pypi/dm/django-versatileimagefield.svg?style=flat
-    :target: https://pypi.python.org/pypi/django-versatileimagefield/
-    :alt: Downloads
-
 .. image:: https://img.shields.io/pypi/v/django-versatileimagefield.svg?style=flat
     :target: https://pypi.python.org/pypi/django-versatileimagefield/
     :alt: Latest Version
