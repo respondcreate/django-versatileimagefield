@@ -221,4 +221,5 @@ class PPOIField(CharField):
         value = self._get_val_from_obj(obj)
         return self.get_prep_value(value)
 
+
 __all__ = ['VersatileImageField']

@@ -75,4 +75,5 @@ def validate_ppoi(value, return_converted_tuple=False):
         if to_return and return_converted_tuple is True:
             return to_return
 
+
 __all__ = ['validate_ppoi_tuple', 'validate_ppoi']

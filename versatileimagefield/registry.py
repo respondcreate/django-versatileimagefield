@@ -179,6 +179,7 @@ class VersatileImageFieldRegistry(object):
         else:
             del self._filter_registry[attr_name]
 
+
 versatileimagefield_registry = VersatileImageFieldRegistry()
 
 
