@@ -180,6 +180,40 @@ class ThumbnailImage(SizedImage):
         return imagefile
 
 
+class FittedImage(SizedImage):
+    """
+    Puts an image into a bounding box without cropping it.
+    Suitable for images with white or transparent background.
+    """
+
+    filename_key = 'fitto'
+
+    def process_image(self,
+                      image, image_format, save_kwargs,
+                      width, height):
+        """
+        Returns a BytesIO instance of `image` pasted to a box.
+        Dimensions are `width`x`height`.
+        """
+        dimensions = (width, height)
+        bgfile = BytesIO()
+        image.thumbnail(
+            (width, height),
+            Image.ANTIALIAS
+        )
+        if image.mode == 'RGBA':
+            bg = Image.new('RGBA', dimensions)
+            bg.paste(image, ((width - image.width) // 2, (height - image.height) // 2), mask=image)
+        else:
+            bg = Image.new('RGB', dimensions, 'white')
+            bg.paste(image, ((width - image.width) // 2, (height - image.height) // 2))
+        bg.save(
+            bgfile,
+            **save_kwargs
+        )
+        return bgfile
+
+
 class InvertImage(FilteredImage):
     """
     Invert the color palette of an image.
@@ -197,6 +231,8 @@ class InvertImage(FilteredImage):
         )
         return imagefile
 
+
 versatileimagefield_registry.register_sizer('crop', CroppedImage)
 versatileimagefield_registry.register_sizer('thumbnail', ThumbnailImage)
+versatileimagefield_registry.register_sizer('fitto', FittedImage)
 versatileimagefield_registry.register_filter('invert', InvertImage)
