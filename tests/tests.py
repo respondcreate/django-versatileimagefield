@@ -1008,12 +1008,11 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         response.render()
         self.assertContains(
             response,
-            """
-            <div class="sizedimage-mod initial">
-              <label class="versatileimagefield-label">Currently</label>
-              <a href="/media/stuff.png">stuff.png</a>
-            </div>
-            """,
-            html=True)
+            '<label class="versatileimagefield-label">Currently</label>',
+        )
+        self.assertContains(
+            response,
+            '<a href="/media/stuff',
+        )
 
-        instance.image.delete()
+        instance.image.delete(save=False)
