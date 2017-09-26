@@ -1003,6 +1003,17 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         with self.assertRaises((IOError, OSError)):
             instance.image.thumbnail['200x200']
 
-        # admin_url = reverse('admin:tests_versatileimagetestmodel_change', args=(instance.pk,))
-        # response = self.client.get(admin_url)
-        # print(response)
+        admin_url = reverse('admin:tests_versatileimagetestmodel_change', args=(instance.pk,))
+        response = self.client.get(admin_url)
+        response.render()
+        self.assertContains(
+            response,
+            """
+            <div class="sizedimage-mod initial">
+              <label class="versatileimagefield-label">Currently</label>
+              <a href="/media/stuff.png">stuff.png</a>
+            </div>
+            """,
+            html=True)
+
+        instance.image.delete()
