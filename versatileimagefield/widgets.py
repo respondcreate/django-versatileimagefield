@@ -58,7 +58,9 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
             # Ensuring admin preview thumbnails are created and available
             value.create_on_demand = True
             return value.thumbnail['300x300']
-        except (IOError, OSError):
+        except Exception:
+            # Do not be overly specific with exceptions; we'd rather show no
+            # thumbnail than crash when showing the widget.
             return None
 
     def get_context(self, name, value, attrs):

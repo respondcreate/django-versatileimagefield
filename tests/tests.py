@@ -1000,7 +1000,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
 
         instance.image.create_on_demand = True
-        with self.assertRaises((IOError, OSError)):
+        with self.assertRaises((AttributeError, IOError, OSError)):
             instance.image.thumbnail['200x200']
 
         admin_url = reverse('admin:tests_versatileimagetestmodel_change', args=(instance.pk,))
