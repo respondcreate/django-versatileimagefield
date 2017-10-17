@@ -103,20 +103,22 @@ class SizedImage(ProcessedImage, dict):
             * `key`: A string in the following format
                      '[width-in-pixels]x[height-in-pixels]'
                      Example: '400x400'
+                     Example: '400x'     # auto heigh
         """
         try:
-            width, height = [int(i) for i in key.split('x')]
+            width, height = [int(i or -1) for i in key.split('x')]
         except (KeyError, ValueError):
             raise MalformedSizedImageKey(
-                "%s keys must be in the following format: "
-                "'`width`x`height`' where both `width` and `height` are "
+                "%s keys must be in one of the following format: "
+                "'`width`x`height`', '`width`x' or 'x`height`' "
+                "where both `width` and `height` are "
                 "integers." % self.__class__.__name__
             )
 
         if not self.path_to_image and getattr(
             settings, 'VERSATILEIMAGEFIELD_USE_PLACEHOLDIT', False
         ):
-            resized_url = "http://placehold.it/%dx%d" % (width, height)
+            resized_url = "http://placehold.it/%sx%s" % (width, height)
             resized_storage_path = resized_url
         else:
             resized_storage_path, resized_url = get_resized_path(
@@ -194,6 +196,8 @@ class SizedImage(ProcessedImage, dict):
 
         image, save_kwargs = self.preprocess(image, image_format)
 
+        width, height = self.get_target_size(image, width, height)
+
         imagefile = self.process_image(
             image=image,
             image_format=image_format,
@@ -202,3 +206,12 @@ class SizedImage(ProcessedImage, dict):
             height=height
         )
         self.save_image(imagefile, save_path_on_storage, file_ext, mime_type)
+
+    def get_target_size(self, image, width, height):
+        if width == -1 or height == -1:
+            original_width, original_height = image.size
+            if width == -1:
+                width = round(height * original_width / original_height)
+            else:
+                height = round(width * original_height / original_width)
+        return width, height

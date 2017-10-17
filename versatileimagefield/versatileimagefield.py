@@ -180,6 +180,8 @@ class ThumbnailImage(SizedImage):
         return imagefile
 
 
+
+
 class InvertImage(FilteredImage):
     """
     Invert the color palette of an image.
