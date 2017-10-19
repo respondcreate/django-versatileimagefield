@@ -4,7 +4,7 @@ from setuptools import find_packages
 
 setup(
     name='django-versatileimagefield',
-    packages=find_packages(),
+    packages=find_packages(exclude=['tests']),
     version='1.7.1',
     author=u'Jonathan Ellenberger',
     author_email='jonathan_ellenberger@wgbh.org',
