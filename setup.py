@@ -4,8 +4,8 @@ from setuptools import find_packages
 
 setup(
     name='django-versatileimagefield',
-    version='1.7.1',
     packages=find_packages(),
+    version='1.8',
     author=u'Jonathan Ellenberger',
     author_email='jonathan_ellenberger@wgbh.org',
     url='http://github.com/respondcreate/django-versatileimagefield/',

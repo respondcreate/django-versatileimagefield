@@ -81,6 +81,12 @@ Table of Contents
 
 Release Notes
 =============
+1.8
+^^^
+- Excluded tests from PyPI releases (thanks, `@matthiask <https://github.com/matthiask>`_!).
+- Fixed a bug with the widget if thumbnailing failed or crashed (thanks again, `@matthiask <https://github.com/matthiask>`_!)
+- Added a note about import problems when adding a new sizer/filter in Python 2.7 (thanks, `@chubz <https://github.com/chubz>`_!).
+- Added LICENSE to package manifest (thanks, `@sannykr <https://github.com/sannykr>`_!).
 
 1.7.1
 ^^^^^
