@@ -81,6 +81,11 @@ Table of Contents
 
 Release Notes
 =============
+
+1.8.1
+^^^^^
+- Updated Pillow dependency. Pillow 2.4.0 thru 4.3.0 now supported in Python 2.7, 3.4, 3.5 and 3.6.
+
 1.8
 ^^^
 - Excluded tests from PyPI releases (thanks, `@matthiask <https://github.com/matthiask>`_!).
