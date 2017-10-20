@@ -1,3 +1,4 @@
+"""Fields."""
 from __future__ import unicode_literals
 
 import os
@@ -15,9 +16,8 @@ from .validators import validate_ppoi
 
 
 class Creator(object):
-    """
-    A placeholder class that provides a way to set the attribute on the model.
-    """
+    """Provides a way to set the attribute on the model."""
+
     def __init__(self, field):
         self.field = field
 
@@ -29,6 +29,8 @@ class Creator(object):
 
 
 class VersatileImageField(ImageField):
+    """Extends ImageField."""
+
     attr_class = VersatileImageFieldFile
     descriptor_class = VersatileImageFileDescriptor
     description = _('Versatile Image Field')
@@ -36,6 +38,7 @@ class VersatileImageField(ImageField):
     def __init__(self, verbose_name=None, name=None, width_field=None,
                  height_field=None, ppoi_field=None, placeholder_image=None,
                  **kwargs):
+        """Initialize an instance."""
         self.ppoi_field = ppoi_field
         super(VersatileImageField, self).__init__(
             verbose_name, name, width_field, height_field, **kwargs
@@ -45,6 +48,8 @@ class VersatileImageField(ImageField):
 
     def process_placeholder_image(self):
         """
+        Process the field's placeholder image.
+
         Ensures the placeholder image has been saved to the same storage class
         as the field in a top level folder with a name specified by
         settings.VERSATILEIMAGEFIELD_SETTINGS['placeholder_directory_name']
@@ -73,14 +78,14 @@ class VersatileImageField(ImageField):
         self.placeholder_image_name = placeholder_image_name
 
     def pre_save(self, model_instance, add):
-        "Returns field's value just before saving."
+        """Return field's value just before saving."""
         file = super(VersatileImageField, self).pre_save(model_instance, add)
         self.update_ppoi_field(model_instance)
         return file
 
     def update_ppoi_field(self, instance, *args, **kwargs):
         """
-        Updates field's ppoi field, if defined.
+        Update field's ppoi field, if defined.
 
         This method is hooked up this field's pre_save method to update
         the ppoi immediately before the model instance (`instance`)
@@ -112,8 +117,7 @@ class VersatileImageField(ImageField):
 
     def save_form_data(self, instance, data):
         """
-        Handles data sent from MultiValueField forms that set
-        ppoi values.
+        Handle data sent from MultiValueField forms that set ppoi values.
 
         `instance`: The model instance that is being altered via a form
         `data`: The data sent from the form to this field which can be either:
@@ -149,6 +153,7 @@ class VersatileImageField(ImageField):
         super(VersatileImageField, self).save_form_data(instance, to_assign)
 
     def formfield(self, **kwargs):
+        """Return a formfield."""
         # This is a fairly standard way to set up some defaults
         # while letting the caller override them.
         defaults = {}
@@ -215,10 +220,9 @@ class PPOIField(CharField):
         return value
 
     def value_to_string(self, obj):
-        """
-        Prepares field for serialization.
-        """
+        """Prepare field for serialization."""
         value = self._get_val_from_obj(obj)
         return self.get_prep_value(value)
+
 
 __all__ = ['VersatileImageField']
