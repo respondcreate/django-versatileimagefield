@@ -20,7 +20,7 @@
          data-image_preview_id="{{ widget.image_preview_id }}">
       <div class="ppoi-point" id="{{ widget.ppoi_id }}"></div>
     </div>
-    {% if widget.value %}
+    {% if widget.value and widget.sized_url %}
     <div class="image-wrap inner">
       <img src="{{ widget.sized_url }}" id="{{ widget.image_preview_id }}"
            data-hidden_field_id="{{ widget.hidden_field_id }}"

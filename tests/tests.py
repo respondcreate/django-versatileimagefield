@@ -12,6 +12,7 @@ from django.contrib.auth.models import User
 from django.core import serializers
 from django.core.cache import cache
 from django.core.exceptions import ImproperlyConfigured, ValidationError
+from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
 from django.template.loader import get_template
@@ -978,3 +979,40 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         image, save_kwargs = processor.preprocess_JPEG(image_info[0])
 
         self.assertEqual(image.mode, 'RGB')
+
+    def test_corrupt_file(self):
+        with open(
+            os.path.join(
+                os.path.dirname(upath(__file__)),
+                "test.png"
+            ),
+            'rb'
+        ) as fp:
+            # Anything which cannot be resized or thumbnailed, but checks out
+            # when only looking at basic header data
+            content = fp.read()[:100]
+
+        instance = VersatileImageTestModel()
+        instance.image.save(
+            'stuff.png',
+            ContentFile(content),
+            save=True,
+        )
+
+        instance.image.create_on_demand = True
+        with self.assertRaises((AttributeError, IOError, OSError)):
+            instance.image.thumbnail['200x200']
+
+        admin_url = reverse('admin:tests_versatileimagetestmodel_change', args=(instance.pk,))
+        response = self.client.get(admin_url)
+        response.render()
+        self.assertContains(
+            response,
+            '<label class="versatileimagefield-label">Currently</label>',
+        )
+        self.assertContains(
+            response,
+            '<a href="/media/stuff',
+        )
+
+        instance.image.delete(save=False)

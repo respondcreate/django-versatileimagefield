@@ -52,6 +52,17 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
             context = self.get_context(name, value, attrs)
             return render_to_string(self.template_name, context)
 
+    def get_sized_url(self, value):
+        """Do not fail completely on invalid images"""
+        try:
+            # Ensuring admin preview thumbnails are created and available
+            value.create_on_demand = True
+            return value.thumbnail['300x300']
+        except Exception:
+            # Do not be overly specific with exceptions; we'd rather show no
+            # thumbnail than crash when showing the widget.
+            return None
+
     def get_context(self, name, value, attrs):
         """Get the context to render this widget with."""
         if self.has_template_widget_rendering:
@@ -84,13 +95,11 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
         })
 
         if value and hasattr(value, "url"):
-            # Ensuring admin preview thumbnails are created and available
-            value.create_on_demand = True
             context['widget'].update({
                 'hidden_field_id': self.get_hidden_field_id(name),
                 'point_stage_id': self.get_point_stage_id(name),
                 'ppoi_id': self.get_ppoi_id(name),
-                'sized_url': value.thumbnail['300x300'],
+                'sized_url': self.get_sized_url(value),
                 'image_preview_id': self.image_preview_id(name),
             })
 
