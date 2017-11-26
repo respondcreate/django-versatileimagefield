@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import os
 import re
+import logging
 
 from django.utils.six import iteritems
 
@@ -15,6 +16,8 @@ from .settings import (
     VERSATILEIMAGEFIELD_FILTERED_DIRNAME
 )
 from .validators import validate_ppoi
+
+logger = logging.getLogger(__name__)
 
 autodiscover()
 
@@ -183,7 +186,7 @@ class VersatileImageMixIn(object):
                     cache.delete(
                         self.storage.url(file_location)
                     )
-                    print(
+                    logger.debug(
                         "Deleted {file} (created from: {original})".format(
                             file=os.path.join(root_folder, f),
                             original=self.name
