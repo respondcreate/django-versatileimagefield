@@ -129,7 +129,7 @@ class SizedImage(ProcessedImage, dict):
 
             try:
                 resized_url = self.storage.url(resized_storage_path)
-            except:
+            except Exception:
                 resized_url = None
 
             if self.create_on_demand is True or resized_url is None:
