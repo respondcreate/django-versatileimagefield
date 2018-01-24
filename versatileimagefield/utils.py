@@ -104,30 +104,6 @@ def get_resized_filename(filename, width, height, filename_key):
     })
 
 
-def get_resized_url(path_to_image, width, height,
-                    filename_key, storage):
-    """
-    Return a web-accessible URL  as dictated by `width`, `height`
-    and `filename_key`
-    """
-    containing_folder, filename = os.path.split(path_to_image)
-
-    resized_filename = get_resized_filename(
-        filename,
-        width,
-        height,
-        filename_key
-    )
-
-    joined_path = os.path.join(*[
-        VERSATILEIMAGEFIELD_SIZED_DIRNAME,
-        containing_folder,
-        resized_filename
-    ]).replace(' ', '')  # Removing spaces so this path is memcached friendly
-
-    return storage.url(joined_path)
-
-
 def get_resized_path(path_to_image, width, height,
                      filename_key, storage):
     """
@@ -168,23 +144,6 @@ def get_filtered_filename(filename, filename_key):
         'filename_key': filename_key,
         'ext': ext
     })
-
-
-def get_filtered_url(path_to_image, filename_key, storage):
-    """
-    Return the URL of `path_to_image`
-    """
-    containing_folder, filename = os.path.split(path_to_image)
-
-    filtered_filename = get_filtered_filename(filename, filename_key)
-    path_to_return = os.path.join(*[
-        containing_folder,
-        VERSATILEIMAGEFIELD_FILTERED_DIRNAME,
-        filtered_filename
-    ])
-    # Removing spaces so this path is memcached key friendly
-    path_to_return = path_to_return.replace(' ', '')
-    return storage.url(path_to_return)
 
 
 def get_filtered_path(path_to_image, filename_key, storage):
