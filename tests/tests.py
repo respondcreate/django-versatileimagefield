@@ -284,6 +284,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
 
     def test_create_on_demand_boolean(self):
         """Ensure create_on_demand boolean is set appropriately."""
+        self.jpg.image.create_on_demand = False
         self.assertFalse(self.jpg.image.create_on_demand)
         self.jpg.image.create_on_demand = True
         self.assertTrue(self.jpg.image.create_on_demand)

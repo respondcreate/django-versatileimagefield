@@ -133,7 +133,7 @@ class SizedImage(ProcessedImage, dict):
                 resized_url = None
 
             if self.create_on_demand is True or resized_url is None:
-                if resized_url is None and cache.get(resized_url):
+                if cache.get(resized_url):
                     # The sized path exists in the cache so the image already
                     # exists. So we `pass` to skip directly to the return
                     # statement
