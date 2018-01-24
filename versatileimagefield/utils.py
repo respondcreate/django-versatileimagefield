@@ -103,8 +103,9 @@ def get_resized_filename(filename, width, height, filename_key):
         'ext': ext
     })
 
+
 def get_resized_url(path_to_image, width, height,
-                     filename_key, storage):
+                    filename_key, storage):
     """
     Return a web-accessible URL  as dictated by `width`, `height`
     and `filename_key`
@@ -149,6 +150,7 @@ def get_resized_path(path_to_image, width, height,
     ]).replace(' ', '')  # Removing spaces so this path is memcached friendly
 
     return joined_path
+
 
 def get_filtered_filename(filename, filename_key):
     """
