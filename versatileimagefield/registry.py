@@ -222,7 +222,7 @@ def autodiscover():
                 versatileimagefield_registry._filter_registry
             )
             import_module('%s.versatileimagefield' % app_config.name)
-        except:
+        except Exception:
             # Reset the versatileimagefield_registry to the state before the
             # last import as this import will have to reoccur on the next
             # request and this could raise NotRegistered and AlreadyRegistered

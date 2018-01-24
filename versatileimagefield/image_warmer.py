@@ -115,7 +115,7 @@ class VersatileImageFieldWarmer(object):
         versatileimagefieldfile.create_on_demand = True
         try:
             url = get_url_from_image_key(versatileimagefieldfile, size_key)
-        except:
+        except Exception:
             success = False
             url_or_filepath = versatileimagefieldfile.name
             logger.exception('Thumbnail generation failed',

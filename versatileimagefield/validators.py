@@ -57,7 +57,7 @@ def validate_ppoi(value, return_converted_tuple=False):
                 for segment in value.split('x')
                 if float(segment.strip()) >= 0 and float(segment.strip()) <= 1
             ]
-        except:
+        except Exception:
             valid_ppoi = False
         else:
             tup = tuple(string_split)
