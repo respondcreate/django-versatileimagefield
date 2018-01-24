@@ -46,7 +46,6 @@ class FilteredImage(DeleteAndClearCacheMixIn, ProcessedImage):
 
         self.url = storage.url(self.name)
 
-
     def create_filtered_image(self, path_to_image, save_path_on_storage):
         """
         Creates a filtered image.
