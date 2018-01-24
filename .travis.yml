@@ -15,7 +15,7 @@ matrix:
     - python: "2.7"
       env: DJANGO_VERSION=1.10.7 REST_FRAMEWORK_VERSION=3.5.3
     - python: "2.7"
-      env: DJANGO_VERSION=1.11.2 REST_FRAMEWORK_VERSION=3.6.2
+      env: DJANGO_VERSION=1.11.9 REST_FRAMEWORK_VERSION=3.6.2
     - python: "3.4"
       env: DJANGO_VERSION=1.8.18 REST_FRAMEWORK_VERSION=3.4.7
     - python: "3.4"
@@ -25,7 +25,7 @@ matrix:
     - python: "3.4"
       env: DJANGO_VERSION=1.10.7 REST_FRAMEWORK_VERSION=3.5.3
     - python: "3.4"
-      env: DJANGO_VERSION=1.11.2 REST_FRAMEWORK_VERSION=3.6.2
+      env: DJANGO_VERSION=1.11.9 REST_FRAMEWORK_VERSION=3.6.2
     - python: "3.5"
       env: DJANGO_VERSION=1.8.18 REST_FRAMEWORK_VERSION=3.4.7
     - python: "3.5"
@@ -45,7 +45,7 @@ matrix:
     - python: "3.6"
       env: DJANGO_VERSION=1.10.7 REST_FRAMEWORK_VERSION=3.5.3
     - python: "3.6"
-      env: DJANGO_VERSION=1.11.2 REST_FRAMEWORK_VERSION=3.6.2
+      env: DJANGO_VERSION=1.11.9 REST_FRAMEWORK_VERSION=3.6.2
 before_install:
   - export DJANGO_SETTINGS_MODULE=tests.test_settings
 # Tell it the things it will need to install when it boots
