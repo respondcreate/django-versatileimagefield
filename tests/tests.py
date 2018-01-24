@@ -38,7 +38,12 @@ from versatileimagefield.settings import (
     VERSATILEIMAGEFIELD_PLACEHOLDER_DIRNAME
 )
 from versatileimagefield.utils import (
-    get_filtered_filename, get_rendition_key_set, get_resized_filename, InvalidSizeKey, InvalidSizeKeySet
+    get_filtered_filename,
+    get_rendition_key_set,
+    get_resized_filename,
+    InvalidSizeKey,
+    InvalidSizeKeySet,
+    get_resized_path
 )
 from versatileimagefield.validators import validate_ppoi_tuple
 from versatileimagefield.versatileimagefield import CroppedImage, InvertImage
@@ -167,6 +172,35 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
     def test_field_can_be_null(self):
         obj = MaybeVersatileImageModel(pk=34, name='foo')
         obj.save()
+
+    def test_storage_fails_to_return_url(self):
+        """
+        This is a wonky test used to ensure 100% code coverge in utils.py.
+
+        We need to test that a storage.url call can hit an exception to trigger
+        resized_url = None in try/except
+        """
+        from copy import deepcopy
+
+        def storage_url_fail(path):
+            raise Exception("Storage class returns exception because file does not exist.")
+
+        jpeg = VersatileImageTestModel.objects.create(
+            img_type='jpeg',
+            image="python-logo.jpeg",
+            ppoi="0.25x0.25",
+            width=0,
+            height=0
+        )
+
+        storage = jpeg.image.field.storage
+        _storage = deepcopy(jpeg.image.field.storage)
+        _storage.url = storage_url_fail
+
+        jpeg.image.field.storage = _storage
+        jpeg.image.thumbnail['200x200']
+
+        jpeg.image.field.storage = storage
 
     def test_check_storage_paths(self):
         """Ensure storage paths are properly set."""
