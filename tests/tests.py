@@ -180,27 +180,27 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         We need to test that a storage.url call can hit an exception to trigger
         resized_url = None in try/except
         """
+        import types
         from copy import deepcopy
+        from django.utils.six import BytesIO
 
-        def storage_url_fail(path):
+        def storage_url_fail(self, path):
+            if self.exists(path):
+                return path
+
             raise Exception("Storage class returns exception because file does not exist.")
 
-        jpeg = VersatileImageTestModel.objects.create(
-            img_type='jpeg',
-            image="python-logo.jpeg",
-            ppoi="0.25x0.25",
-            width=0,
-            height=0
-        )
+        class SizedImageSubclass(SizedImage):
+            filename_key = 'test'
 
-        storage = jpeg.image.field.storage
-        _storage = deepcopy(jpeg.image.field.storage)
-        _storage.url = storage_url_fail
+            def process_image(self, image, image_format, save_kwargs, width, height):
+                return BytesIO()
 
-        jpeg.image.field.storage = _storage
-        jpeg.image.thumbnail['200x200']
+        _storage = deepcopy(self.jpg.image.field.storage)
+        _storage.url = types.MethodType(storage_url_fail, _storage)
 
-        jpeg.image.field.storage = storage
+        s = SizedImageSubclass(self.jpg.image.name, _storage, True)
+        s['100x100']
 
     def test_check_storage_paths(self):
         """Ensure storage paths are properly set."""

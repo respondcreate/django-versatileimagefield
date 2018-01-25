@@ -132,8 +132,8 @@ class SizedImage(ProcessedImage, dict):
             except Exception:
                 resized_url = None
 
-            if self.create_on_demand is True or resized_url is None:
-                if cache.get(resized_url):
+            if self.create_on_demand is True:
+                if cache.get(resized_url) and resized_url is not None:
                     # The sized path exists in the cache so the image already
                     # exists. So we `pass` to skip directly to the return
                     # statement
