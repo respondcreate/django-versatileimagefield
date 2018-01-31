@@ -45,17 +45,19 @@ Compatibility
   - 1.9.x
   - 1.10.x
   - 1.11.x
+  - 2.0.x
 
 .. note:: The 1.4 release dropped support for Django 1.5.x & 1.6.x.
 .. note:: The 1.7 release dropped support for Django 1.7.x.
 
-- `Pillow <https://pillow.readthedocs.io/en/latest/index.html>`_ >=2.4.0,<=4.0.0
+- `Pillow <https://pillow.readthedocs.io/en/latest/index.html>`_ >=2.4.0,<=5.0.0
 
 - `Django REST Framework <http://www.django-rest-framework.org/>`_:
 
   - 3.4.x
   - 3.5.x
   - 3.6.x
+  - 3.7.x
 
 Code
 ====
@@ -81,6 +83,11 @@ Table of Contents
 
 Release Notes
 =============
+1.9
+^^^
+- Fixed a 'race condition' bug that intermittently arose in some cloud storage providers which caused ``VersatileImageField`` to fail when attempting to create a sized url from an image that hadn't finished uploading. A big thanks to `@camflan <https://github.com/camflan>`_ for the stellar work (especially the improvements he contributed to the test suite)!
+- Added Django 2.0.x and Django REST Framework 3.7.x compatibility.
+- Added Pillow 5.0.x compatibility.
 
 1.8.1
 ^^^^^
