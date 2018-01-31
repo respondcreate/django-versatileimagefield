@@ -14,7 +14,6 @@ from django.core.cache import cache
 from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.core.urlresolvers import reverse
 from django.template.loader import get_template
 from django.test import TestCase
 from django.test.utils import override_settings
@@ -56,6 +55,11 @@ from .models import (
     MaybeVersatileImageModel
 )
 from .serializers import VersatileImageTestModelSerializer
+
+try:
+    from django.core.urlresolvers import reverse
+except ImportError:  # Django >= 1.10
+    from django.urls import reverse
 
 
 class VersatileImageFieldBaseTestCase(TestCase):
