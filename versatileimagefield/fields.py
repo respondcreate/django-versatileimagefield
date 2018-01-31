@@ -221,7 +221,7 @@ class PPOIField(CharField):
 
     def value_to_string(self, obj):
         """Prepare field for serialization."""
-        value = self._get_val_from_obj(obj)
+        value = self.value_from_object(obj)
         return self.get_prep_value(value)
 
 
