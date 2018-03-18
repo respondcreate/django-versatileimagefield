@@ -142,12 +142,20 @@ class SizedImage(ProcessedImage, dict):
                     if resized_storage_path and not self.storage.exists(
                         resized_storage_path
                     ):
-                        self.create_resized_image(
-                            path_to_image=self.path_to_image,
-                            save_path_on_storage=resized_storage_path,
-                            width=width,
-                            height=height
-                        )
+                        try:
+                            self.create_resized_image(
+                                path_to_image=self.path_to_image,
+                                save_path_on_storage=resized_storage_path,
+                                width=width,
+                                height=height
+                            )
+                        except (OSError, IOError, EOFError) as e:
+                            # Do we really want to crash on bad imges? 
+                            if getattr(settings, 'VERSATILEIMAGEFIELD_CRASH_ON_BAD', True):
+                                raise
+                            # Otherwise just throw a warning
+                            warnings.warn('Unable to resize image %s' % self.path_to_image)
+                            return
 
                         resized_url = self.storage.url(resized_storage_path)
 
