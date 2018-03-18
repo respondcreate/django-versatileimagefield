@@ -213,7 +213,9 @@ def get_url_from_image_key(image_instance, image_key):
         size_key = None
     img_url = reduce(getattr, img_key_split, image_instance)
     if size_key:
-        img_url = img_url[size_key].url
+        img_url_sized = img_url[size_key]
+        if img_url_sized:
+            img_url = img_url_sized.url
     return img_url
 
 
