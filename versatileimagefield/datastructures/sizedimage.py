@@ -151,8 +151,8 @@ class SizedImage(ProcessedImage, dict):
                                 width=width,
                                 height=height
                             )
-                        except (OSError, IOError, EOFError) as e:
-                            # Do we really want to crash on bad imges? 
+                        except (OSError, IOError, EOFError):
+                            # Do we really want to crash on bad imges?
                             if getattr(settings, 'VERSATILEIMAGEFIELD_CRASH_ON_BAD', True):
                                 raise
                             # Otherwise just throw a warning
