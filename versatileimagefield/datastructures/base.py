@@ -165,7 +165,7 @@ class ProcessedImage(object):
             None,
             'foo.%s' % file_ext,
             mime_type,
-            imagefile.getbuffer().nbytes,
+            imagefile.tell(),
             None
         )
         file_to_save.seek(0)
