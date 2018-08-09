@@ -58,6 +58,10 @@ matrix:
       env: DJANGO_VERSION=1.11.9 REST_FRAMEWORK_VERSION=3.7.7
     - python: "3.6"
       env: DJANGO_VERSION=2.0.1 REST_FRAMEWORK_VERSION=3.7.7
+    - python: "3.7"
+      dist: xenial
+      sudo: required
+      env: DJANGO_VERSION=2.0.1 REST_FRAMEWORK_VERSION=3.7.7
 before_install:
   - export DJANGO_SETTINGS_MODULE=tests.test_settings
 # Tell it the things it will need to install when it boots
