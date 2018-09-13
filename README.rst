@@ -40,6 +40,7 @@ Compatibility
   - 1.10.x
   - 1.11.x
   - 2.0.x
+  - 2.1.x
 
 **NOTE**: Python 3.7 does not have support for Django 1.x.
 
