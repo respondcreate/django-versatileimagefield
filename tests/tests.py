@@ -41,8 +41,7 @@ from versatileimagefield.utils import (
     get_rendition_key_set,
     get_resized_filename,
     InvalidSizeKey,
-    InvalidSizeKeySet,
-    get_resized_path
+    InvalidSizeKeySet
 )
 from versatileimagefield.validators import validate_ppoi_tuple
 from versatileimagefield.versatileimagefield import CroppedImage, InvertImage
@@ -415,7 +414,6 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
 
         response = self.client.get(self.admin_url)
         self.assertEqual(response.status_code, 200)
-
         # Test that javascript loads correctly
         self.assertContains(
             response,
@@ -454,19 +452,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         self.assertContains(
             response,
             """
-            <div class="form-row field-optional_image">
-              <div>
-                <label for="id_optional_image">Optional image:</label>
-                Currently:
-                <a href="/media/exif-orientation-examples/Landscape_8.jpg">
-                  exif-orientation-examples/Landscape_8.jpg
-                </a>
-                <input id="optional_image-clear_id" name="optional_image-clear" type="checkbox" />
-                <label for="optional_image-clear_id">Clear</label>
-                <br />Change:
-                <input id="id_optional_image" name="optional_image" type="file" />
-              </div>
-            </div>
+            <a href="/media/exif-orientation-examples/Landscape_8.jpg">exif-orientation-examples/Landscape_8.jpg</a>
             """,
             html=True
         )
