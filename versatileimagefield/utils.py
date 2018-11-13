@@ -15,8 +15,6 @@ from .settings import (
     VERSATILEIMAGEFIELD_FILTERED_DIRNAME
 )
 
-JPEG_MIME_TYPE = 'image/jpeg'
-
 # PIL-supported file formats as found here:
 # https://infohost.nmt.edu/tcc/help/pubs/pil/formats.html
 # {mime type: PIL Identifier}
@@ -25,7 +23,7 @@ MIME_TYPE_TO_PIL_IDENTIFIER = {
     'image/dcx': 'DCX',
     'image/eps': 'eps',
     'image/gif': 'GIF',
-    JPEG_MIME_TYPE: 'JPEG',
+    'image/jpeg': 'JPEG',
     'image/pcd': 'PCD',
     'image/pcx': 'PCX',
     'application/pdf': 'PDF',
