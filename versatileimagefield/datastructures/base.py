@@ -6,7 +6,7 @@ from PIL import Image
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from ..settings import QUAL, VERSATILEIMAGEFIELD_PROGRESSIVE_JPEG
-from ..utils import get_image_metadata_from_file_ext
+from ..utils import get_image_metadata_from_file
 
 EXIF_ORIENTATION_KEY = 274
 
@@ -138,8 +138,8 @@ class ProcessedImage(object):
     def retrieve_image(self, path_to_image):
         """Return a PIL Image instance stored at `path_to_image`."""
         image = self.storage.open(path_to_image, 'rb')
+        image_format, mime_type = get_image_metadata_from_file(image)
         file_ext = path_to_image.rsplit('.')[-1]
-        image_format, mime_type = get_image_metadata_from_file_ext(file_ext)
 
         return (
             Image.open(image),
