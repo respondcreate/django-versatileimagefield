@@ -18,6 +18,7 @@ VERSATILEIMAGEFIELD_SIZED_DIRNAME = '__sized__'
 VERSATILEIMAGEFIELD_FILTERED_DIRNAME = '__filtered__'
 VERSATILEIMAGEFIELD_PLACEHOLDER_DIRNAME = '__placeholder__'
 VERSATILEIMAGEFIELD_CREATE_ON_DEMAND = True
+VERSATILEIMAGEFIELD_THUMBNAIL_SIZE = '300x300'
 
 VERSATILEIMAGEFIELD_SETTINGS = {
     # The amount of time, in seconds, that references to created images
@@ -59,7 +60,9 @@ VERSATILEIMAGEFIELD_SETTINGS = {
     'image_key_post_processor': None,
     # Whether to create progressive JPEGs. Read more about progressive JPEGs
     # here: https://optimus.io/support/progressive-jpeg/
-    'progressive_jpeg': False
+    'progressive_jpeg': False,
+    # The default size of the thumbnail image in an admin page.
+    'default_thumbnail_size': VERSATILEIMAGEFIELD_THUMBNAIL_SIZE
 }
 
 USER_DEFINED = getattr(

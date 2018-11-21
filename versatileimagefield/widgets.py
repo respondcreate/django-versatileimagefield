@@ -4,6 +4,7 @@ import django
 from django.forms.widgets import ClearableFileInput, HiddenInput, MultiWidget, Select
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
+from .settings import VERSATILEIMAGEFIELD_SETTINGS
 
 CENTERPOINT_CHOICES = (
     ('0.0x0.0', 'Top Left'),
@@ -57,7 +58,8 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
         try:
             # Ensuring admin preview thumbnails are created and available
             value.create_on_demand = True
-            return value.thumbnail['300x300']
+            thumbnail_size = VERSATILEIMAGEFIELD_SETTINGS['default_thumbnail_size']
+            return value.thumbnail[thumbnail_size]
         except Exception:
             # Do not be overly specific with exceptions; we'd rather show no
             # thumbnail than crash when showing the widget.

@@ -108,7 +108,9 @@ A dictionary that allows you to fine-tune how ``django-versatileimagefield`` wor
         'image_key_post_processor': None,
         # Whether to create progressive JPEGs. Read more about progressive JPEGs
         # here: https://optimus.io/support/progressive-jpeg/
-        'progressive_jpeg': False
+        'progressive_jpeg': False,
+        # The default size of the thumbnail image in an admin page.
+        'default_thumbnail_size': '300x300'
     }
 
 .. _placehold-it:
