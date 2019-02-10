@@ -120,6 +120,11 @@ A dictionary that allows you to fine-tune how ``django-versatileimagefield`` wor
 
 A boolean that signifies whether optional (``blank=True``) ``VersatileImageField`` fields that do not  :ref:`specify a placeholder image <defining-placeholder-images>` should return `placehold.it <http://placehold.it/>`__ URLs.
 
+``VERSATILEIMAGEFIELD_PLACEHOLDIT_SUFFIX``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A string that gets added to the URL generated for placehold.it
+
 .. _rendition-key-sets:
 
 ``VERSATILEIMAGEFIELD_RENDITION_KEY_SETS``
