@@ -1,3 +1,4 @@
+"""Registry."""
 from __future__ import unicode_literals
 
 import copy
@@ -6,37 +7,51 @@ from .datastructures import FilteredImage, SizedImage
 
 
 class AlreadyRegistered(Exception):
+    """Already registered exception."""
+
     pass
 
 
 class InvalidSizedImageSubclass(Exception):
+    """Ivalid sized image subclass exception."""
+
     pass
 
 
 class InvalidFilteredImageSubclass(Exception):
+    """Invalid filtered image subclass exception."""
+
     pass
 
 
 class NotRegistered(Exception):
+    """Not registered sizer/filter exception."""
+
     pass
 
 
 class UnallowedSizerName(Exception):
+    """Unallowed sizer name exception."""
+
     pass
 
 
 class UnallowedFilterName(Exception):
+    """Unallowed filter name exception."""
+
     pass
 
 
 class VersatileImageFieldRegistry(object):
     """
-    A VersatileImageFieldRegistry object allows new SizedImage & FilteredImage
-    subclasses to be dynamically added to all SizedImageFileField instances
-    at runtime. New SizedImage subclasses are registered with the
-    register_sizer method. New ProcessedImage subclasses are registered
-    with the register_filter method.
+    A VersatileImageFieldRegistry object.
+
+    Allows new SizedImage & FilteredImage subclasses to be dynamically added
+    to all SizedImageFileField instances at runtime. New SizedImage subclasses
+    are registered with the register_sizer method. New ProcessedImage
+    subclasses are registered with the register_filter method.
     """
+
     unallowed_sizer_names = (
         'build_filters_and_sizers',
         'chunks',
@@ -87,14 +102,16 @@ class VersatileImageFieldRegistry(object):
     )
 
     def __init__(self, name='versatileimage_registry'):
+        """Initialize a registry."""
         self._sizedimage_registry = {}  # attr_name -> sizedimage_cls
         self._filter_registry = {}  # attr_name -> filter_cls
         self.name = name
 
     def register_sizer(self, attr_name, sizedimage_cls):
         """
-        Register a new SizedImage subclass (`sizedimage_cls`) to be used
-        via the attribute (`attr_name`)
+        Register a new SizedImage subclass (`sizedimage_cls`).
+
+        To be used via the attribute (`attr_name`).
         """
         if attr_name.startswith(
             '_'
@@ -141,8 +158,9 @@ class VersatileImageFieldRegistry(object):
 
     def register_filter(self, attr_name, filterimage_cls):
         """
-        Register a new FilteredImage subclass (`filterimage_cls`) to be used
-        via the attribute (filters.`attr_name`)
+        Register a new FilteredImage subclass (`filterimage_cls`).
+
+        To be used via the attribute (filters.`attr_name`)
         """
         if attr_name.startswith('_'):
             raise UnallowedFilterName(
@@ -166,8 +184,7 @@ class VersatileImageFieldRegistry(object):
 
     def unregister_filter(self, attr_name):
         """
-        Unregister the FilteredImage subclass currently assigned to
-        `attr_name`.
+        Unregister the FilteredImage subclass currently assigned to attr_name.
 
         If a FilteredImage subclass isn't already registered to filters.
         `attr_name` NotRegistered will raise.
@@ -179,11 +196,14 @@ class VersatileImageFieldRegistry(object):
         else:
             del self._filter_registry[attr_name]
 
+
 versatileimagefield_registry = VersatileImageFieldRegistry()
 
 
 def autodiscover():
     """
+    Discover versatileimagefield.py modules.
+
     Iterate over django.apps.get_app_configs() and discover
     versatileimagefield.py modules.
     """
@@ -202,7 +222,7 @@ def autodiscover():
                 versatileimagefield_registry._filter_registry
             )
             import_module('%s.versatileimagefield' % app_config.name)
-        except:
+        except Exception:
             # Reset the versatileimagefield_registry to the state before the
             # last import as this import will have to reoccur on the next
             # request and this could raise NotRegistered and AlreadyRegistered

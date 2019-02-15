@@ -38,11 +38,13 @@ class FilteredImage(DeleteAndClearCacheMixIn, ProcessedImage):
         super(FilteredImage, self).__init__(
             path_to_image, storage, create_on_demand
         )
-        self.name, self.url = get_filtered_path(
+        self.name = get_filtered_path(
             path_to_image=self.path_to_image,
             filename_key=filename_key,
             storage=storage
         )
+
+        self.url = storage.url(self.name)
 
     def create_filtered_image(self, path_to_image, save_path_on_storage):
         """
@@ -125,11 +127,14 @@ class FilterLibrary(dict):
                     filtered_path = None
                     prepped_filter = DummyFilter()
                 else:
-                    filtered_path, filtered_url = get_filtered_path(
+                    filtered_path = get_filtered_path(
                         path_to_image=self.original_file_location,
                         filename_key=key,
                         storage=self.storage
                     )
+
+                    filtered_url = self.storage.url(filtered_path)
+
                     filter_cls = self.registry._filter_registry[key]
                     prepped_filter = filter_cls(
                         path_to_image=self.original_file_location,

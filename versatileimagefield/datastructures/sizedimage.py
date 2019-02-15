@@ -121,15 +121,21 @@ class SizedImage(ProcessedImage, dict):
             resized_url = "http://placehold.it/%sx%s" % (width, height)
             resized_storage_path = resized_url
         else:
-            resized_storage_path, resized_url = get_resized_path(
+            resized_storage_path = get_resized_path(
                 path_to_image=self.path_to_image,
                 width=width,
                 height=height,
                 filename_key=self.get_filename_key(),
                 storage=self.storage
             )
+
+            try:
+                resized_url = self.storage.url(resized_storage_path)
+            except Exception:
+                resized_url = None
+
             if self.create_on_demand is True:
-                if cache.get(resized_url):
+                if cache.get(resized_url) and resized_url is not None:
                     # The sized path exists in the cache so the image already
                     # exists. So we `pass` to skip directly to the return
                     # statement
@@ -144,6 +150,9 @@ class SizedImage(ProcessedImage, dict):
                             width=width,
                             height=height
                         )
+
+                        resized_url = self.storage.url(resized_storage_path)
+
                     # Setting a super-long cache for a resized image (30 Days)
                     cache.set(resized_url, 1, VERSATILEIMAGEFIELD_CACHE_LENGTH)
         return SizedImageInstance(

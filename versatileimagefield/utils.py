@@ -107,8 +107,7 @@ def get_resized_filename(filename, width, height, filename_key):
 def get_resized_path(path_to_image, width, height,
                      filename_key, storage):
     """
-    Return a 2-tuple to `path_to_image` location on `storage` (position 0)
-    and it's web-accessible URL (position 1) as dictated by `width`, `height`
+    Return a `path_to_image` location on `storage` as dictated by `width`, `height`
     and `filename_key`
     """
     containing_folder, filename = os.path.split(path_to_image)
@@ -126,10 +125,7 @@ def get_resized_path(path_to_image, width, height,
         resized_filename
     ]).replace(' ', '')  # Removing spaces so this path is memcached friendly
 
-    return (
-        joined_path,
-        storage.url(joined_path)
-    )
+    return joined_path
 
 
 def get_filtered_filename(filename, filename_key):
@@ -152,7 +148,7 @@ def get_filtered_filename(filename, filename_key):
 
 def get_filtered_path(path_to_image, filename_key, storage):
     """
-    Return the 'filtered path' & URL of `path_to_image`
+    Return the 'filtered path'
     """
     containing_folder, filename = os.path.split(path_to_image)
 
@@ -164,10 +160,7 @@ def get_filtered_path(path_to_image, filename_key, storage):
     ])
     # Removing spaces so this path is memcached key friendly
     path_to_return = path_to_return.replace(' ', '')
-    return (
-        path_to_return,
-        storage.url(path_to_return)
-    )
+    return path_to_return
 
 
 def get_image_metadata_from_file_ext(file_ext):

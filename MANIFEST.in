@@ -1,4 +1,6 @@
 include README.rst
+include LICENSE
 recursive-include versatileimagefield/static *.css
 recursive-include versatileimagefield/static *.js
 recursive-include versatileimagefield/templates *.html
+recursive-exclude tests *

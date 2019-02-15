@@ -267,6 +267,10 @@ home.
 ``versatileimagefield`` – (i.e. ``versatileimagefield.py``)
 that are available at the 'top level' of each app on ``INSTALLED_APPS``.
 
+.. caution:: If your project is based on python 2.x you can prevent import problems  
+    by including ``from __future__ import absolute_import`` at the top of any files
+    related to your custom sizer/filter.
+
 Here's an example:
 
 ::
@@ -275,7 +279,7 @@ Here's an example:
         __init__.py
         models.py               # Models
         admin.py                # Admin config
-        versatilimagefield.py   # Custom Sizers and Filters here
+        versatileimagefield.py   # Custom Sizers and Filters here
 
 After defining your Sizers and Filters you'll need to register them with
 the ``versatileimagefield_registry``. Here's how the ``ThumbnailSizer``

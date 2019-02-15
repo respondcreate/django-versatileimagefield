@@ -12,8 +12,8 @@ from django.contrib.auth.models import User
 from django.core import serializers
 from django.core.cache import cache
 from django.core.exceptions import ImproperlyConfigured, ValidationError
+from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.core.urlresolvers import reverse
 from django.template.loader import get_template
 from django.test import TestCase
 from django.test.utils import override_settings
@@ -37,7 +37,11 @@ from versatileimagefield.settings import (
     VERSATILEIMAGEFIELD_PLACEHOLDER_DIRNAME
 )
 from versatileimagefield.utils import (
-    get_filtered_filename, get_rendition_key_set, get_resized_filename, InvalidSizeKey, InvalidSizeKeySet
+    get_filtered_filename,
+    get_rendition_key_set,
+    get_resized_filename,
+    InvalidSizeKey,
+    InvalidSizeKeySet
 )
 from versatileimagefield.validators import validate_ppoi_tuple
 from versatileimagefield.versatileimagefield import CroppedImage, InvertImage
@@ -50,6 +54,11 @@ from .models import (
     MaybeVersatileImageModel
 )
 from .serializers import VersatileImageTestModelSerializer
+
+try:
+    from django.core.urlresolvers import reverse
+except ImportError:  # Django >= 1.10
+    from django.urls import reverse
 
 
 class VersatileImageFieldBaseTestCase(TestCase):
@@ -167,6 +176,35 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         obj = MaybeVersatileImageModel(pk=34, name='foo')
         obj.save()
 
+    def test_storage_fails_to_return_url(self):
+        """
+        This is a wonky test used to ensure 100% code coverge in utils.py.
+
+        We need to test that a storage.url call can hit an exception to trigger
+        resized_url = None in try/except
+        """
+        import types
+        from copy import deepcopy
+        from django.utils.six import BytesIO
+
+        def storage_url_fail(self, path):
+            if self.exists(path):
+                return path
+
+            raise Exception("Storage class returns exception because file does not exist.")
+
+        class SizedImageSubclass(SizedImage):
+            filename_key = 'test'
+
+            def process_image(self, image, image_format, save_kwargs, width, height):
+                return BytesIO()
+
+        _storage = deepcopy(self.jpg.image.field.storage)
+        _storage.url = types.MethodType(storage_url_fail, _storage)
+
+        s = SizedImageSubclass(self.jpg.image.name, _storage, True)
+        s['100x100']
+
     def test_check_storage_paths(self):
         """Ensure storage paths are properly set."""
         self.assertEqual(self.jpg.image.name, 'python-logo.jpg')
@@ -283,6 +321,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
 
     def test_create_on_demand_boolean(self):
         """Ensure create_on_demand boolean is set appropriately."""
+        self.jpg.image.create_on_demand = False
         self.assertFalse(self.jpg.image.create_on_demand)
         self.jpg.image.create_on_demand = True
         self.assertTrue(self.jpg.image.create_on_demand)
@@ -375,7 +414,6 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
 
         response = self.client.get(self.admin_url)
         self.assertEqual(response.status_code, 200)
-
         # Test that javascript loads correctly
         self.assertContains(
             response,
@@ -414,19 +452,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         self.assertContains(
             response,
             """
-            <div class="form-row field-optional_image">
-              <div>
-                <label for="id_optional_image">Optional image:</label>
-                Currently:
-                <a href="/media/exif-orientation-examples/Landscape_8.jpg">
-                  exif-orientation-examples/Landscape_8.jpg
-                </a>
-                <input id="optional_image-clear_id" name="optional_image-clear" type="checkbox" />
-                <label for="optional_image-clear_id">Clear</label>
-                <br />Change:
-                <input id="id_optional_image" name="optional_image" type="file" />
-              </div>
-            </div>
+            <a href="/media/exif-orientation-examples/Landscape_8.jpg">exif-orientation-examples/Landscape_8.jpg</a>
             """,
             html=True
         )
@@ -978,3 +1004,40 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         image, save_kwargs = processor.preprocess_JPEG(image_info[0])
 
         self.assertEqual(image.mode, 'RGB')
+
+    def test_corrupt_file(self):
+        with open(
+            os.path.join(
+                os.path.dirname(upath(__file__)),
+                "test.png"
+            ),
+            'rb'
+        ) as fp:
+            # Anything which cannot be resized or thumbnailed, but checks out
+            # when only looking at basic header data
+            content = fp.read()[:100]
+
+        instance = VersatileImageTestModel()
+        instance.image.save(
+            'stuff.png',
+            ContentFile(content),
+            save=True,
+        )
+
+        instance.image.create_on_demand = True
+        with self.assertRaises((AttributeError, IOError, OSError)):
+            instance.image.thumbnail['200x200']
+
+        admin_url = reverse('admin:tests_versatileimagetestmodel_change', args=(instance.pk,))
+        response = self.client.get(admin_url)
+        response.render()
+        self.assertContains(
+            response,
+            '<label class="versatileimagefield-label">Currently</label>',
+        )
+        self.assertContains(
+            response,
+            '<a href="/media/stuff',
+        )
+
+        instance.image.delete(save=False)

@@ -29,6 +29,7 @@ Compatibility
   - 3.4
   - 3.5
   - 3.6
+  - 3.7
 
 **NOTE**: The 1.2 release dropped support for Python 3.3.x.
 
@@ -38,8 +39,13 @@ Compatibility
   - 1.9.x (NOTE: Django REST Framework>=3.1.x is required if using Django 1.9.x)
   - 1.10.x
   - 1.11.x
+  - 2.0.x
+  - 2.1.x
+
+**NOTE**: Python 3.7 does not have support for Django 1.x.
 
 **NOTE**: The 1.4 release dropped support for Django 1.5.x & 1.6.x.
+
 **NOTE**: The 1.7 release dropped support for Django 1.7.x.
 
 - `Pillow <https://pillow.readthedocs.io/en/latest/index.html>`_ >= 2.4.0
@@ -49,6 +55,7 @@ Compatibility
   - 3.4.x
   - 3.5.x
   - 3.6.x
+  - 3.7.x
 
 Documentation
 =============

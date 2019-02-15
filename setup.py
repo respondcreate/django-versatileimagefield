@@ -5,7 +5,7 @@ from setuptools import find_packages
 setup(
     name='django-versatileimagefield',
     packages=find_packages(),
-    version='1.7.1',
+    version='1.10',
     author=u'Jonathan Ellenberger',
     author_email='jonathan_ellenberger@wgbh.org',
     url='http://github.com/respondcreate/django-versatileimagefield/',
@@ -15,7 +15,7 @@ setup(
                 "creating new images from the one assigned to the field.",
     long_description=open('README.rst').read(),
     zip_safe=False,
-    install_requires=['Pillow>=2.4.0,<=4.0.0'],
+    install_requires=['Pillow>=2.4.0,<6.0.0'],
     include_package_data=True,
     keywords=[
         'django',
@@ -28,6 +28,8 @@ setup(
         'Framework :: Django :: 1.9',
         'Framework :: Django :: 1.10',
         'Framework :: Django :: 1.11',
+        'Framework :: Django :: 2.0',
+        'Framework :: Django :: 2.1',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
@@ -39,6 +41,7 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Topic :: Multimedia :: Graphics :: Presentation',
     ]
 )

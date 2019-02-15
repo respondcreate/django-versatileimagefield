@@ -23,6 +23,8 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
+MIDDLEWARE = MIDDLEWARE_CLASSES
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',

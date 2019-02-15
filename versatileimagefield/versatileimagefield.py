@@ -199,6 +199,7 @@ class InvertImage(FilteredImage):
         )
         return imagefile
 
+
 versatileimagefield_registry.register_sizer('crop', CroppedImage)
 versatileimagefield_registry.register_sizer('thumbnail', ThumbnailImage)
 versatileimagefield_registry.register_filter('invert', InvertImage)
