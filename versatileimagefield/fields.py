@@ -229,4 +229,4 @@ class PPOIField(CharField):
         return self.get_prep_value(value)
 
 
-__all__ = ['VersatileImageField']
+__all__ = ['VersatileImageField', 'PPOIField']
