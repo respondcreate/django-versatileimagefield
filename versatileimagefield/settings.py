@@ -18,7 +18,9 @@ VERSATILEIMAGEFIELD_SIZED_DIRNAME = '__sized__'
 VERSATILEIMAGEFIELD_FILTERED_DIRNAME = '__filtered__'
 VERSATILEIMAGEFIELD_PLACEHOLDER_DIRNAME = '__placeholder__'
 VERSATILEIMAGEFIELD_CREATE_ON_DEMAND = True
-VERSATILEIMAGEFIELD_THUMBNAIL_SIZE = '300x300'
+VERSATILEIMAGEFIELD_THUMBNAIL_SIZE = {
+    # 'instance._meta.model_name': 'widthxheight'
+} # Defaults to full-sized image
 
 VERSATILEIMAGEFIELD_SETTINGS = {
     # The amount of time, in seconds, that references to created images

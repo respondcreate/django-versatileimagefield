@@ -58,8 +58,13 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
         try:
             # Ensuring admin preview thumbnails are created and available
             value.create_on_demand = True
-            thumbnail_size = VERSATILEIMAGEFIELD_SETTINGS['default_thumbnail_size']
-            return value.thumbnail[thumbnail_size]
+            thumbnail_size = VERSATILEIMAGEFIELD_SETTINGS['default_thumbnail_size'].get(
+                value.instance._meta.model_name)
+            if thumbnail_size:
+                return value.thumbnail[thumbnail_size]
+            else:
+                value.name = value.url
+                return value
         except Exception:
             # Do not be overly specific with exceptions; we'd rather show no
             # thumbnail than crash when showing the widget.
