@@ -204,7 +204,7 @@ class PPOIField(CharField):
         super(PPOIField, self).contribute_to_class(cls, name, **kwargs)
         setattr(cls, self.name, Creator(self))
 
-    def from_db_value(self, value, expression, connection, context):
+    def from_db_value(self, value, *args, **kwargs):
         return self.to_python(value)
 
     def to_python(self, value):
@@ -229,4 +229,4 @@ class PPOIField(CharField):
         return self.get_prep_value(value)
 
 
-__all__ = ['VersatileImageField']
+__all__ = ['VersatileImageField', 'PPOIField']
