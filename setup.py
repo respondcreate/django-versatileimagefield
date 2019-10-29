@@ -15,7 +15,7 @@ setup(
                 "creating new images from the one assigned to the field.",
     long_description=open('README.rst').read(),
     zip_safe=False,
-    install_requires=['Pillow>=2.4.0,<6.0.0'],
+    install_requires=['Pillow>=2.4.0,<7.0.0'],
     include_package_data=True,
     keywords=[
         'django',
