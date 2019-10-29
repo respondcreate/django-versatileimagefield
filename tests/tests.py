@@ -176,35 +176,6 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         obj = MaybeVersatileImageModel(pk=34, name='foo')
         obj.save()
 
-    def test_storage_fails_to_return_url(self):
-        """
-        This is a wonky test used to ensure 100% code coverge in utils.py.
-
-        We need to test that a storage.url call can hit an exception to trigger
-        resized_url = None in try/except
-        """
-        import types
-        from copy import deepcopy
-        from django.utils.six import BytesIO
-
-        def storage_url_fail(self, path):
-            if self.exists(path):
-                return path
-
-            raise Exception("Storage class returns exception because file does not exist.")
-
-        class SizedImageSubclass(SizedImage):
-            filename_key = 'test'
-
-            def process_image(self, image, image_format, save_kwargs, width, height):
-                return BytesIO()
-
-        _storage = deepcopy(self.jpg.image.field.storage)
-        _storage.url = types.MethodType(storage_url_fail, _storage)
-
-        s = SizedImageSubclass(self.jpg.image.name, _storage, True)
-        s['100x100']
-
     def test_check_storage_paths(self):
         """Ensure storage paths are properly set."""
         self.assertEqual(self.jpg.image.name, 'python-logo.jpg')
