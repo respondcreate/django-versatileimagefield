@@ -4,6 +4,7 @@ from functools import reduce
 
 import os
 
+import magic
 from django.core.exceptions import ImproperlyConfigured
 
 from .settings import (
@@ -16,45 +17,22 @@ from .settings import (
 
 # PIL-supported file formats as found here:
 # https://infohost.nmt.edu/tcc/help/pubs/pil/formats.html
-# (PIL Identifier, mime type)
-BMP = ('BMP', 'image/bmp')
-DCX = ('DCX', 'image/dcx')
-EPS = ('eps', 'image/eps')
-GIF = ('GIF', 'image/gif')
-JPEG = ('JPEG', 'image/jpeg')
-PCD = ('PCD', 'image/pcd')
-PCX = ('PCX', 'image/pcx')
-PDF = ('PDF', 'application/pdf')
-PNG = ('PNG', 'image/png')
-PPM = ('PPM', 'image/x-ppm')
-PSD = ('PSD', 'image/psd')
-TIFF = ('TIFF', 'image/tiff')
-XBM = ('XBM', 'image/x-xbitmap')
-XPM = ('XPM', 'image/x-xpm')
-
-# Mapping file extensions to PIL types/mime types
-FILE_EXTENSION_MAP = {
-    'png': PNG,
-    'jpe': JPEG,
-    'jpeg': JPEG,
-    'jpg': JPEG,
-    'gif': GIF,
-    'bmp': BMP,
-    'dib': BMP,
-    'dcx': DCX,
-    'eps': EPS,
-    'ps': EPS,
-    'pcd': PCD,
-    'pcx': PCX,
-    'pdf': PDF,
-    'pbm': PPM,
-    'pgm': PPM,
-    'ppm': PPM,
-    'psd': PSD,
-    'tif': TIFF,
-    'tiff': TIFF,
-    'xbm': XBM,
-    'xpm': XPM
+# {mime type: PIL Identifier}
+MIME_TYPE_TO_PIL_IDENTIFIER = {
+    'image/bmp': 'BMP',
+    'image/dcx': 'DCX',
+    'image/eps': 'eps',
+    'image/gif': 'GIF',
+    'image/jpeg': 'JPEG',
+    'image/pcd': 'PCD',
+    'image/pcx': 'PCX',
+    'application/pdf': 'PDF',
+    'image/png': 'PNG',
+    'image/x-ppm': 'PPM',
+    'image/psd': 'PSD',
+    'image/tiff': 'TIFF',
+    'image/x-xbitmap': 'XBM',
+    'image/x-xpm': 'XPM',
 }
 
 
@@ -163,14 +141,17 @@ def get_filtered_path(path_to_image, filename_key, storage):
     return path_to_return
 
 
-def get_image_metadata_from_file_ext(file_ext):
+def get_image_metadata_from_file(file_like):
     """
-    Receive a valid image file format and returns a 2-tuple of two strings:
+    Receive a valid image file and returns a 2-tuple of two strings:
         [0]: Image format (i.e. 'jpg', 'gif' or 'png')
         [1]: InMemoryUploadedFile-friendly save format (i.e. 'image/jpeg')
     image_format, in_memory_file_type
     """
-    return FILE_EXTENSION_MAP.get(file_ext, JPEG)
+    mime_type = magic.from_buffer(file_like.read(1024), mime=True)
+    file_like.seek(0)
+    image_format = MIME_TYPE_TO_PIL_IDENTIFIER[mime_type]
+    return image_format, mime_type
 
 
 def validate_versatileimagefield_sizekey_list(sizes):
