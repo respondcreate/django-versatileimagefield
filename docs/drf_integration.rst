@@ -1,7 +1,7 @@
 Django REST Framework Integration
 =================================
 
-If you've got an API powered by `Tom Christie <https://twitter.com/_tomchristie>`_'s excellent `Django REST Framework <http://www.django-rest-framework.org/>`_ and want to serve images in multiple sizes/renditions ``django-versatileimagefield`` has you covered with it's  ``VersatileImageFieldSerializer``.
+If you've got an API powered by `Tom Christie <https://twitter.com/_tomchristie>`_'s excellent `Django REST Framework <http://www.django-rest-framework.org/>`_ and want to serve images in multiple sizes/renditions ``django-versatileimagefield`` has you covered with its  ``VersatileImageFieldSerializer``.
 
 .. _example-model:
 
