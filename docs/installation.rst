@@ -26,11 +26,12 @@ Django Compatibility
 -  1.11.x
 -  2.0.x
 -  2.1.x
+-  2.2.x
 
 Dependencies
 ------------
 
--  ``Pillow`` 2.4.x thru 6.0.0
+-  ``Pillow``>= 2.4.x
 
 ``django-versatileimagefield`` depends on the excellent
 `Pillow <https://pillow.readthedocs.io>`__ fork of ``PIL``. If you
