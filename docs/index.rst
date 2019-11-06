@@ -89,6 +89,8 @@ Release Notes
 =============
 1.11
 ^^^^
+- File contents (not file extension) now determine the image type. Thanks, `@tuky <https://github.com/tuky>`_!
+- Fixed newline output when ``self.verbose=False``. Thanks, `@slurms <https://github.com/slurms>`_!
 - Added Django 2.2.x and Django REST Framework 3.10.x compatibility.
 - Added Pillow 6.2.x compatibility.
 
