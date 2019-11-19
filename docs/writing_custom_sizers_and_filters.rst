@@ -141,7 +141,7 @@ For an example, let's take a look at the ``invert`` Filter
 .. code-block:: python
     :emphasize-lines: 14-24
 
-    from django.utils.six import BytesIO
+    from io import BytesIO
 
     from PIL import ImageOps
 

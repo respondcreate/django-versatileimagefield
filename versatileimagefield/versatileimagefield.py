@@ -1,8 +1,5 @@
 """Default sizer & filter definitions."""
-from __future__ import division
-from __future__ import unicode_literals
-
-from django.utils.six import BytesIO
+from io import BytesIO
 
 from PIL import Image, ImageOps
 

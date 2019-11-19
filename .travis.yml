@@ -6,16 +6,6 @@ language: python
 # List the versions of Python you'd like to test against
 matrix:
   include:
-    - python: "2.7"
-      env: DJANGO_VERSION=1.8.18 REST_FRAMEWORK_VERSION=3.4.7
-    - python: "2.7"
-      env: DJANGO_VERSION=1.8.18 REST_FRAMEWORK_VERSION=3.5.3
-    - python: "2.7"
-      env: DJANGO_VERSION=1.9.13 REST_FRAMEWORK_VERSION=3.5.3
-    - python: "2.7"
-      env: DJANGO_VERSION=1.10.7 REST_FRAMEWORK_VERSION=3.5.3
-    - python: "2.7"
-      env: DJANGO_VERSION=1.11.9 REST_FRAMEWORK_VERSION=3.6.2
     - python: "3.4"
       env: DJANGO_VERSION=1.8.18 REST_FRAMEWORK_VERSION=3.4.7
     - python: "3.4"

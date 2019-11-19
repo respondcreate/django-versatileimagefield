@@ -1,6 +1,4 @@
 """Base datastructures for manipulated images."""
-from __future__ import unicode_literals
-
 from PIL import Image
 
 from django.core.files.uploadedfile import InMemoryUploadedFile

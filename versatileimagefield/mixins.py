@@ -1,10 +1,6 @@
 """versatileimagefield Field mixins."""
-from __future__ import unicode_literals
-
 import os
 import re
-
-from django.utils.six import iteritems
 
 from .datastructures import FilterLibrary
 from .registry import autodiscover, versatileimagefield_registry
@@ -21,17 +17,13 @@ autodiscover()
 filter_regex_snippet = r'__({registered_filters})__'.format(
     registered_filters='|'.join([
         key
-        for key, filter_cls in iteritems(
-            versatileimagefield_registry._filter_registry
-        )
+        for key, filter_cls in versatileimagefield_registry._filter_registry.items()
     ])
 )
 sizer_regex_snippet = r'-({registered_sizers})-(\d+)x(\d+)(?:-\d+)?'.format(
     registered_sizers='|'.join([
         sizer_cls.get_filename_key_regex()
-        for key, sizer_cls in iteritems(
-            versatileimagefield_registry._sizedimage_registry
-        )
+        for key, sizer_cls in versatileimagefield_registry._sizedimage_registry.items()
     ])
 )
 filter_regex = re.compile(filter_regex_snippet + '$')
@@ -120,7 +112,7 @@ class VersatileImageMixIn(object):
         for (
             attr_name,
             sizedimage_cls
-        ) in iteritems(versatileimagefield_registry._sizedimage_registry):
+        ) in versatileimagefield_registry._sizedimage_registry.items():
             setattr(
                 self,
                 attr_name,

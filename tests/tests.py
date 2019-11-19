@@ -17,8 +17,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.template.loader import get_template
 from django.test import TestCase
 from django.test.utils import override_settings
-from django.utils._os import upath
-from django.utils.six.moves import cPickle
+import pickle
 
 from PIL import Image
 from rest_framework.test import APIRequestFactory
@@ -493,8 +492,8 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
 
     def test_versatile_image_field_picklability(self):
         """Ensure VersatileImageField instances can be pickled/unpickled."""
-        cPickle.dump(self.jpg, open("pickletest.p", "wb"))
-        jpg_unpickled = cPickle.load(open("pickletest.p", "rb"))
+        pickle.dump(self.jpg, open("pickletest.p", "wb"))
+        jpg_unpickled = pickle.load(open("pickletest.p", "rb"))
         jpg_instance = jpg_unpickled
         self.assertEqual(
             jpg_instance.image.thumbnail['100x100'].url,
@@ -697,7 +696,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         """Test VersatileImageField.save_form_data."""
         with open(
             os.path.join(
-                os.path.dirname(upath(__file__)),
+                os.path.dirname(__file__),
                 "test.png"
             ),
             'rb'
@@ -705,7 +704,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
             image_data = fp.read()
         with open(
             os.path.join(
-                os.path.dirname(upath(__file__)),
+                os.path.dirname(__file__),
                 "test2.png"
             ),
             'rb'
@@ -979,7 +978,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
     def test_corrupt_file(self):
         with open(
             os.path.join(
-                os.path.dirname(upath(__file__)),
+                os.path.dirname(__file__),
                 "test.png"
             ),
             'rb'
