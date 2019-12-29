@@ -87,6 +87,12 @@ Table of Contents
 
 Release Notes
 =============
+2.0
+^^^
+- Added support for Django 3.0 (and dropped support for Python 2.7.x). Thanks, `@dmptrluke <https://github.com/dmptrluke>`_!
+- Added webp support. Thanks, `@hussam-almarzoq <https://github.com/hussam-almarzoq>`_!
+- Updated docs to notify folks on Windows to install ``libmagic``. Thanks, `@NyanKiyoshi <https://github.com/NyanKiyoshi>`_!
+
 1.11
 ^^^^
 - File contents (not file extension) now determine the image type. Thanks, `@tuky <https://github.com/tuky>`_!

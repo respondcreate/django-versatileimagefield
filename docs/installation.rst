@@ -16,6 +16,7 @@ Python Compatibility
 -  3.5.x
 -  3.6.x
 -  3.7.x
+-  3.8.x
 
 Django Compatibility
 --------------------
@@ -27,6 +28,7 @@ Django Compatibility
 -  2.0.x
 -  2.1.x
 -  2.2.x
+-  3.0.x
 
 Dependencies
 ------------
@@ -44,6 +46,12 @@ installing ``django-versatileimagefield``:
     $ pip install django-versatileimagefield
 
 .. note:: ``django-versatileimagefield`` will not install ``django``.
+
+If you are developing on Windows you'll need to install ``python-magic-bin`` as well:
+
+.. code-block:: bash
+
+    $ pip install python-magic-bin==0.4.1
 
 .. _settings:
 
