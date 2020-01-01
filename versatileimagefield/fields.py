@@ -5,7 +5,7 @@ from django import VERSION as DJANGO_VERSION
 from django.contrib.admin.widgets import AdminFileWidget
 from django.db.models.fields import CharField
 from django.db.models.fields.files import ImageField
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from .files import VersatileImageFieldFile, VersatileImageFileDescriptor
 from .forms import SizedImageCenterpointClickDjangoAdminField
