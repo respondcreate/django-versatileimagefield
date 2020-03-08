@@ -15,7 +15,7 @@ VERSATILEIMAGEFIELD_SETTINGS = {
     # Defaults to 70
     'jpeg_resize_quality': 70,
     # A path on disc to an image that will be used as a 'placeholder'
-    # for non-existant images.
+    # for non-existent images.
     # If 'global_placeholder_image' is unset, the excellent, free-to-use
     # http://placehold.it service will be used instead.
     'global_placeholder_image': os.path.join(
