@@ -945,6 +945,14 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
             get_resized_filename('test', 100, 100, 'thumbnail'),
             'test-thumbnail-100x100-{}.jpg'.format(QUAL)
         )
+        self.assertEqual(
+            get_resized_filename('test', 100, -1, 'thumbnail'),
+            'test-thumbnail-100x-{}.jpg'.format(QUAL)
+        )
+        self.assertEqual(
+            get_resized_filename('test', -1, 100, 'thumbnail'),
+            'test-thumbnail-x100-{}.jpg'.format(QUAL)
+        )
 
     def test_transparent_gif_preprocess(self):
         """Test preprocessing a transparent gif image."""
