@@ -102,8 +102,9 @@ class SizedImage(ProcessedImage, dict):
                      Example: '400x'     # auto height
         """
         try:
+            assert key != "x"
             width, height = [int(i or -1) for i in key.split('x')]
-        except (KeyError, ValueError):
+        except (KeyError, ValueError, AssertionError):
             raise MalformedSizedImageKey(
                 "%s keys must be in one of the following format: "
                 "'`width`x`height`', '`width`x' or 'x`height`' "

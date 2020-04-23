@@ -651,6 +651,13 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         with self.assertRaises(MalformedSizedImageKey):
             self.jpg.image.thumbnail['fooxbar']
 
+        with self.assertRaises(MalformedSizedImageKey):
+            self.jpg.image.thumbnail['x']
+        # valid formats
+        self.jpg.image.thumbnail['100x50']
+        self.jpg.image.thumbnail['100x']
+        self.jpg.image.thumbnail['x50']
+
     def test_registration_exceptions(self):
         """Ensure all registration-related exceptions fire as expected."""
         class A(object):
