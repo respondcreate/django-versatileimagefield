@@ -99,7 +99,7 @@ class SizedImage(ProcessedImage, dict):
             * `key`: A string in the following format
                      '[width-in-pixels]x[height-in-pixels]'
                      Example: '400x400'
-                     Example: '400x'     # auto heigh
+                     Example: '400x'     # auto height
         """
         try:
             width, height = [int(i or -1) for i in key.split('x')]
