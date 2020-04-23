@@ -17,8 +17,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.template.loader import get_template
 from django.test import TestCase
 from django.test.utils import override_settings
-from django.utils._os import upath
-from django.utils.six.moves import cPickle
+import pickle
 
 from PIL import Image
 from rest_framework.test import APIRequestFactory
@@ -175,35 +174,6 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
     def test_field_can_be_null(self):
         obj = MaybeVersatileImageModel(pk=34, name='foo')
         obj.save()
-
-    def test_storage_fails_to_return_url(self):
-        """
-        This is a wonky test used to ensure 100% code coverge in utils.py.
-
-        We need to test that a storage.url call can hit an exception to trigger
-        resized_url = None in try/except
-        """
-        import types
-        from copy import deepcopy
-        from django.utils.six import BytesIO
-
-        def storage_url_fail(self, path):
-            if self.exists(path):
-                return path
-
-            raise Exception("Storage class returns exception because file does not exist.")
-
-        class SizedImageSubclass(SizedImage):
-            filename_key = 'test'
-
-            def process_image(self, image, image_format, save_kwargs, width, height):
-                return BytesIO()
-
-        _storage = deepcopy(self.jpg.image.field.storage)
-        _storage.url = types.MethodType(storage_url_fail, _storage)
-
-        s = SizedImageSubclass(self.jpg.image.name, _storage, True)
-        s['100x100']
 
     def test_check_storage_paths(self):
         """Ensure storage paths are properly set."""
@@ -522,8 +492,8 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
 
     def test_versatile_image_field_picklability(self):
         """Ensure VersatileImageField instances can be pickled/unpickled."""
-        cPickle.dump(self.jpg, open("pickletest.p", "wb"))
-        jpg_unpickled = cPickle.load(open("pickletest.p", "rb"))
+        pickle.dump(self.jpg, open("pickletest.p", "wb"))
+        jpg_unpickled = pickle.load(open("pickletest.p", "rb"))
         jpg_instance = jpg_unpickled
         self.assertEqual(
             jpg_instance.image.thumbnail['100x100'].url,
@@ -726,7 +696,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         """Test VersatileImageField.save_form_data."""
         with open(
             os.path.join(
-                os.path.dirname(upath(__file__)),
+                os.path.dirname(__file__),
                 "test.png"
             ),
             'rb'
@@ -734,7 +704,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
             image_data = fp.read()
         with open(
             os.path.join(
-                os.path.dirname(upath(__file__)),
+                os.path.dirname(__file__),
                 "test2.png"
             ),
             'rb'
@@ -1008,7 +978,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
     def test_corrupt_file(self):
         with open(
             os.path.join(
-                os.path.dirname(upath(__file__)),
+                os.path.dirname(__file__),
                 "test.png"
             ),
             'rb'

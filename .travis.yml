@@ -6,16 +6,6 @@ language: python
 # List the versions of Python you'd like to test against
 matrix:
   include:
-    - python: "2.7"
-      env: DJANGO_VERSION=1.8.18 REST_FRAMEWORK_VERSION=3.4.7
-    - python: "2.7"
-      env: DJANGO_VERSION=1.8.18 REST_FRAMEWORK_VERSION=3.5.3
-    - python: "2.7"
-      env: DJANGO_VERSION=1.9.13 REST_FRAMEWORK_VERSION=3.5.3
-    - python: "2.7"
-      env: DJANGO_VERSION=1.10.7 REST_FRAMEWORK_VERSION=3.5.3
-    - python: "2.7"
-      env: DJANGO_VERSION=1.11.9 REST_FRAMEWORK_VERSION=3.6.2
     - python: "3.4"
       env: DJANGO_VERSION=1.8.18 REST_FRAMEWORK_VERSION=3.4.7
     - python: "3.4"
@@ -29,7 +19,9 @@ matrix:
     - python: "3.4"
       env: DJANGO_VERSION=1.11.9 REST_FRAMEWORK_VERSION=3.7.7
     - python: "3.4"
-      env: DJANGO_VERSION=2.0.1 REST_FRAMEWORK_VERSION=3.7.7
+      env: DJANGO_VERSION=2.0.13 REST_FRAMEWORK_VERSION=3.7.7
+    - python: "3.4"
+      env: DJANGO_VERSION=2.0.13 REST_FRAMEWORK_VERSION=3.7.7
     - python: "3.5"
       env: DJANGO_VERSION=1.8.18 REST_FRAMEWORK_VERSION=3.4.7
     - python: "3.5"
@@ -43,7 +35,7 @@ matrix:
     - python: "3.5"
       env: DJANGO_VERSION=1.11.9 REST_FRAMEWORK_VERSION=3.7.7
     - python: "3.5"
-      env: DJANGO_VERSION=2.0.1 REST_FRAMEWORK_VERSION=3.7.7
+      env: DJANGO_VERSION=2.0.13 REST_FRAMEWORK_VERSION=3.7.7
     - python: "3.6"
       env: DJANGO_VERSION=1.8.18 REST_FRAMEWORK_VERSION=3.4.7
     - python: "3.6"
@@ -59,29 +51,49 @@ matrix:
     - python: "3.6"
       env: DJANGO_VERSION=1.11.9 REST_FRAMEWORK_VERSION=3.8.2
     - python: "3.6"
-      env: DJANGO_VERSION=2.0.1 REST_FRAMEWORK_VERSION=3.7.7
+      env: DJANGO_VERSION=2.0.13 REST_FRAMEWORK_VERSION=3.7.7
     - python: "3.6"
-      env: DJANGO_VERSION=2.0.1 REST_FRAMEWORK_VERSION=3.8.2
+      env: DJANGO_VERSION=2.0.13 REST_FRAMEWORK_VERSION=3.8.2
     - python: "3.6"
-      env: DJANGO_VERSION=2.1.1 REST_FRAMEWORK_VERSION=3.7.7
+      env: DJANGO_VERSION=2.1.15 REST_FRAMEWORK_VERSION=3.7.7
     - python: "3.6"
-      env: DJANGO_VERSION=2.1.1 REST_FRAMEWORK_VERSION=3.8.2
+      env: DJANGO_VERSION=2.1.15 REST_FRAMEWORK_VERSION=3.8.2
+    - python: "3.6"
+      env: DJANGO_VERSION=2.2.8 REST_FRAMEWORK_VERSION=3.10.3
+    - python: "3.6"
+      env: DJANGO_VERSION=3.0.0 REST_FRAMEWORK_VERSION=3.10.3
     - python: "3.7"
       dist: xenial
       sudo: required
-      env: DJANGO_VERSION=2.0.1 REST_FRAMEWORK_VERSION=3.7.7
+      env: DJANGO_VERSION=2.0.13 REST_FRAMEWORK_VERSION=3.7.7
     - python: "3.7"
       dist: xenial
       sudo: required
-      env: DJANGO_VERSION=2.0.1 REST_FRAMEWORK_VERSION=3.8.2
+      env: DJANGO_VERSION=2.0.13 REST_FRAMEWORK_VERSION=3.8.2
     - python: "3.7"
       dist: xenial
       sudo: required
-      env: DJANGO_VERSION=2.1.1 REST_FRAMEWORK_VERSION=3.7.7
+      env: DJANGO_VERSION=2.1.15 REST_FRAMEWORK_VERSION=3.7.7
     - python: "3.7"
       dist: xenial
       sudo: required
-      env: DJANGO_VERSION=2.1.1 REST_FRAMEWORK_VERSION=3.8.2
+      env: DJANGO_VERSION=2.1.15 REST_FRAMEWORK_VERSION=3.8.2
+    - python: "3.7"
+      dist: xenial
+      sudo: required
+      env: DJANGO_VERSION=2.2.8 REST_FRAMEWORK_VERSION=3.10.3
+    - python: "3.7"
+      dist: xenial
+      sudo: required
+      env: DJANGO_VERSION=3.0.0 REST_FRAMEWORK_VERSION=3.10.3
+    - python: "3.8"
+      dist: xenial
+      sudo: required
+      env: DJANGO_VERSION=2.2.8 REST_FRAMEWORK_VERSION=3.10.3
+    - python: "3.8"
+      dist: xenial
+      sudo: required
+      env: DJANGO_VERSION=3.0.0 REST_FRAMEWORK_VERSION=3.10.3
 before_install:
   - export DJANGO_SETTINGS_MODULE=tests.test_settings
 # Tell it the things it will need to install when it boots

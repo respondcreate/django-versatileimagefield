@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 import django
 from django.forms.widgets import ClearableFileInput, HiddenInput, MultiWidget, Select
 from django.template.loader import render_to_string

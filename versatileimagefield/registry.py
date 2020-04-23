@@ -1,6 +1,4 @@
 """Registry."""
-from __future__ import unicode_literals
-
 import copy
 
 from .datastructures import FilteredImage, SizedImage

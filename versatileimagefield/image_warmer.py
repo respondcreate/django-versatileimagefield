@@ -1,12 +1,9 @@
-from __future__ import unicode_literals
-
 from functools import reduce
 import logging
 from sys import stdout
 
 from django.db.models import Model
 from django.db.models.query import QuerySet
-from django.utils import six
 
 from .utils import (
     get_rendition_key_set,
@@ -87,7 +84,7 @@ class VersatileImageFieldWarmer(object):
                 "{}".format(self.__class__.__name__)
             )
         self.queryset = queryset
-        if isinstance(rendition_key_set, six.string_types):
+        if isinstance(rendition_key_set, str):
             rendition_key_set = get_rendition_key_set(rendition_key_set)
         self.size_key_list = [
             size_key
@@ -149,8 +146,9 @@ class VersatileImageFieldWarmer(object):
                 else:
                     failed_to_create_image_path_list.append(url_or_filepath)
 
-                if a * b == total:
+                if a * b == total and self.verbose:
                     stdout.write('\n')
 
-        stdout.flush()
+        if self.verbose:
+            stdout.flush()
         return (num_images_pre_warmed, failed_to_create_image_path_list)

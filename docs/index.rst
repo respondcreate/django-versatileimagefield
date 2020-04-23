@@ -48,11 +48,12 @@ Compatibility
   - 1.11.x
   - 2.0.x
   - 2.1.x
+  - 2.2.x
 
 .. note:: The 1.4 release dropped support for Django 1.5.x & 1.6.x.
 .. note:: The 1.7 release dropped support for Django 1.7.x.
 
-- `Pillow <https://pillow.readthedocs.io/en/latest/index.html>`_ >=2.4.0,<=6.0.0
+- `Pillow <https://pillow.readthedocs.io/en/latest/index.html>`_ >=2.4.0
 
 - `Django REST Framework <http://www.django-rest-framework.org/>`_:
 
@@ -65,7 +66,7 @@ Compatibility
 Code
 ====
 
-``django-versatileimagefield`` is hosted on `github <https://github.com/WGBH/django-versatileimagefield>`_.
+``django-versatileimagefield`` is hosted on `github <https://github.com/respondcreate/django-versatileimagefield>`_.
 
 
 Table of Contents
@@ -86,6 +87,19 @@ Table of Contents
 
 Release Notes
 =============
+2.0
+^^^
+- Added support for Django 3.0 (and dropped support for Python 2.7.x). Thanks, `@dmptrluke <https://github.com/dmptrluke>`_!
+- Added webp support. Thanks, `@hussam-almarzoq <https://github.com/hussam-almarzoq>`_!
+- Updated docs to notify folks on Windows to install ``libmagic``. Thanks, `@NyanKiyoshi <https://github.com/NyanKiyoshi>`_!
+
+1.11
+^^^^
+- File contents (not file extension) now determine the image type. Thanks, `@tuky <https://github.com/tuky>`_!
+- Fixed newline output when ``self.verbose=False``. Thanks, `@slurms <https://github.com/slurms>`_!
+- Added Django 2.2.x and Django REST Framework 3.10.x compatibility.
+- Added Pillow 6.2.x compatibility.
+
 1.10
 ^^^^
 - Squashed a bug that prevented calling ``len()`` on ``InMemoryUploadedFile`` instances. This change will help make post processing tasks for newly uploaded images – like uploading files to S3 or other remote storage – more straight-forward. Thanks, `@jxltom <https://github.com/jxltom>`_!
