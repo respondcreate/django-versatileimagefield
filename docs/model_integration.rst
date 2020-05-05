@@ -88,7 +88,7 @@ And here's that same model using ``VersatileImageField`` instead (see highlighte
 Specifying Placeholder Images
 -----------------------------
 
-For ``VersatileImageField`` fields that are set to ``blank=True`` you can optionally specify a placeholder image to be used when its sizers and filters are accessed (like a generic silouette for a non-existant user profile image, for instance).
+For ``VersatileImageField`` fields that are set to ``blank=True`` you can optionally specify a placeholder image to be used when its sizers and filters are accessed (like a generic silouette for a non-existent user profile image, for instance).
 
 You have two options for specifying placeholder images:
 
