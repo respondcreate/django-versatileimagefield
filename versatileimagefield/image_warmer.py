@@ -73,10 +73,12 @@ class VersatileImageFieldWarmer(object):
                    to sys.stdout
         """
         if isinstance(instance_or_queryset, Model):
+            self.instance = instance_or_queryset
             queryset = instance_or_queryset.__class__._default_manager.filter(
                 pk=instance_or_queryset.pk
             )
         elif isinstance(instance_or_queryset, QuerySet):
+            self.instance = None
             queryset = instance_or_queryset
         else:
             raise ValueError(
@@ -120,7 +122,13 @@ class VersatileImageFieldWarmer(object):
         else:
             success = True
             url_or_filepath = url
-        return (success, url_or_filepath)
+        return success, url_or_filepath
+
+    def _elements_to_warm(self):
+        if self.instance:
+            return self.instance,
+        else:
+            return self.queryset
 
     def warm(self):
         """
@@ -133,7 +141,9 @@ class VersatileImageFieldWarmer(object):
         num_images_pre_warmed = 0
         failed_to_create_image_path_list = []
         total = self.queryset.count() * len(self.size_key_list)
-        for a, instance in enumerate(self.queryset, start=1):
+        elements_to_warm = self._elements_to_warm()
+
+        for a, instance in enumerate(elements_to_warm, start=1):
             for b, size_key in enumerate(self.size_key_list, start=1):
                 success, url_or_filepath = self._prewarm_versatileimagefield(
                     size_key,

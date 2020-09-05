@@ -503,7 +503,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         self.assertEqual(
             pickled_state,
             {
-                '_create_on_demand': False,
+                '_create_on_demand': True,
                 '_committed': True,
                 '_file': None,
                 'name': 'python-logo.jpg',
