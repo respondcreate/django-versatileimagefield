@@ -1,5 +1,5 @@
-from .models import VersatileImagePostProcessorTestModel
 from ..tests import VersatileImageFieldBaseTestCase
+from .models import VersatileImagePostProcessorTestModel
 
 
 class VersatileImageFieldPostProcessorTestCase(VersatileImageFieldBaseTestCase):

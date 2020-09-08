@@ -1,13 +1,10 @@
 """versatileimagefield settings."""
-from django.utils.module_loading import import_string
-
 from django.conf import settings
-from django.core.cache import (
-    caches,
-    cache as default_cache,
-    InvalidCacheBackendError
-)
+from django.core.cache import InvalidCacheBackendError
+from django.core.cache import cache as default_cache
+from django.core.cache import caches
 from django.core.exceptions import ImproperlyConfigured
+from django.utils.module_loading import import_string
 
 # Defaults
 QUAL = 70

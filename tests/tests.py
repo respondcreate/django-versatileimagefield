@@ -1,10 +1,11 @@
 """versatileimagefield tests."""
 from __future__ import division, unicode_literals
 
-from functools import reduce
 import math
 import operator
 import os
+import pickle
+from functools import reduce
 from shutil import rmtree
 
 from django.conf import settings
@@ -17,41 +18,36 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.template.loader import get_template
 from django.test import TestCase
 from django.test.utils import override_settings
-import pickle
-
 from PIL import Image
 from rest_framework.test import APIRequestFactory
 
 from versatileimagefield.datastructures.base import ProcessedImage
-from versatileimagefield.datastructures.filteredimage import InvalidFilter
-from versatileimagefield.datastructures.sizedimage import MalformedSizedImageKey, SizedImage
-from versatileimagefield.datastructures.filteredimage import FilteredImage
+from versatileimagefield.datastructures.filteredimage import (FilteredImage,
+                                                              InvalidFilter)
+from versatileimagefield.datastructures.sizedimage import (
+    MalformedSizedImageKey, SizedImage)
 from versatileimagefield.image_warmer import VersatileImageFieldWarmer
-from versatileimagefield.registry import (
-    autodiscover, versatileimagefield_registry, AlreadyRegistered, InvalidSizedImageSubclass,
-    InvalidFilteredImageSubclass, NotRegistered, UnallowedSizerName, UnallowedFilterName
-)
+from versatileimagefield.registry import (AlreadyRegistered,
+                                          InvalidFilteredImageSubclass,
+                                          InvalidSizedImageSubclass,
+                                          NotRegistered, UnallowedFilterName,
+                                          UnallowedSizerName, autodiscover,
+                                          versatileimagefield_registry)
 from versatileimagefield.settings import (
-    QUAL, VERSATILEIMAGEFIELD_SIZED_DIRNAME, VERSATILEIMAGEFIELD_FILTERED_DIRNAME,
-    VERSATILEIMAGEFIELD_PLACEHOLDER_DIRNAME
-)
-from versatileimagefield.utils import (
-    get_filtered_filename,
-    get_rendition_key_set,
-    get_resized_filename,
-    InvalidSizeKey,
-    InvalidSizeKeySet
-)
+    QUAL, VERSATILEIMAGEFIELD_FILTERED_DIRNAME,
+    VERSATILEIMAGEFIELD_PLACEHOLDER_DIRNAME, VERSATILEIMAGEFIELD_SIZED_DIRNAME)
+from versatileimagefield.utils import (InvalidSizeKey, InvalidSizeKeySet,
+                                       get_filtered_filename,
+                                       get_rendition_key_set,
+                                       get_resized_filename)
 from versatileimagefield.validators import validate_ppoi_tuple
 from versatileimagefield.versatileimagefield import CroppedImage, InvertImage
 
-from .forms import VersatileImageTestModelForm, VersatileImageWidgetTestModelForm
-from .models import (
-    VersatileImageTestModel,
-    VersatileImageTestUploadDirectoryModel,
-    VersatileImageWidgetTestModel,
-    MaybeVersatileImageModel
-)
+from .forms import (VersatileImageTestModelForm,
+                    VersatileImageWidgetTestModelForm)
+from .models import (MaybeVersatileImageModel, VersatileImageTestModel,
+                     VersatileImageTestUploadDirectoryModel,
+                     VersatileImageWidgetTestModel)
 from .serializers import VersatileImageTestModelSerializer
 
 try:

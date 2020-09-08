@@ -1,15 +1,12 @@
-from functools import reduce
 import logging
+from functools import reduce
 from sys import stdout
 
 from django.db.models import Model
 from django.db.models.query import QuerySet
 
-from .utils import (
-    get_rendition_key_set,
-    get_url_from_image_key,
-    validate_versatileimagefield_sizekey_list
-)
+from .utils import (get_rendition_key_set, get_url_from_image_key,
+                    validate_versatileimagefield_sizekey_list)
 
 logger = logging.getLogger(__name__)
 

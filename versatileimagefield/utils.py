@@ -1,17 +1,12 @@
-from functools import reduce
-
 import os
+from functools import reduce
 
 import magic
 from django.core.exceptions import ImproperlyConfigured
 
-from .settings import (
-    IMAGE_SETS,
-    QUAL,
-    VERSATILEIMAGEFIELD_POST_PROCESSOR,
-    VERSATILEIMAGEFIELD_SIZED_DIRNAME,
-    VERSATILEIMAGEFIELD_FILTERED_DIRNAME
-)
+from .settings import (IMAGE_SETS, QUAL, VERSATILEIMAGEFIELD_FILTERED_DIRNAME,
+                       VERSATILEIMAGEFIELD_POST_PROCESSOR,
+                       VERSATILEIMAGEFIELD_SIZED_DIRNAME)
 
 # PIL-supported file formats as found here:
 # https://infohost.nmt.edu/tcc/help/pubs/pil/formats.html

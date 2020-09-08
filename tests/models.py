@@ -2,8 +2,9 @@ import os
 
 from django.db import models
 
-from versatileimagefield.fields import VersatileImageField, PPOIField
-from versatileimagefield.placeholder import OnDiscPlaceholderImage, OnStoragePlaceholderImage
+from versatileimagefield.fields import PPOIField, VersatileImageField
+from versatileimagefield.placeholder import (OnDiscPlaceholderImage,
+                                             OnStoragePlaceholderImage)
 
 
 class MaybeVersatileImageModel(models.Model):

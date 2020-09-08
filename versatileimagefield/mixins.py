@@ -4,12 +4,9 @@ import re
 
 from .datastructures import FilterLibrary
 from .registry import autodiscover, versatileimagefield_registry
-from .settings import (
-    cache,
-    VERSATILEIMAGEFIELD_CREATE_ON_DEMAND,
-    VERSATILEIMAGEFIELD_SIZED_DIRNAME,
-    VERSATILEIMAGEFIELD_FILTERED_DIRNAME
-)
+from .settings import (VERSATILEIMAGEFIELD_CREATE_ON_DEMAND,
+                       VERSATILEIMAGEFIELD_FILTERED_DIRNAME,
+                       VERSATILEIMAGEFIELD_SIZED_DIRNAME, cache)
 from .validators import validate_ppoi
 
 autodiscover()

@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
-from .sizedimage import SizedImage
 from .filteredimage import FilteredImage, FilterLibrary
+from .sizedimage import SizedImage
 
 __all__ = [
     'SizedImage',

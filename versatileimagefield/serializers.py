@@ -1,10 +1,7 @@
 from rest_framework.serializers import ImageField
 
-from .utils import (
-    build_versatileimagefield_url_set,
-    get_rendition_key_set,
-    validate_versatileimagefield_sizekey_list
-)
+from .utils import (build_versatileimagefield_url_set, get_rendition_key_set,
+                    validate_versatileimagefield_sizekey_list)
 
 
 class VersatileImageFieldSerializer(ImageField):

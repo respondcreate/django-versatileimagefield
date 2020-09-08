@@ -1,8 +1,8 @@
 from django.forms import ModelForm
 
 from versatileimagefield.forms import (
-    SizedImageCenterpointClickDjangoAdminField, SizedImageCenterpointClickBootstrap3Field
-)
+    SizedImageCenterpointClickBootstrap3Field,
+    SizedImageCenterpointClickDjangoAdminField)
 
 from .models import VersatileImageTestModel, VersatileImageWidgetTestModel
 

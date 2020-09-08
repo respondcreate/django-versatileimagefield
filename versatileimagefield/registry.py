@@ -206,6 +206,7 @@ def autodiscover():
     versatileimagefield.py modules.
     """
     from importlib import import_module
+
     from django.apps import apps
     from django.utils.module_loading import module_has_submodule
 

@@ -1,9 +1,7 @@
 """Datastructures for sizing images."""
 from django.conf import settings
-from ..settings import (
-    cache,
-    VERSATILEIMAGEFIELD_CACHE_LENGTH
-)
+
+from ..settings import VERSATILEIMAGEFIELD_CACHE_LENGTH, cache
 from ..utils import get_resized_path
 from .base import ProcessedImage
 from .mixins import DeleteAndClearCacheMixIn

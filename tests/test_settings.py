@@ -1,4 +1,5 @@
 from .settings_base import *
+
 INSTALLED_APPS += ["tests"]
 
 VERSATILEIMAGEFIELD_SETTINGS = {

@@ -1,7 +1,6 @@
 """Base datastructures for manipulated images."""
-from PIL import Image
-
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from PIL import Image
 
 from ..settings import QUAL, VERSATILEIMAGEFIELD_PROGRESSIVE_JPEG
 from ..utils import get_image_metadata_from_file

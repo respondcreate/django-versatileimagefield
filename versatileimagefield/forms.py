@@ -1,9 +1,8 @@
-from django.forms.fields import MultiValueField, CharField, ImageField
+from django.forms.fields import CharField, ImageField, MultiValueField
 
-from .widgets import (
-    SizedImageCenterpointClickDjangoAdminWidget, SizedImageCenterpointClickBootstrap3Widget,
-    VersatileImagePPOIClickWidget
-)
+from .widgets import (SizedImageCenterpointClickBootstrap3Widget,
+                      SizedImageCenterpointClickDjangoAdminWidget,
+                      VersatileImagePPOIClickWidget)
 
 
 class SizedImageCenterpointMixIn(object):

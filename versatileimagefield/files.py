@@ -1,9 +1,6 @@
 from django.core.files.base import File
-from django.db.models.fields.files import (
-    FieldFile,
-    ImageFieldFile,
-    ImageFileDescriptor
-)
+from django.db.models.fields.files import (FieldFile, ImageFieldFile,
+                                           ImageFileDescriptor)
 
 from .mixins import VersatileImageMixIn
 
