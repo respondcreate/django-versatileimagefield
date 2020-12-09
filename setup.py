@@ -5,10 +5,10 @@ from setuptools import find_packages
 setup(
     name='django-versatileimagefield',
     packages=find_packages(),
-    version='2.0',
-    author=u'Jonathan Ellenberger',
-    author_email='jonathan_ellenberger@wgbh.org',
-    url='http://github.com/respondcreate/django-versatileimagefield/',
+    version='2.1',
+    author=u'Buyceps Tech',
+    author_email='hello@buyceps.com',
+    url='http://github.com/buyceps/django-versatileimagefield/',
     license='MIT License, see LICENSE',
     description="A drop-in replacement for django's ImageField that provides "
                 "a flexible, intuitive and easily-extensible interface for "

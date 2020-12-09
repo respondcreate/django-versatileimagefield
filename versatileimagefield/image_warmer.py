@@ -8,7 +8,7 @@ from django.db.models.query import QuerySet
 from .utils import (
     get_rendition_key_set,
     get_url_from_image_key,
-    validate_versatileimagefield_sizekey_list
+    validate_versatileimagefield_sizekey_list,
 )
 
 logger = logging.getLogger(__name__)
@@ -33,14 +33,11 @@ def cli_progress_bar(start, end, bar_length=50):
         http://stackoverflow.com/a/13685020/1149774
     """
     percent = float(start) / end
-    hashes = '#' * int(round(percent * bar_length))
-    spaces = '-' * (bar_length - len(hashes))
+    hashes = "#" * int(round(percent * bar_length))
+    spaces = "-" * (bar_length - len(hashes))
     stdout.write(
         "\r[{0}] {1}/{2} ({3}%)".format(
-            hashes + spaces,
-            start,
-            end,
-            int(round(percent * 100))
+            hashes + spaces, start, end, int(round(percent * 100))
         )
     )
     stdout.flush()
@@ -51,8 +48,9 @@ class VersatileImageFieldWarmer(object):
     A class for creating sets of images from a VersatileImageField
     """
 
-    def __init__(self, instance_or_queryset,
-                 rendition_key_set, image_attr, verbose=False):
+    def __init__(
+        self, instance_or_queryset, rendition_key_set, image_attr, verbose=False
+    ):
         """
         Arguments:
         `instance_or_queryset`: A django model instance or QuerySet
@@ -115,8 +113,9 @@ class VersatileImageFieldWarmer(object):
         except Exception:
             success = False
             url_or_filepath = versatileimagefieldfile.name
-            logger.exception('Thumbnail generation failed',
-                             extra={'path': url_or_filepath})
+            logger.exception(
+                "Thumbnail generation failed", extra={"path": url_or_filepath}
+            )
         else:
             success = True
             url_or_filepath = url
@@ -136,8 +135,7 @@ class VersatileImageFieldWarmer(object):
         for a, instance in enumerate(self.queryset, start=1):
             for b, size_key in enumerate(self.size_key_list, start=1):
                 success, url_or_filepath = self._prewarm_versatileimagefield(
-                    size_key,
-                    reduce(getattr, self.image_attr.split("."), instance)
+                    size_key, reduce(getattr, self.image_attr.split("."), instance)
                 )
                 if success is True:
                     num_images_pre_warmed += 1
@@ -147,7 +145,7 @@ class VersatileImageFieldWarmer(object):
                     failed_to_create_image_path_list.append(url_or_filepath)
 
                 if a * b == total and self.verbose:
-                    stdout.write('\n')
+                    stdout.write("\n")
 
         if self.verbose:
             stdout.flush()

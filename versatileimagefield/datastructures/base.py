@@ -31,8 +31,9 @@ class ProcessedImage(object):
     name = None
     url = None
 
-    def __init__(self, path_to_image, storage, create_on_demand,
-                 placeholder_image=None):
+    def __init__(
+        self, path_to_image, storage, create_on_demand, placeholder_image=None
+    ):
         """Construct a ProcessedImage."""
         self.path_to_image = path_to_image
         self.storage = storage
@@ -51,9 +52,7 @@ class ProcessedImage(object):
 
         Subclasses MUST implement this method.
         """
-        raise NotImplementedError(
-            'Subclasses MUST provide a `process_image` method.'
-        )
+        raise NotImplementedError("Subclasses MUST provide a `process_image` method.")
 
     def preprocess(self, image, image_format):
         """
@@ -74,10 +73,10 @@ class ProcessedImage(object):
                    when the instance is saved. If no additional keyword
                    arguments, return an empty dict ({}).
         """
-        save_kwargs = {'format': image_format}
+        save_kwargs = {"format": image_format}
 
         # Ensuring image is properly rotated
-        if hasattr(image, '_getexif'):
+        if hasattr(image, "_getexif"):
             exif_datadict = image._getexif()  # returns None if no EXIF data
             if exif_datadict is not None:
                 exif = dict(exif_datadict.items())
@@ -90,13 +89,12 @@ class ProcessedImage(object):
                     image = image.transpose(Image.ROTATE_90)
 
         # Ensure any embedded ICC profile is preserved
-        save_kwargs['icc_profile'] = image.info.get('icc_profile')
+        save_kwargs["icc_profile"] = image.info.get("icc_profile")
 
-        if hasattr(self, 'preprocess_%s' % image_format):
-            image, addl_save_kwargs = getattr(
-                self,
-                'preprocess_%s' % image_format
-            )(image=image)
+        if hasattr(self, "preprocess_%s" % image_format):
+            image, addl_save_kwargs = getattr(self, "preprocess_%s" % image_format)(
+                image=image
+            )
             save_kwargs.update(addl_save_kwargs)
 
         return image, save_kwargs
@@ -109,8 +107,8 @@ class ProcessedImage(object):
             * [0]: Original Image instance (passed to `image`)
             * [1]: Dict with a transparency key (to GIF transparency layer)
         """
-        if 'transparency' in image.info:
-            save_kwargs = {'transparency': image.info['transparency']}
+        if "transparency" in image.info:
+            save_kwargs = {"transparency": image.info["transparency"]}
         else:
             save_kwargs = {}
         return (image, save_kwargs)
@@ -126,25 +124,20 @@ class ProcessedImage(object):
                    setting)
         """
         save_kwargs = {
-            'progressive': VERSATILEIMAGEFIELD_PROGRESSIVE_JPEG,
-            'quality': QUAL
+            "progressive": VERSATILEIMAGEFIELD_PROGRESSIVE_JPEG,
+            "quality": QUAL,
         }
-        if image.mode != 'RGB':
-            image = image.convert('RGB')
+        if image.mode != "RGB":
+            image = image.convert("RGB")
         return (image, save_kwargs)
 
     def retrieve_image(self, path_to_image):
         """Return a PIL Image instance stored at `path_to_image`."""
-        image = self.storage.open(path_to_image, 'rb')
+        image = self.storage.open(path_to_image, "rb")
         image_format, mime_type = get_image_metadata_from_file(image)
-        file_ext = path_to_image.rsplit('.')[-1]
+        file_ext = path_to_image.rsplit(".")[-1]
 
-        return (
-            Image.open(image),
-            file_ext,
-            image_format,
-            mime_type
-        )
+        return (Image.open(image), file_ext, image_format, mime_type)
 
     def save_image(self, imagefile, save_path, file_ext, mime_type):
         """
@@ -159,12 +152,7 @@ class ProcessedImage(object):
                          versatileimagefield.utils)
         """
         file_to_save = InMemoryUploadedFile(
-            imagefile,
-            None,
-            'foo.%s' % file_ext,
-            mime_type,
-            imagefile.tell(),
-            None
+            imagefile, None, "foo.%s" % file_ext, mime_type, imagefile.tell(), None
         )
         file_to_save.seek(0)
         self.storage.save(save_path, file_to_save)

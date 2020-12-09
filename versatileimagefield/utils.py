@@ -10,28 +10,28 @@ from .settings import (
     QUAL,
     VERSATILEIMAGEFIELD_POST_PROCESSOR,
     VERSATILEIMAGEFIELD_SIZED_DIRNAME,
-    VERSATILEIMAGEFIELD_FILTERED_DIRNAME
+    VERSATILEIMAGEFIELD_FILTERED_DIRNAME,
 )
 
 # PIL-supported file formats as found here:
 # https://infohost.nmt.edu/tcc/help/pubs/pil/formats.html
 # {mime type: PIL Identifier}
 MIME_TYPE_TO_PIL_IDENTIFIER = {
-    'image/bmp': 'BMP',
-    'image/dcx': 'DCX',
-    'image/eps': 'eps',
-    'image/gif': 'GIF',
-    'image/jpeg': 'JPEG',
-    'image/pcd': 'PCD',
-    'image/pcx': 'PCX',
-    'application/pdf': 'PDF',
-    'image/png': 'PNG',
-    'image/x-ppm': 'PPM',
-    'image/psd': 'PSD',
-    'image/tiff': 'TIFF',
-    'image/x-xbitmap': 'XBM',
-    'image/x-xpm': 'XPM',
-    'image/webp': 'WEBP',
+    "image/bmp": "BMP",
+    "image/dcx": "DCX",
+    "image/eps": "eps",
+    "image/gif": "GIF",
+    "image/jpeg": "JPEG",
+    "image/pcd": "PCD",
+    "image/pcx": "PCX",
+    "application/pdf": "PDF",
+    "image/png": "PNG",
+    "image/x-ppm": "PPM",
+    "image/psd": "PSD",
+    "image/tiff": "TIFF",
+    "image/x-xbitmap": "XBM",
+    "image/x-xpm": "XPM",
+    "image/webp": "WEBP",
 }
 
 
@@ -58,85 +58,81 @@ def get_resized_filename(filename, width, height, filename_key):
     `filename`-`filename_key`-`width`x`height`.ext
     """
     try:
-        image_name, ext = filename.rsplit('.', 1)
+        image_name, ext = filename.rsplit(".", 1)
     except ValueError:
         image_name = filename
-        ext = 'jpg'
+        ext = "jpg"
 
     resized_template = "%(filename_key)s-%(width)dx%(height)d"
-    if ext.lower() in ['jpg', 'jpeg']:
+    if ext.lower() in ["jpg", "jpeg"]:
         resized_template = resized_template + "-%(quality)d"
 
-    resized_key = resized_template % ({
-        'filename_key': filename_key,
-        'width': width,
-        'height': height,
-        'quality': QUAL
-    })
+    resized_key = resized_template % (
+        {
+            "filename_key": filename_key,
+            "width": width,
+            "height": height,
+            "quality": QUAL,
+        }
+    )
 
-    return "%(image_name)s-%(image_key)s.%(ext)s" % ({
-        'image_name': image_name,
-        'image_key': post_process_image_key(resized_key),
-        'ext': ext
-    })
+    return "%(image_name)s-%(image_key)s.%(ext)s" % (
+        {
+            "image_name": image_name,
+            "image_key": post_process_image_key(resized_key),
+            "ext": ext,
+        }
+    )
 
 
-def get_resized_path(path_to_image, width, height,
-                     filename_key, storage):
+def get_resized_path(path_to_image, width, height, filename_key, storage):
     """
     Return a `path_to_image` location on `storage` as dictated by `width`, `height`
     and `filename_key`
     """
     containing_folder, filename = os.path.split(path_to_image)
 
-    resized_filename = get_resized_filename(
-        filename,
-        width,
-        height,
-        filename_key
-    )
+    resized_filename = get_resized_filename(filename, width, height, filename_key)
 
-    joined_path = os.path.join(*[
-        VERSATILEIMAGEFIELD_SIZED_DIRNAME,
-        containing_folder,
-        resized_filename
-    ]).replace(' ', '')  # Removing spaces so this path is memcached friendly
+    joined_path = os.path.join(
+        *[VERSATILEIMAGEFIELD_SIZED_DIRNAME, containing_folder, resized_filename]
+    ).replace(
+        " ", ""
+    )  # Removing spaces so this path is memcached friendly
 
     return joined_path
 
 
-def get_filtered_filename(filename, filename_key):
+def get_filtered_filename(filename, filename_key, file_ext):
     """
     Return the 'filtered filename' (according to `filename_key`)
     in the following format:
     `filename`__`filename_key`__.ext
     """
     try:
-        image_name, ext = filename.rsplit('.', 1)
+        image_name, ext = filename.rsplit(".", 1)
     except ValueError:
         image_name = filename
-        ext = 'jpg'
-    return "%(image_name)s__%(filename_key)s__.%(ext)s" % ({
-        'image_name': image_name,
-        'filename_key': filename_key,
-        'ext': ext
-    })
+        ext = "jpg"
+    if file_ext:
+        ext = file_ext
+    return "%(image_name)s__%(filename_key)s__.%(ext)s" % (
+        {"image_name": image_name, "filename_key": filename_key, "ext": ext}
+    )
 
 
-def get_filtered_path(path_to_image, filename_key, storage):
+def get_filtered_path(path_to_image, filename_key, storage, file_ext=None):
     """
     Return the 'filtered path'
     """
     containing_folder, filename = os.path.split(path_to_image)
 
-    filtered_filename = get_filtered_filename(filename, filename_key)
-    path_to_return = os.path.join(*[
-        containing_folder,
-        VERSATILEIMAGEFIELD_FILTERED_DIRNAME,
-        filtered_filename
-    ])
+    filtered_filename = get_filtered_filename(filename, filename_key, file_ext=file_ext)
+    path_to_return = os.path.join(
+        *[containing_folder, VERSATILEIMAGEFIELD_FILTERED_DIRNAME, filtered_filename]
+    )
     # Removing spaces so this path is memcached key friendly
-    path_to_return = path_to_return.replace(' ', '')
+    path_to_return = path_to_return.replace(" ", "")
     return path_to_return
 
 
@@ -166,10 +162,8 @@ def validate_versatileimagefield_sizekey_list(sizes):
     """
     try:
         for key, size_key in sizes:
-            size_key_split = size_key.split('__')
-            if size_key_split[-1] != 'url' and (
-                'x' not in size_key_split[-1]
-            ):
+            size_key_split = size_key.split("__")
+            if size_key_split[-1] != "url" and ("x" not in size_key_split[-1]):
                 raise InvalidSizeKey(
                     "{0} is an invalid size. All sizes must be either "
                     "'url' or made up of at least two segments separated "
@@ -178,16 +172,16 @@ def validate_versatileimagefield_sizekey_list(sizes):
                 )
     except ValueError:
         raise InvalidSizeKeySet(
-            '{} is an invalid size key set. Size key sets must be an '
-            'iterable of 2-tuples'.format(str(sizes))
+            "{} is an invalid size key set. Size key sets must be an "
+            "iterable of 2-tuples".format(str(sizes))
         )
     return list(set(sizes))
 
 
 def get_url_from_image_key(image_instance, image_key):
     """Build a URL from `image_key`."""
-    img_key_split = image_key.split('__')
-    if 'x' in img_key_split[-1]:
+    img_key_split = image_key.split("__")
+    if "x" in img_key_split[-1]:
         size_key = img_key_split.pop(-1)
     else:
         size_key = None
