@@ -105,7 +105,7 @@ def get_resized_path(path_to_image, width, height,
     return joined_path
 
 
-def get_filtered_filename(filename, filename_key):
+def get_filtered_filename(filename, filename_key, file_ext):
     """
     Return the 'filtered filename' (according to `filename_key`)
     in the following format:
@@ -116,6 +116,8 @@ def get_filtered_filename(filename, filename_key):
     except ValueError:
         image_name = filename
         ext = 'jpg'
+    if(file_ext):
+        ext=file_ext
     return "%(image_name)s__%(filename_key)s__.%(ext)s" % ({
         'image_name': image_name,
         'filename_key': filename_key,
@@ -123,13 +125,13 @@ def get_filtered_filename(filename, filename_key):
     })
 
 
-def get_filtered_path(path_to_image, filename_key, storage):
+def get_filtered_path(path_to_image, filename_key, storage, file_ext=None):
     """
     Return the 'filtered path'
     """
     containing_folder, filename = os.path.split(path_to_image)
 
-    filtered_filename = get_filtered_filename(filename, filename_key)
+    filtered_filename = get_filtered_filename(filename, filename_key,file_ext=file_ext)
     path_to_return = os.path.join(*[
         containing_folder,
         VERSATILEIMAGEFIELD_FILTERED_DIRNAME,

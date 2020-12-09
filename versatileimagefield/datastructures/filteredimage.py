@@ -36,7 +36,8 @@ class FilteredImage(DeleteAndClearCacheMixIn, ProcessedImage):
         self.name = get_filtered_path(
             path_to_image=self.path_to_image,
             filename_key=filename_key,
-            storage=storage
+            storage=storage,
+            file_ext=self.filename_ext() if hasattr(self, 'filename_ext') else None
         )
 
         self.url = storage.url(self.name)
@@ -125,7 +126,8 @@ class FilterLibrary(dict):
                     filtered_path = get_filtered_path(
                         path_to_image=self.original_file_location,
                         filename_key=key,
-                        storage=self.storage
+                        storage=self.storage,
+                        file_ext=self.registry._filter_registry[key].filename_ext(self.registry._filter_registry[key]) if hasattr(self.registry._filter_registry[key],"filename_ext") else None
                     )
 
                     filtered_url = self.storage.url(filtered_path)
