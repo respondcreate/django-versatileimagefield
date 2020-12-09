@@ -1,15 +1,10 @@
 from django.core.files.base import File
-from django.db.models.fields.files import (
-    FieldFile,
-    ImageFieldFile,
-    ImageFileDescriptor
-)
+from django.db.models.fields.files import FieldFile, ImageFieldFile, ImageFileDescriptor
 
 from .mixins import VersatileImageMixIn
 
 
 class VersatileImageFieldFile(VersatileImageMixIn, ImageFieldFile):
-
     def __getstate__(self):
         # VersatileImageFieldFile needs access to its associated model field
         # and an instance it's attached to in order to work properly, but the
@@ -17,12 +12,11 @@ class VersatileImageFieldFile(VersatileImageMixIn, ImageFieldFile):
         # Everything else will be restored later, by
         # VersatileImageFileDescriptor below.
         state = super(VersatileImageFieldFile, self).__getstate__()
-        state['_create_on_demand'] = self._create_on_demand
+        state["_create_on_demand"] = self._create_on_demand
         return state
 
 
 class VersatileImageFileDescriptor(ImageFileDescriptor):
-
     def __set__(self, instance, value):
         previous_file = instance.__dict__.get(self.field.name)
         super(VersatileImageFileDescriptor, self).__set__(instance, value)
@@ -62,11 +56,7 @@ class VersatileImageFileDescriptor(ImageFileDescriptor):
         # subclass the attribute class]. This object understands how to convert
         # a path to a file, and also how to handle None.
         if isinstance(file, str) or file is None:
-            attr = self.field.attr_class(
-                instance=instance,
-                field=self.field,
-                name=file
-            )
+            attr = self.field.attr_class(instance=instance, field=self.field, name=file)
             # Check if this field has a ppoi_field assigned
             if attr.field.ppoi_field:
                 # Pulling the current value of the ppoi_field...
@@ -89,7 +79,7 @@ class VersatileImageFileDescriptor(ImageFileDescriptor):
         # Finally, because of the (some would say boneheaded) way pickle works,
         # the underlying FieldFile might not actually itself have an associated
         # file. So we need to reset the details of the FieldFile in those cases
-        elif isinstance(file, FieldFile) and not hasattr(file, 'field'):
+        elif isinstance(file, FieldFile) and not hasattr(file, "field"):
             file.instance = instance
             file.field = self.field
             file.storage = self.field.storage

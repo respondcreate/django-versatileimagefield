@@ -3,7 +3,7 @@ from rest_framework.serializers import ImageField
 from .utils import (
     build_versatileimagefield_url_set,
     get_rendition_key_set,
-    validate_versatileimagefield_sizekey_list
+    validate_versatileimagefield_sizekey_list,
 )
 
 
@@ -25,25 +25,22 @@ class VersatileImageFieldSerializer(ImageField):
         'small': 'http://some.url/__sized__/image-thumbnail-100x100.jpg',
     }
     """
+
     read_only = True
 
     def __init__(self, sizes, *args, **kwargs):
         if isinstance(sizes, str):
             sizes = get_rendition_key_set(sizes)
         self.sizes = validate_versatileimagefield_sizekey_list(sizes)
-        super(VersatileImageFieldSerializer, self).__init__(
-            *args, **kwargs
-        )
+        super(VersatileImageFieldSerializer, self).__init__(*args, **kwargs)
 
     def to_native(self, value):
         """For djangorestframework <=2.3.14"""
         context_request = None
         if self.context:
-            context_request = self.context.get('request', None)
+            context_request = self.context.get("request", None)
         return build_versatileimagefield_url_set(
-            value,
-            self.sizes,
-            request=context_request
+            value, self.sizes, request=context_request
         )
 
     def to_representation(self, value):

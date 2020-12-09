@@ -2,7 +2,6 @@ from ..settings import cache
 
 
 class DeleteAndClearCacheMixIn(object):
-
     def clear_cache(self):
         cache.delete(self.url)
 

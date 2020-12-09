@@ -1,9 +1,6 @@
 """Datastructures for sizing images."""
 from django.conf import settings
-from ..settings import (
-    cache,
-    VERSATILEIMAGEFIELD_CACHE_LENGTH
-)
+from ..settings import cache, VERSATILEIMAGEFIELD_CACHE_LENGTH
 from ..utils import get_resized_path
 from .base import ProcessedImage
 from .mixins import DeleteAndClearCacheMixIn
@@ -42,17 +39,15 @@ class SizedImage(ProcessedImage, dict):
 
     def __init__(self, path_to_image, storage, create_on_demand, ppoi=None):
         """Construct a SizedImage."""
-        super(SizedImage, self).__init__(
-            path_to_image, storage, create_on_demand
-        )
+        super(SizedImage, self).__init__(path_to_image, storage, create_on_demand)
         self.ppoi = ppoi
         try:
             key = self.get_filename_key()
         except AttributeError:
             raise NotImplementedError(
-                'SizedImage subclasses must define a '
-                '`filename_key` attribute or override the '
-                '`get_filename_key` method.'
+                "SizedImage subclasses must define a "
+                "`filename_key` attribute or override the "
+                "`get_filename_key` method."
             )
         else:
             del key
@@ -60,8 +55,8 @@ class SizedImage(ProcessedImage, dict):
     def ppoi_as_str(self):
         """Return PPOI value as a string."""
         return "%s__%s" % (
-            str(self.ppoi[0]).replace('.', '-'),
-            str(self.ppoi[1]).replace('.', '-')
+            str(self.ppoi[0]).replace(".", "-"),
+            str(self.ppoi[1]).replace(".", "-"),
         )
 
     def get_filename_key(self):
@@ -76,19 +71,18 @@ class SizedImage(ProcessedImage, dict):
         except AttributeError:
             try:
                 return cls.filename_key
-            except AttributeError:   # pragma: no cover
+            except AttributeError:  # pragma: no cover
                 raise NotImplementedError(
-                    'SizedImage subclasses must define a '
-                    '`filename_key_regex` attribute or a '
-                    '`filename_key` attribute or override the '
-                    '`get_filename_key_regex` class method.'
+                    "SizedImage subclasses must define a "
+                    "`filename_key_regex` attribute or a "
+                    "`filename_key` attribute or override the "
+                    "`get_filename_key_regex` class method."
                 )
 
     def __setitem__(self, key, value):
         """Ensure attribute assignment is disabled."""
         raise NotImplementedError(
-            '%s instances do not allow key'
-            ' assignment.' % self.__class__.__name__
+            "%s instances do not allow key" " assignment." % self.__class__.__name__
         )
 
     def __getitem__(self, key):
@@ -101,7 +95,7 @@ class SizedImage(ProcessedImage, dict):
                      Example: '400x400'
         """
         try:
-            width, height = [int(i) for i in key.split('x')]
+            width, height = [int(i) for i in key.split("x")]
         except (KeyError, ValueError):
             raise MalformedSizedImageKey(
                 "%s keys must be in the following format: "
@@ -110,7 +104,7 @@ class SizedImage(ProcessedImage, dict):
             )
 
         if not self.path_to_image and getattr(
-            settings, 'VERSATILEIMAGEFIELD_USE_PLACEHOLDIT', False
+            settings, "VERSATILEIMAGEFIELD_USE_PLACEHOLDIT", False
         ):
             resized_url = "http://placehold.it/%dx%d" % (width, height)
             resized_storage_path = resized_url
@@ -120,7 +114,7 @@ class SizedImage(ProcessedImage, dict):
                 width=width,
                 height=height,
                 filename_key=self.get_filename_key(),
-                storage=self.storage
+                storage=self.storage,
             )
 
             try:
@@ -142,7 +136,7 @@ class SizedImage(ProcessedImage, dict):
                             path_to_image=self.path_to_image,
                             save_path_on_storage=resized_storage_path,
                             width=width,
-                            height=height
+                            height=height,
                         )
 
                         resized_url = self.storage.url(resized_storage_path)
@@ -150,13 +144,10 @@ class SizedImage(ProcessedImage, dict):
                     # Setting a super-long cache for a resized image (30 Days)
                     cache.set(resized_url, 1, VERSATILEIMAGEFIELD_CACHE_LENGTH)
         return SizedImageInstance(
-            name=resized_storage_path,
-            url=resized_url,
-            storage=self.storage
+            name=resized_storage_path, url=resized_url, storage=self.storage
         )
 
-    def process_image(self, image, image_format, save_kwargs,
-                      width, height):
+    def process_image(self, image, image_format, save_kwargs, width, height):
         """
         Process a SizedImage.
 
@@ -174,12 +165,9 @@ class SizedImage(ProcessedImage, dict):
 
         Subclasses MUST implement this method.
         """
-        raise NotImplementedError(
-            'Subclasses MUST provide a `process_image` method.'
-        )
+        raise NotImplementedError("Subclasses MUST provide a `process_image` method.")
 
-    def create_resized_image(self, path_to_image, save_path_on_storage,
-                             width, height):
+    def create_resized_image(self, path_to_image, save_path_on_storage, width, height):
         """
         Create a resized image.
 
@@ -193,9 +181,7 @@ class SizedImage(ProcessedImage, dict):
                         to signify what operation was done to it.
                         Examples: 'crop' or 'scale'
         """
-        image, file_ext, image_format, mime_type = self.retrieve_image(
-            path_to_image
-        )
+        image, file_ext, image_format, mime_type = self.retrieve_image(path_to_image)
 
         image, save_kwargs = self.preprocess(image, image_format)
 
@@ -204,6 +190,6 @@ class SizedImage(ProcessedImage, dict):
             image_format=image_format,
             save_kwargs=save_kwargs,
             width=width,
-            height=height
+            height=height,
         )
         self.save_image(imagefile, save_path_on_storage, file_ext, mime_type)

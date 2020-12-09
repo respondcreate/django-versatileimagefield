@@ -52,7 +52,7 @@ def validate_ppoi(value, return_converted_tuple=False):
         try:
             string_split = [
                 float(segment.strip())
-                for segment in value.split('x')
+                for segment in value.split("x")
                 if float(segment.strip()) >= 0 and float(segment.strip()) <= 1
             ]
         except Exception:
@@ -66,12 +66,11 @@ def validate_ppoi(value, return_converted_tuple=False):
             to_return = tup
     if not valid_ppoi:
         raise ValidationError(
-            message=INVALID_CENTERPOINT_ERROR_MESSAGE % str(value),
-            code='invalid_ppoi'
+            message=INVALID_CENTERPOINT_ERROR_MESSAGE % str(value), code="invalid_ppoi"
         )
     else:
         if to_return and return_converted_tuple is True:
             return to_return
 
 
-__all__ = ['validate_ppoi_tuple', 'validate_ppoi']
+__all__ = ["validate_ppoi_tuple", "validate_ppoi"]

@@ -32,11 +32,18 @@ class VersatileImageField(ImageField):
 
     attr_class = VersatileImageFieldFile
     descriptor_class = VersatileImageFileDescriptor
-    description = _('Versatile Image Field')
+    description = _("Versatile Image Field")
 
-    def __init__(self, verbose_name=None, name=None, width_field=None,
-                 height_field=None, ppoi_field=None, placeholder_image=None,
-                 **kwargs):
+    def __init__(
+        self,
+        verbose_name=None,
+        name=None,
+        width_field=None,
+        height_field=None,
+        ppoi_field=None,
+        placeholder_image=None,
+        **kwargs
+    ):
         """Initialize an instance."""
         self.ppoi_field = ppoi_field
         super(VersatileImageField, self).__init__(
@@ -70,10 +77,7 @@ class VersatileImageField(ImageField):
                 VERSATILEIMAGEFIELD_PLACEHOLDER_DIRNAME, name
             )
             if not self.storage.exists(placeholder_image_name):
-                self.storage.save(
-                    placeholder_image_name,
-                    placeholder_image.image_data
-                )
+                self.storage.save(placeholder_image_name, placeholder_image.image_data)
         self.placeholder_image_name = placeholder_image_name
 
     def pre_save(self, model_instance, add):
@@ -107,7 +111,7 @@ class VersatileImageField(ImageField):
         # None.
         ppoi = None
         if file and not isinstance(file, tuple):
-            if hasattr(file, 'ppoi'):
+            if hasattr(file, "ppoi"):
                 ppoi = file.ppoi
 
         # Update the ppoi field.
@@ -143,7 +147,7 @@ class VersatileImageField(ImageField):
             elif data[0] is False:
                 # This means the 'Clear' checkbox was checked so we
                 # need to empty the field
-                to_assign = ''
+                to_assign = ""
             else:
                 # This means there is a new upload so we need to unpack
                 # the tuple and assign the first position to the field
@@ -157,8 +161,8 @@ class VersatileImageField(ImageField):
         # while letting the caller override them.
         defaults = {}
         if self.ppoi_field:
-            defaults['form_class'] = SizedImageCenterpointClickDjangoAdminField
-        if kwargs.get('widget') is AdminFileWidget:
+            defaults["form_class"] = SizedImageCenterpointClickDjangoAdminField
+        if kwargs.get("widget") is AdminFileWidget:
             # Ensuring default admin widget is skipped (in favor of using
             # SizedImageCenterpointClickDjangoAdminField's default widget as
             # the default widget choice for use in the admin).
@@ -174,27 +178,23 @@ class VersatileImageField(ImageField):
             # specify it in their ModelAdmin.formfield_overrides (though,
             # if that's the case, why are they using VersatileImageField in
             # the first place?)
-            del kwargs['widget']
+            del kwargs["widget"]
         defaults.update(kwargs)
         return super(VersatileImageField, self).formfield(**defaults)
 
 
 class PPOIField(CharField):
-
     def __init__(self, *args, **kwargs):
-        if 'default' not in kwargs:
-            kwargs['default'] = '0.5x0.5'
-        kwargs['default'] = self.get_prep_value(
-            value=validate_ppoi(
-                kwargs['default'],
-                return_converted_tuple=True
-            )
+        if "default" not in kwargs:
+            kwargs["default"] = "0.5x0.5"
+        kwargs["default"] = self.get_prep_value(
+            value=validate_ppoi(kwargs["default"], return_converted_tuple=True)
         )
-        if 'max_length' not in kwargs:
-            kwargs['max_length'] = 20
+        if "max_length" not in kwargs:
+            kwargs["max_length"] = 20
         # Forcing editable = False since PPOI values are set directly on
         # VersatileImageField.
-        kwargs['editable'] = False
+        kwargs["editable"] = False
         super(PPOIField, self).__init__(*args, **kwargs)
         self.validators.append(validate_ppoi)
 
@@ -207,15 +207,13 @@ class PPOIField(CharField):
 
     def to_python(self, value):
         if value is None:
-            value = '0.5x0.5'
-        to_return = validate_ppoi(
-            value, return_converted_tuple=True
-        )
+            value = "0.5x0.5"
+        to_return = validate_ppoi(value, return_converted_tuple=True)
         return to_return
 
     def get_prep_value(self, value):
         if isinstance(value, tuple):
-            value = 'x'.join(str(num) for num in value)
+            value = "x".join(str(num) for num in value)
         return value
 
     def value_to_string(self, obj):
@@ -227,4 +225,4 @@ class PPOIField(CharField):
         return self.get_prep_value(value)
 
 
-__all__ = ['VersatileImageField', 'PPOIField']
+__all__ = ["VersatileImageField", "PPOIField"]

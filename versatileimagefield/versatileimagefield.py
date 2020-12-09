@@ -14,15 +14,12 @@ class CroppedImage(SizedImage):
     See the `process_image` method for more details.
     """
 
-    filename_key = 'crop'
-    filename_key_regex = r'crop-c[0-9-]+__[0-9-]+'
+    filename_key = "crop"
+    filename_key_regex = r"crop-c[0-9-]+__[0-9-]+"
 
     def get_filename_key(self):
         """Return the filename key for cropped images."""
-        return "{key}-c{ppoi}".format(
-            key=self.filename_key,
-            ppoi=self.ppoi_as_str()
-        )
+        return "{key}-c{ppoi}".format(key=self.filename_key, ppoi=self.ppoi_as_str())
 
     def crop_on_centerpoint(self, image, width, height, ppoi=(0.5, 0.5)):
         """
@@ -59,20 +56,14 @@ class CroppedImage(SizedImage):
         ppoi_y_axis = int(image.size[1] * ppoi[1])
         center_pixel_coord = (ppoi_x_axis, ppoi_y_axis)
         # Calculate the aspect ratio of `image`
-        orig_aspect_ratio = float(
-            image.size[0]
-        ) / float(
-            image.size[1]
-        )
+        orig_aspect_ratio = float(image.size[0]) / float(image.size[1])
         crop_aspect_ratio = float(width) / float(height)
 
         # Figure out if we're trimming from the left/right or top/bottom
         if orig_aspect_ratio >= crop_aspect_ratio:
             # `image` is wider than what's needed,
             # crop from left/right sides
-            orig_crop_width = int(
-                (crop_aspect_ratio * float(image.size[1])) + 0.5
-            )
+            orig_crop_width = int((crop_aspect_ratio * float(image.size[1])) + 0.5)
             orig_crop_height = image.size[1]
             crop_boundary_top = 0
             crop_boundary_bottom = orig_crop_height
@@ -89,9 +80,7 @@ class CroppedImage(SizedImage):
             # `image` is taller than what's needed,
             # crop from top/bottom sides
             orig_crop_width = image.size[0]
-            orig_crop_height = int(
-                (float(image.size[0]) / crop_aspect_ratio) + 0.5
-            )
+            orig_crop_height = int((float(image.size[0]) / crop_aspect_ratio) + 0.5)
             crop_boundary_left = 0
             crop_boundary_right = orig_crop_width
             crop_boundary_top = center_pixel_coord[1] - (orig_crop_height // 2)
@@ -108,18 +97,14 @@ class CroppedImage(SizedImage):
                 crop_boundary_left,
                 crop_boundary_top,
                 crop_boundary_right,
-                crop_boundary_bottom
+                crop_boundary_bottom,
             )
         )
         # Resizing the newly cropped image to the size specified
         # (as determined by `width`x`height`)
-        return cropped_image.resize(
-            (width, height),
-            Image.ANTIALIAS
-        )
+        return cropped_image.resize((width, height), Image.ANTIALIAS)
 
-    def process_image(self, image, image_format, save_kwargs,
-                      width, height):
+    def process_image(self, image, image_format, save_kwargs, width, height):
         """
         Return a BytesIO instance of `image` cropped to `width` and `height`.
 
@@ -129,22 +114,14 @@ class CroppedImage(SizedImage):
         """
         imagefile = BytesIO()
         palette = image.getpalette()
-        cropped_image = self.crop_on_centerpoint(
-            image,
-            width,
-            height,
-            self.ppoi
-        )
+        cropped_image = self.crop_on_centerpoint(image, width, height, self.ppoi)
 
         # Using ImageOps.fit on GIFs can introduce issues with their palette
         # Solution derived from: http://stackoverflow.com/a/4905209/1149774
-        if image_format == 'GIF':
+        if image_format == "GIF":
             cropped_image.putpalette(palette)
 
-        cropped_image.save(
-            imagefile,
-            **save_kwargs
-        )
+        cropped_image.save(imagefile, **save_kwargs)
 
         return imagefile
 
@@ -156,24 +133,17 @@ class ThumbnailImage(SizedImage):
     See the `process_image()` method for more information
     """
 
-    filename_key = 'thumbnail'
+    filename_key = "thumbnail"
 
-    def process_image(self, image, image_format, save_kwargs,
-                      width, height):
+    def process_image(self, image, image_format, save_kwargs, width, height):
         """
         Return a BytesIO instance of `image` that fits in a bounding box.
 
         Bounding box dimensions are `width`x`height`.
         """
         imagefile = BytesIO()
-        image.thumbnail(
-            (width, height),
-            Image.ANTIALIAS
-        )
-        image.save(
-            imagefile,
-            **save_kwargs
-        )
+        image.thumbnail((width, height), Image.ANTIALIAS)
+        image.save(imagefile, **save_kwargs)
         return imagefile
 
 
@@ -188,13 +158,10 @@ class InvertImage(FilteredImage):
         """Return a BytesIO instance of `image` with inverted colors."""
         imagefile = BytesIO()
         inv_image = ImageOps.invert(image)
-        inv_image.save(
-            imagefile,
-            **save_kwargs
-        )
+        inv_image.save(imagefile, **save_kwargs)
         return imagefile
 
 
-versatileimagefield_registry.register_sizer('crop', CroppedImage)
-versatileimagefield_registry.register_sizer('thumbnail', ThumbnailImage)
-versatileimagefield_registry.register_filter('invert', InvertImage)
+versatileimagefield_registry.register_sizer("crop", CroppedImage)
+versatileimagefield_registry.register_sizer("thumbnail", ThumbnailImage)
+versatileimagefield_registry.register_filter("invert", InvertImage)
