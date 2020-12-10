@@ -89,7 +89,9 @@ class ProcessedImage(object):
                     image = image.transpose(Image.ROTATE_90)
 
         # Ensure any embedded ICC profile is preserved
-        save_kwargs["icc_profile"] = image.info.get("icc_profile")
+        icc_profile = image.info.get("icc_profile")
+        if icc_profile:
+            save_kwargs["icc_profile"] = image.info.get("icc_profile")
 
         if hasattr(self, "preprocess_%s" % image_format):
             image, addl_save_kwargs = getattr(self, "preprocess_%s" % image_format)(
