@@ -51,7 +51,7 @@ def post_process_image_key(image_key):
         return VERSATILEIMAGEFIELD_POST_PROCESSOR(image_key)
 
 
-def get_resized_filename(filename, width, height, filename_key):
+def get_resized_filename(filename, width, height, filename_key, file_ext=None):
     """
     Return the 'resized filename' (according to `width`, `height` and
     `filename_key`) in the following format:
@@ -62,7 +62,8 @@ def get_resized_filename(filename, width, height, filename_key):
     except ValueError:
         image_name = filename
         ext = "jpg"
-
+    if file_ext:
+        ext = file_ext
     resized_template = "%(filename_key)s-%(width)dx%(height)d"
     if ext.lower() in ["jpg", "jpeg"]:
         resized_template = resized_template + "-%(quality)d"
@@ -85,14 +86,18 @@ def get_resized_filename(filename, width, height, filename_key):
     )
 
 
-def get_resized_path(path_to_image, width, height, filename_key, storage):
+def get_resized_path(
+    path_to_image, width, height, filename_key, storage, file_ext=None
+):
     """
     Return a `path_to_image` location on `storage` as dictated by `width`, `height`
     and `filename_key`
     """
     containing_folder, filename = os.path.split(path_to_image)
 
-    resized_filename = get_resized_filename(filename, width, height, filename_key)
+    resized_filename = get_resized_filename(
+        filename, width, height, filename_key, file_ext
+    )
 
     joined_path = os.path.join(
         *[VERSATILEIMAGEFIELD_SIZED_DIRNAME, containing_folder, resized_filename]

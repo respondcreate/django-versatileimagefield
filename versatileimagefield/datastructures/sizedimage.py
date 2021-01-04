@@ -115,6 +115,7 @@ class SizedImage(ProcessedImage, dict):
                 height=height,
                 filename_key=self.get_filename_key(),
                 storage=self.storage,
+                file_ext=self.filename_ext() if hasattr(self, "filename_ext") else None,
             )
 
             try:
