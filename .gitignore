@@ -47,3 +47,5 @@ __sized__/*
 # Pickled Files #
 #################
 *.p
+tests/collected_static
+tests/collected_static/*
