@@ -265,7 +265,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         self.assertFalse(
             self.jpg.optional_image.field.storage.size(
                 self.jpg.optional_image.name
-            ) is 0
+            ) == 0
         )
         self.jpg.optional_image.create_on_demand = False
 
