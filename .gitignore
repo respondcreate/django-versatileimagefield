@@ -47,3 +47,6 @@ __sized__/*
 # Pickled Files #
 #################
 *.p
+
+.tox
+.idea
