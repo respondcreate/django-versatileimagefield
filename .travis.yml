@@ -61,7 +61,7 @@ matrix:
     - python: "3.6"
       env: DJANGO_VERSION=2.2.8 REST_FRAMEWORK_VERSION=3.10.3
     - python: "3.6"
-      env: DJANGO_VERSION=3.0.0 REST_FRAMEWORK_VERSION=3.10.3
+      env: DJANGO_VERSION=3.0.12 REST_FRAMEWORK_VERSION=3.10.3
     - python: "3.7"
       dist: xenial
       sudo: required
@@ -85,7 +85,7 @@ matrix:
     - python: "3.7"
       dist: xenial
       sudo: required
-      env: DJANGO_VERSION=3.0.0 REST_FRAMEWORK_VERSION=3.10.3
+      env: DJANGO_VERSION=3.0.12 REST_FRAMEWORK_VERSION=3.10.3
     - python: "3.8"
       dist: xenial
       sudo: required
@@ -93,7 +93,39 @@ matrix:
     - python: "3.8"
       dist: xenial
       sudo: required
-      env: DJANGO_VERSION=3.0.0 REST_FRAMEWORK_VERSION=3.10.3
+      env: DJANGO_VERSION=3.0.12 REST_FRAMEWORK_VERSION=3.10.3
+    - python: "3.8"
+      dist: xenial
+      sudo: required
+      env: DJANGO_VERSION=3.1.7 REST_FRAMEWORK_VERSION=3.11.2
+    - python: "3.8"
+      dist: xenial
+      sudo: required
+      env: DJANGO_VERSION=3.2.0rc1 REST_FRAMEWORK_VERSION=3.11.2
+    - python: "3.9"
+      dist: xenial
+      sudo: required
+      env: DJANGO_VERSION=3.1.7 REST_FRAMEWORK_VERSION=3.11.2
+    - python: "3.9"
+      dist: xenial
+      sudo: required
+      env: DJANGO_VERSION=3.2.0rc1 REST_FRAMEWORK_VERSION=3.11.2
+    - python: "3.8"
+      dist: xenial
+      sudo: required
+      env: DJANGO_VERSION=3.1.7 REST_FRAMEWORK_VERSION=3.12.4
+    - python: "3.8"
+      dist: xenial
+      sudo: required
+      env: DJANGO_VERSION=3.2.0rc1 REST_FRAMEWORK_VERSION=3.12.4
+    - python: "3.9"
+      dist: xenial
+      sudo: required
+      env: DJANGO_VERSION=3.1.7 REST_FRAMEWORK_VERSION=3.12.4
+    - python: "3.9"
+      dist: xenial
+      sudo: required
+      env: DJANGO_VERSION=3.2.0rc1 REST_FRAMEWORK_VERSION=3.12.4
 before_install:
   - export DJANGO_SETTINGS_MODULE=tests.test_settings
 # Tell it the things it will need to install when it boots
@@ -112,5 +144,6 @@ script:
 - flake8 versatileimagefield/
 - coverage run --parallel-mode --source=versatileimagefield runtests.py
 - coverage run --parallel-mode --source=versatileimagefield post_processor_runtests.py
+after_script:
 - coverage combine
 after_success: coveralls
