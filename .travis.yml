@@ -4,14 +4,10 @@ sudo: false
 # Tell Travis you want a Python environment to test in
 language: python
 # List the versions of Python you'd like to test against
-matrix:
-  include:
-    - python: 3.6
-      env: TOXENV=py36
-    - python: 3.7
-      env: TOXENV=py37
-    - python: 3.8
-      env: TOXENV=py38
+python:
+  - "3.6"
+  - "3.7"
+  - "3.8"
 before_install:
   - export DJANGO_SETTINGS_MODULE=tests.test_settings
 # Tell it the things it will need to install when it boots
