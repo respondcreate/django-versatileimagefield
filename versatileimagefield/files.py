@@ -1,3 +1,4 @@
+from django import VERSION as DJANGO_VERSION
 from django.core.files.base import File
 from django.db.models.fields.files import (
     FieldFile,
@@ -10,14 +11,22 @@ from .mixins import VersatileImageMixIn
 
 class VersatileImageFieldFile(VersatileImageMixIn, ImageFieldFile):
 
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        if DJANGO_VERSION[0] >= 3 and DJANGO_VERSION[1] > 0:
+            self.storage = self.field.storage
+            self._create_on_demand = state.get('_create_on_demand')
+            self._ppoi_value = state.get('_ppoi_value')
+
     def __getstate__(self):
         # VersatileImageFieldFile needs access to its associated model field
         # and an instance it's attached to in order to work properly, but the
         # only necessary data to be pickled is the file's name itself.
         # Everything else will be restored later, by
         # VersatileImageFileDescriptor below.
-        state = super(VersatileImageFieldFile, self).__getstate__()
+        state = super().__getstate__()
         state['_create_on_demand'] = self._create_on_demand
+        state['_ppoi_value'] = self._ppoi_value
         return state
 
 
@@ -25,7 +34,7 @@ class VersatileImageFileDescriptor(ImageFileDescriptor):
 
     def __set__(self, instance, value):
         previous_file = instance.__dict__.get(self.field.name)
-        super(VersatileImageFileDescriptor, self).__set__(instance, value)
+        super().__set__(instance, value)
 
         # Updating ppoi_field on attribute set
         if previous_file is not None:
@@ -50,7 +59,7 @@ class VersatileImageFileDescriptor(ImageFileDescriptor):
         # in __set__.
         file = instance.__dict__[self.field.name]
 
-        # Call the placeholder procecess method on VersatileImageField.
+        # Call the placeholder process method on VersatileImageField.
         # (This was called inside the VersatileImageField __init__ before) Fixes #28
         self.field.process_placeholder_image()
 
@@ -73,7 +82,6 @@ class VersatileImageFileDescriptor(ImageFileDescriptor):
                 ppoi = instance.__dict__[attr.field.ppoi_field]
                 # ...and assigning it to VersatileImageField instance
                 attr.ppoi = ppoi
-
             instance.__dict__[self.field.name] = attr
 
         # Other types of files may be assigned as well, but they need to have
@@ -99,4 +107,8 @@ class VersatileImageFileDescriptor(ImageFileDescriptor):
                 file.ppoi = ppoi
 
         # That was fun, wasn't it?
+        # Finally, ensure all the sizers/filters are available after pickling
+        to_return = instance.__dict__[self.field.name]
+        to_return.build_filters_and_sizers(to_return.ppoi, to_return.create_on_demand)
+        instance.__dict__[self.field.name] = to_return
         return instance.__dict__[self.field.name]

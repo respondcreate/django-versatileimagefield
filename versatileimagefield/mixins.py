@@ -40,6 +40,7 @@ class VersatileImageMixIn(object):
         """Construct PPOI and create_on_demand."""
         self._create_on_demand = VERSATILEIMAGEFIELD_CREATE_ON_DEMAND
         super(VersatileImageMixIn, self).__init__(*args, **kwargs)
+        self._ppoi_value = (0.5, 0.5)
         # Setting initial ppoi
         if self.field.ppoi_field:
             instance_ppoi_value = getattr(
@@ -48,8 +49,6 @@ class VersatileImageMixIn(object):
                 (0.5, 0.5)
             )
             self.ppoi = instance_ppoi_value
-        else:
-            self.ppoi = (0.5, 0.5)
 
     @property
     def url(self):
