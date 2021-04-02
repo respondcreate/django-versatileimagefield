@@ -15,7 +15,7 @@ setup(
                 "creating new images from the one assigned to the field.",
     long_description=open('README.rst').read(),
     zip_safe=False,
-    install_requires=['Pillow>=2.4.0', 'python-magic>=0.4.15,<1.0.0'],
+    install_requires=['Pillow>=2.4.0', 'python-magic>=0.4.15,<1.0.0', 'Django>=1.8'],
     include_package_data=True,
     keywords=[
         'django',
@@ -32,6 +32,8 @@ setup(
         'Framework :: Django :: 2.1',
         'Framework :: Django :: 2.2',
         'Framework :: Django :: 3.0',
+        'Framework :: Django :: 3.1',
+        'Framework :: Django :: 3.2',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
@@ -43,6 +45,7 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'Topic :: Multimedia :: Graphics :: Presentation',
     ]
 )
