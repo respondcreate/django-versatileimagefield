@@ -14,7 +14,9 @@ before_install:
 install:
    # Install the dependencies the app itself has
    # which in this case I choose to keep in a requirements file
- - pip install tox-travis
+ - pip install tox-travis coverage coveralls
 # Tell Travis how to run the test script itself
 script:
   - tox -r
+after_success:
+  - coveralls
