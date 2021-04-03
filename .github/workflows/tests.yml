@@ -29,6 +29,12 @@ jobs:
          - os: ubuntu-20.04
            django-version: django3.0
            drf-version: drf3.09
+         - os: ubuntu-20.04
+           django-version: django2.1
+           drf-version: drf3.12
+         - os: ubuntu-20.04
+           django-version: django2.0
+           drf-version: drf3.12
     name: ${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.django-version }}-${{ matrix.drf-version }}
     steps:
     - name: "Set job environments"
