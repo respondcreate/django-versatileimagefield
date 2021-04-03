@@ -46,7 +46,7 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
             return super(ClearableFileInputWithImagePreview, self).render(
                 name, value, attrs=attrs, renderer=renderer
             )
-        else:
+        else:  # pragma: no cover
             context = self.get_context(name, value, attrs)
             return render_to_string(self.template_name, context)
 
@@ -63,20 +63,11 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
 
     def get_context(self, name, value, attrs):
         """Get the context to render this widget with."""
+        # Initialize widget context.
+        context = {}
+
         if self.has_template_widget_rendering:
             context = super(ClearableFileInputWithImagePreview, self).get_context(name, value, attrs)
-        else:
-            # Build the context manually.
-            context = {}
-            context['widget'] = {
-                'name': name,
-                'is_hidden': self.is_hidden,
-                'required': self.is_required,
-                'value': self._format_value(value),
-                'attrs': self.build_attrs(self.attrs, attrs),
-                'template_name': self.template_name,
-                'type': self.input_type,
-            }
 
         # It seems Django 1.11's ClearableFileInput doesn't add everything to the 'widget' key, so we can't use it
         # in MultiWidget. Add it manually here.

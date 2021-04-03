@@ -97,7 +97,7 @@ class VersatileImageFileDescriptor(ImageFileDescriptor):
         # Finally, because of the (some would say boneheaded) way pickle works,
         # the underlying FieldFile might not actually itself have an associated
         # file. So we need to reset the details of the FieldFile in those cases
-        elif isinstance(file, FieldFile) and not hasattr(file, 'field'):
+        elif isinstance(file, FieldFile) and not hasattr(file, 'field'):  # pragma: no cover
             file.instance = instance
             file.field = self.field
             file.storage = self.field.storage
