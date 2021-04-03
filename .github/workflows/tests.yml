@@ -11,7 +11,7 @@ jobs:
       matrix:
         os: [ubuntu-20.04]
         python-version: [python3.9, python3.8]
-        django-version: [django3.2, django3.1, django3.0, django2.2, django1.9, django1.8]
+        django-version: [django3.2, django3.1, django3.0, django2.2, django2.1, django2.0]
         drf-version: [drf3.12, drf3.11, drf3.10, drf3.09]
         exclude:
          - os: ubuntu-20.04
