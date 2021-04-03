@@ -1,7 +1,6 @@
 """Fields."""
 import os
 
-from django import VERSION as DJANGO_VERSION
 from django.contrib.admin.widgets import AdminFileWidget
 from django.db.models.fields import CharField
 from django.db.models.fields.files import ImageField
