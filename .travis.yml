@@ -17,7 +17,4 @@ install:
  - pip install tox-travis
 # Tell Travis how to run the test script itself
 script:
-- tox -r
-after_success:
-  - coverage combine
-  - coveralls
+  - tox -r
