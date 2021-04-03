@@ -69,12 +69,13 @@ Code
 Running Tests
 =============
 
-If you're running tests on Mac OSX you'll need libmagic installed. The recommended way to do this is with ``homebrew``:
-Note: Some systems may also be necessary to install the `non-python Pillow build dependencies <https://pillow.readthedocs.io/en/stable/installation.html#external-libraries>`_.
+If you're running tests on Mac OSX you'll need `libmagic` installed. The recommended way to do this is with ``homebrew``:
 
 .. code-block:: bash
 
     $ brew install libmagic
+
+Note: Some systems may also be necessary to install the `non-python Pillow build dependencies <https://pillow.readthedocs.io/en/stable/installation.html#external-libraries>`_.
 
 You'll also need ``tox``:
 
@@ -82,26 +83,21 @@ You'll also need ``tox``:
 
     $ pip install tox
 
-```suggestion
-To run the entire django-versatileimagefield test matrix, that is, run all tests on all supported combination of versions of python, django and djangorestframework:
 
-Simple run:
+To run the entire django-versatileimagefield test matrix, that is, run all tests on all supported combination of versions of ``python``, ``django`` and ``djangorestframework``:
 
 .. code-block:: bash
 
    $ tox
 
-Note: tox names a possible combination as "tox environment"
-
-
-To list the available tox environments run:
+If you just want to run tests against a specific tox environment first, run this command to list all available environments:
 
 .. code-block:: bash
 
    $ tox -l
 
-To execute all tests on a specific tox environment:
+Then run this command, substituting ``{tox-env}`` with the environment you want to test:
 
 .. code-block:: bash
 
-   $ tox -e <name-of-the-environment>
+   $ tox -e {tox-env}
