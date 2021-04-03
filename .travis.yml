@@ -19,4 +19,6 @@ install:
 # Tell Travis how to run the test script itself
 script:
 - tox -r
-after_success: coveralls
+after_success:
+  - coverage combine
+  - coveralls
