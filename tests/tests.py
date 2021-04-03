@@ -500,16 +500,20 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
             '/media/__sized__/python-logo-thumbnail-100x100-70.jpg'
         )
         pickled_state = self.jpg.image.__getstate__()
-        # self.assertEqual(
-        #     pickled_state,
-        #     {
-        #         '_create_on_demand': False,
-        #         '_committed': True,
-        #         '_file': None,
-        #         'name': 'python-logo.jpg',
-        #         'closed': False
-        #     }
-        # )
+        pickled_state.pop("field", None)
+        pickled_state.pop("instance", None)
+        pickled_state.pop("storage", None)
+        compare(
+            actual=pickled_state,
+            expected={
+                '_create_on_demand': False,
+                '_committed': True,
+                '_file': None,
+                'name': 'python-logo.jpg',
+                'closed': False,
+                '_ppoi_value': (0.25, 0.25)
+            }
+        )
 
     def test_versatile_image_field_rendition_key_sets_setting(self):
         """Ensure VERSATILEIMAGEFIELD_RENDITION_KEY_SETS setting validates."""
