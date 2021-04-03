@@ -70,6 +70,7 @@ Running Tests
 =============
 
 If you're running tests on Mac OSX you'll need libmagic installed. The recommended way to do this is with ``homebrew``:
+Note: Some systems may also be necessary to install the `non-python Pillow build dependencies <https://pillow.readthedocs.io/en/stable/installation.html#external-libraries>`_.
 
 .. code-block:: bash
 
