@@ -82,8 +82,26 @@ You'll also need ``tox``:
 
     $ pip install tox
 
-To run tests:
+```suggestion
+To run the entire django-versatileimagefield test matrix, that is, run all tests on all supported combination of versions of python, django and djangorestframework:
+
+Simple run:
 
 .. code-block:: bash
 
-    $ tox
+   $ tox
+
+Note: tox names a possible combination as "tox environment"
+
+
+To list the available tox environments run:
+
+.. code-block:: bash
+
+   $ tox -l
+
+To execute all tests on a specific tox environment:
+
+.. code-block:: bash
+
+   $ tox -e <name-of-the-environment>
