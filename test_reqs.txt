@@ -8,3 +8,4 @@ flake8==2.2.5
 python-magic==0.4.22
 requests==2.5.1
 sphinx-rtd-theme==0.1.6
+testfixtures==6.17.1

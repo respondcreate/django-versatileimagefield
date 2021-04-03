@@ -6,7 +6,9 @@ import math
 import operator
 import os
 from shutil import rmtree
+from testfixtures import compare
 
+from django import VERSION as DJANGO_VERSION
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core import serializers
@@ -374,7 +376,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
             }
         )
 
-    def _skipfornow_test_widget_javascript(self):
+    def test_widget_javascript(self):
         """Ensure VersatileImagePPOIClickWidget widget loads appropriately."""
         self.widget_test.image.create_on_demand = True
         self.widget_test.image.url
@@ -385,9 +387,13 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         response = self.client.get(self.admin_url)
         self.assertEqual(response.status_code, 200)
         # Test that javascript loads correctly
+        if DJANGO_VERSION[0] >= 3 and DJANGO_VERSION[1] >= 1:
+            expected_response = '<script src="/static/versatileimagefield/js/versatileimagefield.js"></script>'
+        else:
+            expected_response = '<script type="text/javascript" src="/static/versatileimagefield/js/versatileimagefield.js"></script>'
         self.assertContains(
             response,
-            '<script type="text/javascript" src="/static/versatileimagefield/js/versatileimagefield.js"></script>',
+            expected_response,
             html=True
         )
 
