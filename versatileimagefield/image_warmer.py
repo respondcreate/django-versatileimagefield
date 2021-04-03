@@ -112,7 +112,7 @@ class VersatileImageFieldWarmer(object):
         versatileimagefieldfile.create_on_demand = True
         try:
             url = get_url_from_image_key(versatileimagefieldfile, size_key)
-        except Exception: # pragma: no cover
+        except Exception:  # pragma: no cover
             success = False
             url_or_filepath = versatileimagefieldfile.name
             logger.exception('Thumbnail generation failed',
@@ -143,7 +143,7 @@ class VersatileImageFieldWarmer(object):
                     num_images_pre_warmed += 1
                     if self.verbose:
                         cli_progress_bar(num_images_pre_warmed, total)
-                else: # pragma: no cover
+                else:  # pragma: no cover
                     failed_to_create_image_path_list.append(url_or_filepath)
 
                 if a * b == total and self.verbose:
