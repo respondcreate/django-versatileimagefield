@@ -42,7 +42,7 @@ class VersatileImageFileDescriptor(ImageFileDescriptor):
             self.field.update_ppoi_field(instance)
 
     def __get__(self, instance=None, owner=None):
-        if instance is None:
+        if instance is None:  # pragma: no cover
             return self
 
         # This is slightly complicated, so worth an explanation.
