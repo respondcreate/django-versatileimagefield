@@ -124,19 +124,22 @@ class SizedImage(ProcessedImage, dict):
             )
 
             try:
-                resized_url = self.storage.url(resized_storage_path)
+                if hasattr(self.storage, 'static_url'):
+                    resized_url = self.storage.static_url(filtered_path)
+                else:
+                    resized_url = self.storage.url(filtered_path)
             except Exception:
                 resized_url = None
 
             if self.create_on_demand is True:
-                if cache.get(resized_storage_path) and resized_url is not None:
+                if cache.get(resized_url) and resized_url is not None:
                     # The sized path exists in the cache so the image already
                     # exists. So we `pass` to skip directly to the return
                     # statement
                     pass
                 else:
                     if resized_storage_path and not self.storage.exists(
-                        resized_storage_path
+                        resized_url
                     ):
                         self.create_resized_image(
                             path_to_image=self.path_to_image,
@@ -148,7 +151,7 @@ class SizedImage(ProcessedImage, dict):
                         resized_url = self.storage.url(resized_storage_path)
 
                     # Setting a super-long cache for a resized image (30 Days)
-                    cache.set(resized_storage_path, 1, VERSATILEIMAGEFIELD_CACHE_LENGTH)
+                    cache.set(resized_url, 1, VERSATILEIMAGEFIELD_CACHE_LENGTH)
         return SizedImageInstance(
             name=resized_storage_path,
             url=resized_url,

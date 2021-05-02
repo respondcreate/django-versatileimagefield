@@ -128,7 +128,10 @@ class FilterLibrary(dict):
                         storage=self.storage
                     )
 
-                    filtered_url = self.storage.url(filtered_path)
+                    if hasattr(self.storage, 'static_url'):
+                        filtered_url = self.storage.static_url(filtered_path)
+                    else:
+                        filtered_url = self.storage.url(filtered_path)
 
                     filter_cls = self.registry._filter_registry[key]
                     prepped_filter = filter_cls(
@@ -138,13 +141,13 @@ class FilterLibrary(dict):
                         filename_key=key
                     )
                     if self.create_on_demand is True:
-                        if cache.get(filtered_path):
+                        if cache.get(filtered_url):
                             # The filtered_url exists in the cache so the image
                             # already exists. So we `pass` to skip directly to
                             # the return statement.
                             pass
                         else:
-                            if not self.storage.exists(filtered_path):
+                            if not self.storage.exists(filtered_url):
                                 prepped_filter.create_filtered_image(
                                     path_to_image=self.original_file_location,
                                     save_path_on_storage=filtered_path
@@ -153,7 +156,7 @@ class FilterLibrary(dict):
                             # Setting a super-long cache for the newly created
                             # image
                             cache.set(
-                                filtered_path,
+                                filtered_url,
                                 1,
                                 VERSATILEIMAGEFIELD_CACHE_LENGTH
                             )
