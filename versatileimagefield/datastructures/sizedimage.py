@@ -125,9 +125,9 @@ class SizedImage(ProcessedImage, dict):
 
             try:
                 if hasattr(self.storage, 'static_url'):
-                    resized_url = self.storage.static_url(filtered_path)
+                    resized_url = self.storage.static_url(resized_storage_path)
                 else:
-                    resized_url = self.storage.url(filtered_path)
+                    resized_url = self.storage.url(resized_storage_path)
             except Exception:
                 resized_url = None
 
@@ -139,7 +139,7 @@ class SizedImage(ProcessedImage, dict):
                     pass
                 else:
                     if resized_storage_path and not self.storage.exists(
-                        resized_url
+                        resized_storage_path
                     ):
                         self.create_resized_image(
                             path_to_image=self.path_to_image,

@@ -147,7 +147,7 @@ class FilterLibrary(dict):
                             # the return statement.
                             pass
                         else:
-                            if not self.storage.exists(filtered_url):
+                            if not self.storage.exists(filtered_path):
                                 prepped_filter.create_filtered_image(
                                     path_to_image=self.original_file_location,
                                     save_path_on_storage=filtered_path
