@@ -130,9 +130,9 @@ class FilterLibrary(dict):
 
                     filtered_url = self.storage.url(filtered_path)
                     
-                    static_url = filtered_path
+                    static_url = filtered_url
                     if hasattr(self.storage, 'static_url'):
-                        static_url = self.storage.static_url(resized_storage_path)
+                        static_url = self.storage.static_url(filtered_path)
 
                     filter_cls = self.registry._filter_registry[key]
                     prepped_filter = filter_cls(
