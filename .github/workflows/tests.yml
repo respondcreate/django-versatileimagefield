@@ -68,16 +68,10 @@ jobs:
     - name: Tox tests
       run: |
         tox -e $TOXENV
-    # - name: Upload coverage
-    #   uses: codecov/codecov-action@v1
-    #   with:
-    #     name: Python ${{ env.PYTHON_V }}
-    - name: Coveralls
-      uses: coverallsapp/github-action@master
+    - name: Upload coverage
+      uses: codecov/codecov-action@v1
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        flag-name: run-${{ matrix.test_number }}
-        parallel: true
+        name: Python ${{ env.PYTHON_V }}
   finish-coverage-upload:
     needs: run-tests
     runs-on: ubuntu-latest
