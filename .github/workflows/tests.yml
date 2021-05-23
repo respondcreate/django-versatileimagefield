@@ -3,7 +3,7 @@ name: Run Tests
 on: [push, pull_request]
 
 jobs:
-  build:
+  run-tests:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -75,6 +75,7 @@ jobs:
   publish-to-pypi:
     name: Build and publish Python 🐍 distributions 📦 to PyPI and TestPyPI
     runs-on: ubuntu-18.04
+    needs: run-tests
     steps:
     - uses: actions/checkout@master
     - name: Set up Python 3.7
@@ -97,6 +98,7 @@ jobs:
         .
     - name: Publish distribution 📦 to Test PyPI
       uses: pypa/gh-action-pypi-publish@master
+      if: github.ref == 'refs/heads/master'
       with:
         password: ${{ secrets.TEST_PYPI_API_TOKEN }}
         repository_url: https://test.pypi.org/legacy/
