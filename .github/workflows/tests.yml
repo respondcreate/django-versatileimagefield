@@ -1,4 +1,4 @@
-name: Test
+name: Run Tests
 
 on: [push, pull_request]
 
@@ -61,18 +61,6 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ env.PYTHON_V }}
-#    - name: Get pip cache dir
-#      id: pip-cache
-#      run: |
-#        echo "::set-output name=dir::$(pip cache dir)"
-#    - name: Cache
-#      uses: actions/cache@v2
-#      with:
-#        path: ${{ steps.pip-cache.outputs.dir }}
-#        key:
-#          -${{ matrix.python-version }}-v1-${{ hashFiles('**/setup.py') }}
-#        restore-keys: |
-#          -${{ matrix.python-version }}-v1-
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -84,3 +72,36 @@ jobs:
       uses: codecov/codecov-action@v1
       with:
         name: Python ${{ env.PYTHON_V }}
+  publish-to-pypi:
+    name: Build and publish Python 🐍 distributions 📦 to PyPI and TestPyPI
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@master
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+    - name: Install pypa/build
+      run: >-
+        python -m
+        pip install
+        build
+        --user
+    - name: Build a binary wheel and a source tarball
+      run: >-
+        python -m
+        build
+        --sdist
+        --wheel
+        --outdir dist/
+        .
+    - name: Publish distribution 📦 to Test PyPI
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+        repository_url: https://test.pypi.org/legacy/
+    - name: Publish distribution 📦 to PyPI
+      if: startsWith(github.ref, 'refs/tags')
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        password: ${{ secrets.PYPI_API_TOKEN }}
