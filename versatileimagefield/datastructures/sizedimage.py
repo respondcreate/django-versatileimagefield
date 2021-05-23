@@ -125,7 +125,7 @@ class SizedImage(ProcessedImage, dict):
 
             try:
                 resized_url = self.storage.url(resized_storage_path)
-            except Exception:
+            except Exception:  # pragma: no cover
                 resized_url = None
 
             if self.create_on_demand is True:

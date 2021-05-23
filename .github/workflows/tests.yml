@@ -1,0 +1,120 @@
+name: Run Tests
+
+on: [push, pull_request]
+
+jobs:
+  run-tests:
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        os: [ubuntu-20.04]
+        python-version: [python3.9, python3.8]
+        django-version: [django3.2, django3.1, django3.0, django2.2, django2.1, django2.0]
+        drf-version: [drf3.12, drf3.11, drf3.10, drf3.09]
+        exclude:
+         - os: ubuntu-20.04
+           django-version: django3.2
+           drf-version: drf3.10
+         - os: ubuntu-20.04
+           django-version: django3.1
+           drf-version: drf3.10
+         - os: ubuntu-20.04
+           django-version: django3.2
+           drf-version: drf3.09
+         - os: ubuntu-20.04
+           django-version: django3.1
+           drf-version: drf3.09
+         - os: ubuntu-20.04
+           django-version: django3.0
+           drf-version: drf3.09
+         - os: ubuntu-20.04
+           django-version: django2.1
+           drf-version: drf3.12
+         - os: ubuntu-20.04
+           django-version: django2.0
+           drf-version: drf3.12
+    name: ${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.django-version }}-${{ matrix.drf-version }}
+    steps:
+    - name: "Set job environments"
+      run: |
+          matrix_python="${{ matrix.python-version }}"
+          matrix_django="${{ matrix.django-version }}"
+          matrix_drf="${{ matrix.drf-version }}"
+          python_v="${matrix_python//[a-zA-Z]}"
+          django_v="${matrix_django//[a-zA-Z\.]}"
+          drf_v="${matrix_drf//[a-zA-Z\.]}"
+          tox_env_name="py${python_v}-django${django_v}-drf${drf_v}"
+          echo "TOXENV=$tox_env_name" >> $GITHUB_ENV
+          echo "PYTHON_V=$python_v" >> $GITHUB_ENV
+    - name: "Installing non-python packages"
+      run: |
+         sudo apt-get update -qq
+         DEBIAN_FRONTEND=noninteractive
+         echo "Installing build tools"
+         sudo apt-get install -y build-essential
+         echo "Installing python Pillow library dependencies"
+         sudo apt-get install -y libraqm0 libfreetype6-dev libfribidi-dev libimagequant-dev libjpeg-dev liblcms2-dev libopenjp2-7-dev libtiff5-dev libwebp-dev libxcb1-dev
+    - uses: actions/checkout@v2
+    - name: Set up Python "${{ env.PYTHON_V }}"
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ env.PYTHON_V }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install --upgrade tox tox-gh-actions testfixtures
+    - name: Tox tests
+      run: |
+        tox -e $TOXENV
+    - name: Upload coverage
+      uses: codecov/codecov-action@v1
+      with:
+        name: Python ${{ env.PYTHON_V }}
+  finish-coverage-upload:
+    needs: run-tests
+    runs-on: ubuntu-latest
+    steps:
+    - name: Coveralls Finished
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        parallel-finished: true
+  publish-to-pypi:
+    name: Build and publish Python 🐍 distributions 📦 to PyPI and TestPyPI
+    runs-on: ubuntu-18.04
+    needs: run-tests
+    steps:
+    - uses: actions/checkout@master
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+    - name: Install pypa/build
+      run: >-
+        python -m
+        pip install
+        build
+        --user
+    - name: Build a binary wheel and a source tarball
+      run: >-
+        python -m
+        build
+        --sdist
+        --wheel
+        --outdir dist/
+        .
+    - name: Publish distribution 📦 to Test PyPI
+      uses: pypa/gh-action-pypi-publish@master
+      if: github.ref == 'refs/heads/master'
+      with:
+        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+        repository_url: https://test.pypi.org/legacy/
+    - name: Publish distribution 📦 to PyPI
+      if: startsWith(github.ref, 'refs/tags')
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        password: ${{ secrets.PYPI_API_TOKEN }}

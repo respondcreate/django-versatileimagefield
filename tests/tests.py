@@ -6,7 +6,9 @@ import math
 import operator
 import os
 from shutil import rmtree
+from testfixtures import compare
 
+from django import VERSION as DJANGO_VERSION
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core import serializers
@@ -385,9 +387,13 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         response = self.client.get(self.admin_url)
         self.assertEqual(response.status_code, 200)
         # Test that javascript loads correctly
+        if DJANGO_VERSION[0] >= 3 and DJANGO_VERSION[1] >= 1:
+            expected_response = '<script src="/static/versatileimagefield/js/versatileimagefield.js"></script>'
+        else:
+            expected_response = '<script type="text/javascript" src="/static/versatileimagefield/js/versatileimagefield.js"></script>'
         self.assertContains(
             response,
-            '<script type="text/javascript" src="/static/versatileimagefield/js/versatileimagefield.js"></script>',
+            expected_response,
             html=True
         )
 
@@ -500,14 +506,18 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
             '/media/__sized__/python-logo-thumbnail-100x100-70.jpg'
         )
         pickled_state = self.jpg.image.__getstate__()
-        self.assertEqual(
-            pickled_state,
-            {
+        pickled_state.pop("field", None)
+        pickled_state.pop("instance", None)
+        pickled_state.pop("storage", None)
+        compare(
+            actual=pickled_state,
+            expected={
                 '_create_on_demand': False,
                 '_committed': True,
                 '_file': None,
                 'name': 'python-logo.jpg',
-                'closed': False
+                'closed': False,
+                '_ppoi_value': (0.25, 0.25)
             }
         )
 
