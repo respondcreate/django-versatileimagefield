@@ -1,4 +1,4 @@
-name: Run Tests
+name: Run Tests, Evaluate Coverage, Package & Release
 
 on: [push, pull_request]
 
