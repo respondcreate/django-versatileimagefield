@@ -73,11 +73,11 @@ jobs:
     #   with:
     #     name: Python ${{ env.PYTHON_V }}
     - name: Coveralls
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          flag-name: run-${{ matrix.test_number }}
-          parallel: true
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        flag-name: run-${{ matrix.test_number }}
+        parallel: true
   finish-coverage-upload:
     needs: run-tests
     runs-on: ubuntu-latest
