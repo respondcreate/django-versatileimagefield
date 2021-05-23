@@ -68,10 +68,25 @@ jobs:
     - name: Tox tests
       run: |
         tox -e $TOXENV
-    - name: Upload coverage
-      uses: codecov/codecov-action@v1
+    # - name: Upload coverage
+    #   uses: codecov/codecov-action@v1
+    #   with:
+    #     name: Python ${{ env.PYTHON_V }}
+    - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          flag-name: run-${{ matrix.test_number }}
+          parallel: true
+  finish-coverage-upload:
+    needs: run-tests
+    runs-on: ubuntu-latest
+    steps:
+    - name: Coveralls Finished
+      uses: coverallsapp/github-action@master
       with:
-        name: Python ${{ env.PYTHON_V }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        parallel-finished: true
   publish-to-pypi:
     name: Build and publish Python 🐍 distributions 📦 to PyPI and TestPyPI
     runs-on: ubuntu-18.04
