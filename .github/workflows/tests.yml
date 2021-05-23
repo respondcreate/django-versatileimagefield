@@ -4,6 +4,8 @@ on: [push, pull_request]
 
 jobs:
   run-tests:
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
