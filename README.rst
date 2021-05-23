@@ -2,9 +2,9 @@
 django-versatileimagefield
 ==========================
 
-.. image:: https://travis-ci.org/respondcreate/django-versatileimagefield.svg?branch=master
-    :target: https://travis-ci.org/respondcreate/django-versatileimagefield
-    :alt: Travis CI Status
+.. image:: https://github.com/respondcreate/django-versatileimagefield/actions/workflows/tests.yml/badge.svg
+    :target: https://github.com/respondcreate/django-versatileimagefield/actions/workflows/tests.yml
+    :alt: Github Actions Status
 
 .. image:: https://coveralls.io/repos/github/respondcreate/django-versatileimagefield/badge.svg?branch=master
     :target: https://coveralls.io/github/respondcreate/django-versatileimagefield?branch=master
