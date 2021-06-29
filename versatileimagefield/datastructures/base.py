@@ -3,7 +3,12 @@ from PIL import Image
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
-from ..settings import QUAL, VERSATILEIMAGEFIELD_PROGRESSIVE_JPEG
+from ..settings import (
+    JPEG_QUAL,
+    VERSATILEIMAGEFIELD_PROGRESSIVE_JPEG,
+    VERSATILEIMAGEFIELD_LOSSLESS_WEBP,
+    WEBP_QUAL,
+)
 from ..utils import get_image_metadata_from_file
 
 EXIF_ORIENTATION_KEY = 274
@@ -122,15 +127,31 @@ class ProcessedImage(object):
         Args:
             * [0]: Image instance, converted to RGB
             * [1]: Dict with a quality key (mapped to the value of `QUAL` as
-                   defined by the `VERSATILEIMAGEFIELD_JPEG_RESIZE_QUALITY`
-                   setting)
+                   defined by the `VERSATILEIMAGEFIELD_RESIZE_QUALITY` setting)
         """
         save_kwargs = {
             'progressive': VERSATILEIMAGEFIELD_PROGRESSIVE_JPEG,
-            'quality': QUAL
+            'quality': JPEG_QUAL
         }
         if image.mode != 'RGB':
             image = image.convert('RGB')
+        return (image, save_kwargs)
+
+    def preprocess_WEBP(self, image, **kwargs):
+        """
+        Receive a PIL Image instance of a WEBP and return 2-tuple.
+
+        Args:
+            * [0]: Original Image instance (passed to `image`)
+            * [1]: Dict with a quality key (mapped to the value of `QUAL`as
+                   defined by the `VERSATILEIMAGEFIELD_RESIZE_QUALITY` setting)
+        """
+        save_kwargs = {
+            "quality": WEBP_QUAL,
+            "lossless": VERSATILEIMAGEFIELD_LOSSLESS_WEBP,
+            "icc_profile": image.info.get('icc_profile', '')
+        }
+
         return (image, save_kwargs)
 
     def retrieve_image(self, path_to_image):
