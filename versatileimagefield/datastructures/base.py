@@ -126,8 +126,9 @@ class ProcessedImage(object):
 
         Args:
             * [0]: Image instance, converted to RGB
-            * [1]: Dict with a quality key (mapped to the value of `QUAL` as
-                   defined by the `VERSATILEIMAGEFIELD_RESIZE_QUALITY` setting)
+            * [1]: Dict with a quality key (mapped to the value of `JPEG_QUAL`
+                   defined by the `VERSATILEIMAGEFIELD_JPEG_RESIZE_QUALITY`
+                   setting)
         """
         save_kwargs = {
             'progressive': VERSATILEIMAGEFIELD_PROGRESSIVE_JPEG,
@@ -143,8 +144,9 @@ class ProcessedImage(object):
 
         Args:
             * [0]: Original Image instance (passed to `image`)
-            * [1]: Dict with a quality key (mapped to the value of `QUAL`as
-                   defined by the `VERSATILEIMAGEFIELD_RESIZE_QUALITY` setting)
+            * [1]: Dict with a quality key (mapped to the value of `WEBP_QUAL`
+                   as defined by the `VERSATILEIMAGEFIELD_RESIZE_QUALITY`
+                   setting)
         """
         save_kwargs = {
             "quality": WEBP_QUAL,

@@ -263,3 +263,33 @@ Placeholder images defined by ``OnStoragePlaceholderImage`` will be saved into t
 .. _django.db.models.ImageField: https://docs.djangoproject.com/en/dev/ref/models/fields/#imagefield
 .. _south: https://south.readthedocs.io/en/latest/index.html
 .. _default_storage: https://docs.djangoproject.com/en/dev/topics/files/#file-storage
+
+
+Working with Webp images
+-----------------------------
+
+WebP images are fully supported across the whole library and should act like any other image type.
+
+.. note:: If you are uploading a WebP image in a ``Django<2.2``, you need
+    to provide explicit values for both, ``width`` and ``height`` fields.
+    This behavior has been fixed in the following Django versions.
+    Check `Django#10331 <https://github.com/django/django/pull/10331/>`_ for more info.
+
+    .. code-block:: python
+        :emphasize-lines: 3-4,9-10
+
+        from someapp.models import ImageExampleModel
+
+        # Django OK
+        ImageExampleModel.objects.create(
+            image="python-logo.webp",
+            width=580,
+            height=164
+        )
+
+        # Django>=2.2 OK. Will through an error in earlier versions.
+        ImageExampleModel.objects.create(
+            image="python-logo.webp",
+            width=0,
+            height=0
+        )

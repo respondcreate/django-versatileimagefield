@@ -19,7 +19,7 @@ class VersatileImageFieldPostProcessorTestCase(VersatileImageFieldBaseTestCase):
         self.instance.create_on_demand = True
         self.assertEqual(
             self.instance.image.crop['100x100'].url,
-            '/media/__sized__/python-logo-2c88a725748e22ee.jpg'
+            '/media/__sized__/python-logo-0628a40c3c1b5466.jpg'
         )
 
     def test_obscured_file_delete(self):
