@@ -32,12 +32,10 @@ Compatibility
 
 - Python:
 
-  - 3.4
-  - 3.5
   - 3.6
   - 3.7
-
-.. note:: The 1.2 release dropped support for Python 3.3.x.
+  - 3.8
+  - 3.9
 
 - `Django <https://www.djangoproject.com/>`_:
 
@@ -47,9 +45,6 @@ Compatibility
   - 3.0.x
   - 3.1.x
   - 3.2.x
-
-.. note:: The 1.4 release dropped support for Django 1.5.x & 1.6.x.
-.. note:: The 1.7 release dropped support for Django 1.7.x.
 
 - `Pillow <https://pillow.readthedocs.io/en/latest/index.html>`_ >=2.4.0
 
@@ -83,6 +78,7 @@ Table of Contents
 
 Release Notes
 =============
+
 2.1
 ^^^
 - Added support for Django 3.1 & 3.2.

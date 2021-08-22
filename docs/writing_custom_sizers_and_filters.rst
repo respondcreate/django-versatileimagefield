@@ -267,10 +267,6 @@ home.
 ``versatileimagefield`` – (i.e. ``versatileimagefield.py``)
 that are available at the 'top level' of each app on ``INSTALLED_APPS``.
 
-.. caution:: If your project is based on python 2.x you can prevent import problems  
-    by including ``from __future__ import absolute_import`` at the top of any files
-    related to your custom sizer/filter.
-
 Here's an example:
 
 ::

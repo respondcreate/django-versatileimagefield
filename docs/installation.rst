@@ -10,25 +10,19 @@ Installation is easy with `pip <https://pypi.python.org/pypi/pip>`__:
 Python Compatibility
 --------------------
 
--  2.7.x
--  3.3.x
--  3.4.x
--  3.5.x
 -  3.6.x
 -  3.7.x
 -  3.8.x
+-  3.9.x
 
 Django Compatibility
 --------------------
 
--  1.8.x
--  1.9.x
--  1.10.x
--  1.11.x
 -  2.0.x
--  2.1.x
 -  2.2.x
 -  3.0.x
+-  3.1.x
+-  3.2.x
 
 Dependencies
 ------------
