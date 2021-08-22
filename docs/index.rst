@@ -78,6 +78,9 @@ Table of Contents
 
 Release Notes
 =============
+2.2
+^^^
+- Added WEBP support for sizers & filters. Thanks, `@ahmedaljazzar <https://github.com/ahmedaljazzar>`_!
 
 2.1
 ^^^
