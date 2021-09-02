@@ -6,7 +6,12 @@ import math
 import operator
 import os
 from shutil import rmtree
+from unittest import skipIf
 
+import django
+from testfixtures import compare
+
+from django import VERSION as DJANGO_VERSION
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core import serializers
@@ -32,8 +37,11 @@ from versatileimagefield.registry import (
     InvalidFilteredImageSubclass, NotRegistered, UnallowedSizerName, UnallowedFilterName
 )
 from versatileimagefield.settings import (
-    QUAL, VERSATILEIMAGEFIELD_SIZED_DIRNAME, VERSATILEIMAGEFIELD_FILTERED_DIRNAME,
-    VERSATILEIMAGEFIELD_PLACEHOLDER_DIRNAME
+    JPEG_QUAL,
+    VERSATILEIMAGEFIELD_SIZED_DIRNAME,
+    VERSATILEIMAGEFIELD_FILTERED_DIRNAME,
+    VERSATILEIMAGEFIELD_PLACEHOLDER_DIRNAME,
+    WEBP_QUAL
 )
 from versatileimagefield.utils import (
     get_filtered_filename,
@@ -137,6 +145,13 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
             width=0,
             height=0
         )
+        cls.webp = VersatileImageTestModel.objects.create(
+            img_type='webp',
+            image="python-logo.webp",
+            ppoi="0.5x0.5",
+            width=580,
+            height=164
+        )
         cls.delete_test = VersatileImageTestModel.objects.create(
             img_type='delete_test',
             image="delete-test/python-logo-delete-test.jpg",
@@ -185,14 +200,18 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         """Ensure thumbnail Sizer paths are set correctly."""
         self.assertEqual(
             self.jpg.image.thumbnail['100x100'].url,
-            '/media/__sized__/python-logo-thumbnail-100x100-70.jpg'
+            '/media/__sized__/python-logo-thumbnail-100x100-{}.jpg'.format(JPEG_QUAL)
+        )
+        self.assertEqual(
+            self.webp.image.thumbnail['100x100'].url,
+            '/media/__sized__/python-logo-thumbnail-100x100-{}.webp'.format(WEBP_QUAL)
         )
 
     def test_crop_resized_path(self):
         """Ensure crop Sizer paths are set correctly."""
         self.assertEqual(
             self.jpg.image.crop['100x100'].url,
-            '/media/__sized__/python-logo-crop-c0-25__0-25-100x100-70.jpg'
+            '/media/__sized__/python-logo-crop-c0-25__0-25-100x100-{}.jpg'.format(JPEG_QUAL)
         )
         self.assertEqual(
             self.gif.image.crop['100x100'].url,
@@ -202,6 +221,10 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
             self.png.image.crop['100x100'].url,
             '/media/__sized__/python-logo-crop-c0-5__0-5-100x100.png'
         )
+        self.assertEqual(
+            self.webp.image.crop['100x100'].url,
+            '/media/__sized__/python-logo-crop-c0-5__0-5-100x100-{}.webp'.format(WEBP_QUAL)
+        )
 
     def test_invert_filtered_path(self):
         """Ensure crop Sizer paths are set correctly."""
@@ -209,11 +232,18 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
             self.jpg.image.filters.invert.url,
             '/media/__filtered__/python-logo__invert__.jpg'
         )
+        self.assertEqual(
+            self.webp.image.filters.invert.url,
+            '/media/__filtered__/python-logo__invert__.webp'
+        )
 
     def test_invalid_filter(self):
         """Ensure InvalidFilter raises."""
         with self.assertRaises(InvalidFilter):
             invalid_filter = self.jpg.image.filters.non_existant.url
+            del invalid_filter
+        with self.assertRaises(InvalidFilter):
+            invalid_filter = self.webp.image.filters.non_existant.url
             del invalid_filter
 
     def test_invert_plus_thumbnail_sizer_filtered_path(self):
@@ -221,8 +251,13 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         self.assertEqual(
             self.jpg.image.filters.invert.thumbnail['100x100'].url,
             (
-                '/media/__sized__/__filtered__/python-logo__invert__'
-                '-thumbnail-100x100-70.jpg'
+                '/media/__sized__/__filtered__/python-logo__invert__-thumbnail-100x100-{}.jpg'.format(JPEG_QUAL)
+            )
+        )
+        self.assertEqual(
+            self.webp.image.filters.invert.thumbnail['100x100'].url,
+            (
+                '/media/__sized__/__filtered__/python-logo__invert__-thumbnail-100x100-{}.webp'.format(WEBP_QUAL)
             )
         )
 
@@ -235,13 +270,11 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
         self.assertEqual(
             self.jpg.optional_image.crop['100x100'].url,
-            '/media/__sized__/__placeholder__/'
-            'placeholder-crop-c0-5__0-5-100x100.png'
+            '/media/__sized__/__placeholder__/placeholder-crop-c0-5__0-5-100x100.png'
         )
         self.assertEqual(
             self.jpg.optional_image.thumbnail['100x100'].url,
-            '/media/__sized__/__placeholder__/'
-            'placeholder-thumbnail-100x100.png'
+            '/media/__sized__/__placeholder__/placeholder-thumbnail-100x100.png'
         )
         self.assertEqual(
             self.jpg.optional_image.filters.invert.url,
@@ -249,23 +282,19 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
         self.assertEqual(
             self.jpg.optional_image_2.crop['100x100'].url,
-            '/media/__sized__/__placeholder__/on-storage-placeholder/'
-            'placeholder-crop-c0-5__0-5-100x100.png'
+            '/media/__sized__/__placeholder__/on-storage-placeholder/placeholder-crop-c0-5__0-5-100x100.png'
         )
         self.assertEqual(
             self.jpg.optional_image_2.thumbnail['100x100'].url,
-            '/media/__sized__/__placeholder__/on-storage-placeholder/'
-            'placeholder-thumbnail-100x100.png'
+            '/media/__sized__/__placeholder__/on-storage-placeholder/placeholder-thumbnail-100x100.png'
         )
         self.assertEqual(
             self.jpg.optional_image_2.filters.invert.url,
-            '/media/__placeholder__/on-storage-placeholder/__filtered__/'
-            'placeholder__invert__.png'
+            '/media/__placeholder__/on-storage-placeholder/__filtered__/placeholder__invert__.png'
         )
-        self.assertFalse(
-            self.jpg.optional_image.field.storage.size(
-                self.jpg.optional_image.name
-            ) is 0
+        self.assertNotEqual(
+            0,
+            self.jpg.optional_image.field.storage.size(self.jpg.optional_image.name)
         )
         self.jpg.optional_image.create_on_demand = False
 
@@ -323,6 +352,13 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
         num_created, failed_to_create = jpg_warmer.warm()
         self.assertEqual(num_created, 5)
+        webp_warmer = VersatileImageFieldWarmer(
+            instance_or_queryset=self.webp,
+            rendition_key_set='test_set',
+            image_attr='image'
+        )
+        num_created, failed_to_create = webp_warmer.warm()
+        self.assertEqual(num_created, 5)
         all_imgs_warmer = VersatileImageFieldWarmer(
             instance_or_queryset=VersatileImageTestModel.objects.exclude(
                 img_type='delete_test'
@@ -356,11 +392,11 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         self.assertEqual(
             serializer.data.get('image'),
             {
-                'test_crop': 'http://testserver/media/__sized__/python-logo-crop-c0-25__0-25-100x100-70.jpg',
-                'test_invert_crop': 'http://testserver/media/__sized__/__filtered__/python-logo__invert__-crop-c0-25__0-25-100x100-70.jpg',
-                'test_invert_thumb': 'http://testserver/media/__sized__/__filtered__/python-logo__invert__-thumbnail-100x100-70.jpg',
+                'test_crop': 'http://testserver/media/__sized__/python-logo-crop-c0-25__0-25-100x100-{}.jpg'.format(JPEG_QUAL),
+                'test_invert_crop': 'http://testserver/media/__sized__/__filtered__/python-logo__invert__-crop-c0-25__0-25-100x100-{}.jpg'.format(JPEG_QUAL),
+                'test_invert_thumb': 'http://testserver/media/__sized__/__filtered__/python-logo__invert__-thumbnail-100x100-{}.jpg'.format(JPEG_QUAL),
                 'test_invert': 'http://testserver/media/__filtered__/python-logo__invert__.jpg',
-                'test_thumb': 'http://testserver/media/__sized__/python-logo-thumbnail-100x100-70.jpg',
+                'test_thumb': 'http://testserver/media/__sized__/python-logo-thumbnail-100x100-{}.jpg'.format(JPEG_QUAL),
             }
         )
         self.assertEqual(
@@ -385,9 +421,13 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         response = self.client.get(self.admin_url)
         self.assertEqual(response.status_code, 200)
         # Test that javascript loads correctly
+        if DJANGO_VERSION[0] >= 3 and DJANGO_VERSION[1] >= 1:
+            expected_response = '<script src="/static/versatileimagefield/js/versatileimagefield.js"></script>'
+        else:
+            expected_response = '<script type="text/javascript" src="/static/versatileimagefield/js/versatileimagefield.js"></script>'
         self.assertContains(
             response,
-            '<script type="text/javascript" src="/static/versatileimagefield/js/versatileimagefield.js"></script>',
+            expected_response,
             html=True
         )
 
@@ -456,7 +496,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
                     <div class="ppoi-point" id="optional_image_with_ppoi_0_ppoi"></div>
                   </div>
                   <div class="image-wrap inner">
-                    <img src="/media/__sized__/exif-orientation-examples/Landscape_6-thumbnail-300x300-70.jpg"
+                    <img src="/media/__sized__/exif-orientation-examples/Landscape_6-thumbnail-300x300-{quality}.jpg"
                          id="optional_image_with_ppoi_0_imagepreview"
                          data-hidden_field_id="id_optional_image_with_ppoi_1"
                          data-point_stage_id="optional_image_with_ppoi_0_point-stage"
@@ -472,7 +512,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
               <input class="ppoi-input" id="id_optional_image_with_ppoi_1"
                      name="optional_image_with_ppoi_1" type="hidden" value="1.0x1.0" />
             </div>
-            """,
+            """.format(quality=JPEG_QUAL),
             html=True
         )
         self.assertTrue(
@@ -497,17 +537,21 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         jpg_instance = jpg_unpickled
         self.assertEqual(
             jpg_instance.image.thumbnail['100x100'].url,
-            '/media/__sized__/python-logo-thumbnail-100x100-70.jpg'
+            '/media/__sized__/python-logo-thumbnail-100x100-{}.jpg'.format(JPEG_QUAL)
         )
         pickled_state = self.jpg.image.__getstate__()
-        self.assertEqual(
-            pickled_state,
-            {
+        pickled_state.pop("field", None)
+        pickled_state.pop("instance", None)
+        pickled_state.pop("storage", None)
+        compare(
+            actual=pickled_state,
+            expected={
                 '_create_on_demand': False,
                 '_committed': True,
                 '_file': None,
                 'name': 'python-logo.jpg',
-                'closed': False
+                'closed': False,
+                '_ppoi_value': (0.25, 0.25)
             }
         )
 
@@ -646,10 +690,21 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
             jpg = VersatileImageTestModel.objects.get(img_type='jpg')
             jpg.image.thumbnail['100x100'] = None
 
+        with self.assertRaises(NotImplementedError):
+            webp = VersatileImageTestModel.objects.get(img_type='webp')
+            webp.image.crop['100x100'] = None
+
+        with self.assertRaises(NotImplementedError):
+            webp = VersatileImageTestModel.objects.get(img_type='webp')
+            webp.image.thumbnail['100x100'] = None
+
     def test_malformed_sized_image_key(self):
         """Test MalformedSizedImageKey exception."""
         with self.assertRaises(MalformedSizedImageKey):
             self.jpg.image.thumbnail['fooxbar']
+
+        with self.assertRaises(MalformedSizedImageKey):
+            self.webp.image.thumbnail['fooxbar']
 
     def test_registration_exceptions(self):
         """Ensure all registration-related exceptions fire as expected."""
@@ -794,16 +849,16 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
             """
             <html>
               <body>
-                <img id="image-crop" src="/media/__sized__/python-logo-crop-c0-25__0-25-400x400-70.jpg" />
-                <img id="image-thumbnail" src="/media/__sized__/python-logo-thumbnail-400x400-70.jpg" />
+                <img id="image-crop" src="/media/__sized__/python-logo-crop-c0-25__0-25-400x400-{quality}.jpg" />
+                <img id="image-thumbnail" src="/media/__sized__/python-logo-thumbnail-400x400-{quality}.jpg" />
                 <img id="image-invert" src="/media/__filtered__/python-logo__invert__.jpg" />
                 <img id="image-invert-crop"
-                     src="/media/__sized__/__filtered__/python-logo__invert__-crop-c0-25__0-25-400x400-70.jpg" />
+                     src="/media/__sized__/__filtered__/python-logo__invert__-crop-c0-25__0-25-400x400-{quality}.jpg" />
                 <img id="optional-image-crop"
                      src="/media/__sized__/__placeholder__/placeholder-crop-c0-5__0-5-400x400.png" />
               </body>
             </html>
-            """
+            """.format(quality=JPEG_QUAL)
         )
 
     def test_field_serialization(self):
@@ -853,7 +908,9 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
 
     def test_individual_rendition_cache_clear(self):
         """Test that VersatileImageField can clear individual cache entries."""
-        expected_image_url = '/media/__sized__/delete-test/python-logo-delete-test-thumbnail-100x100-70.jpg'
+        expected_image_url = \
+            '/media/__sized__/delete-test/python-logo-delete-test-thumbnail-100x100-{}.jpg'.format(JPEG_QUAL)
+
         self.assertEqual(cache.get(expected_image_url), None)
         img = self.delete_test
         img.image.create_on_demand = True
@@ -864,7 +921,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         self.assertEqual(cache.get(expected_image_url), None)
         self.assertFalse(
             img.image.field.storage.exists(
-                '__sized__/delete-test/python-logo-delete-test-thumbnail-100x100-70.jpg'
+                '__sized__/delete-test/python-logo-delete-test-thumbnail-100x100-{}.jpg'.format(WEBP_QUAL)
             )
         )
 
@@ -873,7 +930,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         img = self.delete_test
         self.assertFalse(
             img.image.field.storage.exists(
-                '__sized__/delete-test/python-logo-delete-test-thumbnail-100x100-70.jpg'
+                '__sized__/delete-test/python-logo-delete-test-thumbnail-100x100-{}.jpg'.format(JPEG_QUAL)
             )
         )
         img.image.create_on_demand = True
@@ -882,7 +939,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         self.assertEqual(cache.get(thumb_url), 1)
         self.assertTrue(
             img.image.field.storage.exists(
-                '__sized__/delete-test/python-logo-delete-test-thumbnail-100x100-70.jpg'
+                '__sized__/delete-test/python-logo-delete-test-thumbnail-100x100-{}.jpg'.format(JPEG_QUAL)
             )
         )
         img.image.delete_all_created_images()
@@ -898,7 +955,9 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         self.assertEqual(cache.get(invert_and_thumb_url), 1)
         self.assertTrue(
             img.image.field.storage.exists(
-                '__sized__/delete-test/__filtered__/python-logo-delete-test__invert__-thumbnail-100x100-70.jpg'
+                '__sized__/delete-test/__filtered__/python-logo-delete-test__invert__-thumbnail-100x100-{}.jpg'.format(
+                    JPEG_QUAL
+                )
             )
         )
 
@@ -906,7 +965,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         self.assertEqual(cache.get(thumb_url), None)
         self.assertFalse(
             img.image.field.storage.exists(
-                '__sized__/delete-test/python-logo-delete-test-thumbnail-100x100-70.jpg'
+                '__sized__/delete-test/python-logo-delete-test-thumbnail-100x100-{}.jpg'.format(JPEG_QUAL)
             )
         )
 
@@ -920,7 +979,9 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         self.assertEqual(cache.get(invert_and_thumb_url), None)
         self.assertFalse(
             img.image.field.storage.exists(
-                '__sized__/delete-test/__filtered__/python-logo-delete-test__invert__-thumbnail-100x100-70.jpg'
+                '__sized__/delete-test/__filtered__/python-logo-delete-test__invert__-thumbnail-100x100-{}.jpg'.format(
+                    JPEG_QUAL
+                )
             )
         )
 
@@ -934,6 +995,10 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
             get_filtered_filename('test', 'inverted'),
             'test__inverted__.jpg'
         )
+        self.assertEqual(
+            get_filtered_filename('test.webp', 'inverted'),
+            'test__inverted__.webp'
+        )
 
     def test_resized_filename(self):
         """Test building a filename for a resized image."""
@@ -943,7 +1008,11 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
         self.assertEqual(
             get_resized_filename('test', 100, 100, 'thumbnail'),
-            'test-thumbnail-100x100-{}.jpg'.format(QUAL)
+            'test-thumbnail-100x100-{}.jpg'.format(JPEG_QUAL)
+        )
+        self.assertEqual(
+            get_resized_filename('test.webp', 100, 100, 'thumbnail'),
+            'test-thumbnail-100x100-{}.webp'.format(WEBP_QUAL)
         )
 
     def test_transparent_gif_preprocess(self):
@@ -1011,3 +1080,47 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         )
 
         instance.image.delete(save=False)
+
+    @skipIf(django.VERSION >= (2, 2), "Not applicable for Django>=2.2")
+    def test_webp_wrong_dimensions(self):
+        """Test WebP image dimensions behavior on Django<2.2"""
+        with self.assertRaisesMessage(RuntimeError, "could not create decoder object"):
+            VersatileImageTestModel.objects.create(
+                img_type='webp-no-dimensions',
+                image="python-logo.webp",
+                width=0,
+                height=0
+            )
+
+        try:
+            VersatileImageTestModel.objects.create(
+                img_type='webp-with-dimensions',
+                image="python-logo.webp",
+                width=580,
+                height=164
+            )
+        except RuntimeError as e:
+            self.fail("ImageField raised RuntimeError unexpectedly! msg: %s" % e)
+
+    @skipIf(django.VERSION < (2, 2), "Different behavior exists on Django<2.2")
+    def test_webp_dimensions_dimensions(self):
+        """Test no failures on all WebP image dimensions"""
+        try:
+            VersatileImageTestModel.objects.create(
+                img_type='webp-no-dimensions',
+                image="python-logo.webp",
+                width=0,
+                height=0
+            )
+        except RuntimeError as e:
+            self.fail("ImageField raised RuntimeError unexpectedly! msg: %s" % e)
+
+        try:
+            VersatileImageTestModel.objects.create(
+                img_type='webp-with-dimensions',
+                image="python-logo.webp",
+                width=580,
+                height=164
+            )
+        except RuntimeError as e:
+            self.fail("ImageField raised RuntimeError unexpectedly! msg: %s" % e)

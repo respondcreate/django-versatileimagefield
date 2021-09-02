@@ -7,10 +7,11 @@ from django.core.exceptions import ImproperlyConfigured
 
 from .settings import (
     IMAGE_SETS,
-    QUAL,
+    JPEG_QUAL,
     VERSATILEIMAGEFIELD_POST_PROCESSOR,
     VERSATILEIMAGEFIELD_SIZED_DIRNAME,
-    VERSATILEIMAGEFIELD_FILTERED_DIRNAME
+    VERSATILEIMAGEFIELD_FILTERED_DIRNAME,
+    WEBP_QUAL,
 )
 
 # PIL-supported file formats as found here:
@@ -64,14 +65,15 @@ def get_resized_filename(filename, width, height, filename_key):
         ext = 'jpg'
 
     resized_template = "%(filename_key)s-%(width)dx%(height)d"
-    if ext.lower() in ['jpg', 'jpeg']:
+    quality = WEBP_QUAL if ext.lower() == 'webp' else JPEG_QUAL
+    if ext.lower() in ['jpg', 'jpeg', 'webp']:
         resized_template = resized_template + "-%(quality)d"
 
     resized_key = resized_template % ({
         'filename_key': filename_key,
         'width': width,
         'height': height,
-        'quality': QUAL
+        'quality': quality
     })
 
     return "%(image_name)s-%(image_key)s.%(ext)s" % ({

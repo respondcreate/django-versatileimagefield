@@ -30,6 +30,14 @@ VERSATILEIMAGEFIELD_SETTINGS = {
     # https://pillow.readthedocs.io/en/latest/handbook/image-file-formats.html#jpeg
     # Defaults to 70
     'jpeg_resize_quality': QUAL,
+    # The save quality of modified WEBP images. More info here:
+    # https://pillow.readthedocs.io/en/latest/handbook/image-file-formats.html#webp
+    # Defaults to 70
+    'webp_resize_quality': QUAL,
+    # If true, instructs the WebP writer to use lossless compression.
+    # https://pillow.readthedocs.io/en/latest/handbook/image-file-formats.html#webp
+    # Defaults to False
+    'lossless_webp': False,
     # The name of the top-level folder within your storage to save all
     # sized images. Defaults to '__sized__'
     'sized_directory_name': VERSATILEIMAGEFIELD_SIZED_DIRNAME,
@@ -70,7 +78,8 @@ USER_DEFINED = getattr(
 if USER_DEFINED:
     VERSATILEIMAGEFIELD_SETTINGS.update(USER_DEFINED)
 
-QUAL = VERSATILEIMAGEFIELD_SETTINGS.get('jpeg_resize_quality')
+JPEG_QUAL = VERSATILEIMAGEFIELD_SETTINGS.get('jpeg_resize_quality')
+WEBP_QUAL = VERSATILEIMAGEFIELD_SETTINGS.get('webp_resize_quality')
 
 VERSATILEIMAGEFIELD_CACHE_NAME = VERSATILEIMAGEFIELD_SETTINGS.get(
     'cache_name'
@@ -103,6 +112,10 @@ VERSATILEIMAGEFIELD_CREATE_ON_DEMAND = VERSATILEIMAGEFIELD_SETTINGS.get(
 
 VERSATILEIMAGEFIELD_PROGRESSIVE_JPEG = VERSATILEIMAGEFIELD_SETTINGS.get(
     'progressive_jpeg'
+)
+
+VERSATILEIMAGEFIELD_LOSSLESS_WEBP = VERSATILEIMAGEFIELD_SETTINGS.get(
+    'lossless_webp'
 )
 
 IMAGE_SETS = getattr(settings, 'VERSATILEIMAGEFIELD_RENDITION_KEY_SETS', {})

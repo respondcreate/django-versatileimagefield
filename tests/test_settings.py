@@ -12,7 +12,15 @@ VERSATILEIMAGEFIELD_SETTINGS = {
     # The save quality of modified JPEG images. More info here:
     # https://pillow.readthedocs.io/en/latest/handbook/image-file-formats.html#jpeg
     # Defaults to 70
-    'jpeg_resize_quality': 70,
+    'jpeg_resize_quality': 60,
+    # The save quality of modified WEBP images. More info here:
+    # https://pillow.readthedocs.io/en/latest/handbook/image-file-formats.html#webp
+    # Defaults to 70
+    'webp_resize_quality': 80,
+    # If true, instructs the WebP writer to use lossless compression.
+    # https://pillow.readthedocs.io/en/latest/handbook/image-file-formats.html#webp
+    # Defaults to False
+    'lossless_webp': False,
     # A path on disc to an image that will be used as a 'placeholder'
     # for non-existent images.
     # If 'global_placeholder_image' is unset, the excellent, free-to-use

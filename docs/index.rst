@@ -7,9 +7,9 @@
 Welcome to django-versatileimagefield's documentation!
 ======================================================
 
-.. image:: https://travis-ci.org/respondcreate/django-versatileimagefield.svg?branch=master
-    :target: https://travis-ci.org/respondcreate/django-versatileimagefield
-    :alt: Travis CI Status
+.. image:: https://github.com/respondcreate/django-versatileimagefield/actions/workflows/tests.yml/badge.svg
+    :target: https://github.com/respondcreate/django-versatileimagefield/actions/workflows/tests.yml
+    :alt: Github Actions Status
 
 .. image:: https://coveralls.io/repos/github/respondcreate/django-versatileimagefield/badge.svg?branch=master
     :target: https://coveralls.io/github/respondcreate/django-versatileimagefield?branch=master
@@ -32,36 +32,27 @@ Compatibility
 
 - Python:
 
-  - 2.7
-  - 3.4
-  - 3.5
   - 3.6
   - 3.7
-
-.. note:: The 1.2 release dropped support for Python 3.3.x.
+  - 3.8
+  - 3.9
 
 - `Django <https://www.djangoproject.com/>`_:
 
-  - 1.8.x
-  - 1.9.x
-  - 1.10.x
-  - 1.11.x
   - 2.0.x
   - 2.1.x
   - 2.2.x
-
-.. note:: The 1.4 release dropped support for Django 1.5.x & 1.6.x.
-.. note:: The 1.7 release dropped support for Django 1.7.x.
+  - 3.0.x
+  - 3.1.x
+  - 3.2.x
 
 - `Pillow <https://pillow.readthedocs.io/en/latest/index.html>`_ >=2.4.0
 
 - `Django REST Framework <http://www.django-rest-framework.org/>`_:
 
-  - 3.4.x
-  - 3.5.x
-  - 3.6.x
-  - 3.7.x
-  - 3.8.x
+  - 3.9.x
+  - 3.10.x
+  - 3.12.x
 
 Code
 ====
@@ -87,6 +78,16 @@ Table of Contents
 
 Release Notes
 =============
+2.2
+^^^
+- Added WEBP support for sizers & filters. Thanks, `@ahmedaljazzar <https://github.com/ahmedaljazzar>`_!
+
+2.1
+^^^
+- Added support for Django 3.1 & 3.2.
+- Added github actions & txsupport. Thanks, `@luzfcb <https://github.com/luzfcb>`_!
+- Added auto-publish to PyPI (on new tag creation).
+
 2.0
 ^^^
 - Added support for Django 3.0 (and dropped support for Python 2.7.x). Thanks, `@dmptrluke <https://github.com/dmptrluke>`_!
