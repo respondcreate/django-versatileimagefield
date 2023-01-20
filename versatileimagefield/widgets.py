@@ -18,7 +18,7 @@ CENTERPOINT_CHOICES = (
 
 class ClearableFileInputWithImagePreview(ClearableFileInput):
 
-    has_template_widget_rendering = django.VERSION >= (1, 11)
+    has_template_widget_rendering = True
     template_name = 'versatileimagefield/forms/widgets/versatile_image.html'
 
     def get_hidden_field_id(self, name):
