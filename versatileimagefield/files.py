@@ -13,7 +13,7 @@ class VersatileImageFieldFile(VersatileImageMixIn, ImageFieldFile):
 
     def __setstate__(self, state):
         self.__dict__.update(state)
-        if DJANGO_VERSION[0] >= 3 and DJANGO_VERSION[1] > 0:
+        if DJANGO_VERSION >= (3, 1):
             self.storage = self.field.storage
             self._create_on_demand = state.get('_create_on_demand')
             self._ppoi_value = state.get('_ppoi_value')
