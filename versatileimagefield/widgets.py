@@ -1,6 +1,4 @@
-import django
 from django.forms.widgets import ClearableFileInput, HiddenInput, MultiWidget, Select
-from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 
 CENTERPOINT_CHOICES = (
