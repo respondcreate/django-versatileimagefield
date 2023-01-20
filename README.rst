@@ -32,12 +32,11 @@ Compatibility
 
 - `Django <https://www.djangoproject.com/>`_:
 
-  - 2.0.x
-  - 2.1.x
-  - 2.2.x
   - 3.0.x
   - 3.1.x
   - 3.2.x
+  - 4.0.x
+  - 4.1.x
 
 **NOTE**: Python 3.6 does not have support for Django <= 1.x.
 
@@ -51,8 +50,6 @@ Compatibility
 
 - `Django REST Framework <http://www.django-rest-framework.org/>`_:
 
-  - 3.9.x
-  - 3.10.x
   - 3.11.x
   - 3.12.x
 

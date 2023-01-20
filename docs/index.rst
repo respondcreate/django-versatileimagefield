@@ -42,6 +42,8 @@ Compatibility
   - 3.0.x
   - 3.1.x
   - 3.2.x
+  - 4.0.x
+  - 4.1.x
 
 - `Pillow <https://pillow.readthedocs.io/en/latest/index.html>`_ >=2.4.0
 
