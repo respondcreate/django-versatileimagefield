@@ -421,7 +421,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         response = self.client.get(self.admin_url)
         self.assertEqual(response.status_code, 200)
         # Test that javascript loads correctly
-        if DJANGO_VERSION[0] >= 3 and DJANGO_VERSION[1] >= 1:
+        if DJANGO_VERSION >= (3, 1):
             expected_response = '<script src="/static/versatileimagefield/js/versatileimagefield.js"></script>'
         else:
             expected_response = '<script type="text/javascript" src="/static/versatileimagefield/js/versatileimagefield.js"></script>'
