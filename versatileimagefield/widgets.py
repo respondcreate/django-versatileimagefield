@@ -18,7 +18,6 @@ CENTERPOINT_CHOICES = (
 
 class ClearableFileInputWithImagePreview(ClearableFileInput):
 
-    has_template_widget_rendering = True
     template_name = 'versatileimagefield/forms/widgets/versatile_image.html'
 
     def get_hidden_field_id(self, name):
@@ -36,20 +35,6 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
     def get_point_stage_id(self, name):
         return name + '_point-stage'
 
-    def render(self, name, value, attrs=None, renderer=None):
-        """
-        Render the widget as an HTML string.
-
-        Overridden here to support Django < 1.11.
-        """
-        if self.has_template_widget_rendering:
-            return super(ClearableFileInputWithImagePreview, self).render(
-                name, value, attrs=attrs, renderer=renderer
-            )
-        else:  # pragma: no cover
-            context = self.get_context(name, value, attrs)
-            return render_to_string(self.template_name, context)
-
     def get_sized_url(self, value):
         """Do not fail completely on invalid images"""
         try:
@@ -63,11 +48,7 @@ class ClearableFileInputWithImagePreview(ClearableFileInput):
 
     def get_context(self, name, value, attrs):
         """Get the context to render this widget with."""
-        # Initialize widget context.
-        context = {}
-
-        if self.has_template_widget_rendering:
-            context = super(ClearableFileInputWithImagePreview, self).get_context(name, value, attrs)
+        context = super(ClearableFileInputWithImagePreview, self).get_context(name, value, attrs)
 
         # It seems Django 1.11's ClearableFileInput doesn't add everything to the 'widget' key, so we can't use it
         # in MultiWidget. Add it manually here.
