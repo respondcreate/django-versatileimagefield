@@ -51,6 +51,8 @@ Compatibility
 
   - 3.11.x
   - 3.12.x
+  - 3.13.x
+  - 3.14.x
 
 Code
 ====
