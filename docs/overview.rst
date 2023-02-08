@@ -151,7 +151,7 @@ Flexible in development, light-weight in production
 Fully Tested & Python 3 Ready
 -----------------------------
 
-``django-versatileimagefield`` is a rock solid, `fully-tested <https://coveralls.io/r/WGBH/django-versatileimagefield>`_ Django app that is compatible with Python 3.6 thru 3.9 and works with Django 2.0.x thru 3.2.x
+``django-versatileimagefield`` is a rock solid, `fully-tested <https://coveralls.io/r/WGBH/django-versatileimagefield>`_ Django app that is compatible with Python 3.6 thru 3.9 and works with Django 3.0.x thru 4.1.x
 
 Get Started
 -----------

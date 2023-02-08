@@ -421,7 +421,7 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
         response = self.client.get(self.admin_url)
         self.assertEqual(response.status_code, 200)
         # Test that javascript loads correctly
-        if DJANGO_VERSION[0] >= 3 and DJANGO_VERSION[1] >= 1:
+        if DJANGO_VERSION >= (3, 1):
             expected_response = '<script src="/static/versatileimagefield/js/versatileimagefield.js"></script>'
         else:
             expected_response = '<script type="text/javascript" src="/static/versatileimagefield/js/versatileimagefield.js"></script>'
@@ -1081,28 +1081,6 @@ class VersatileImageFieldTestCase(VersatileImageFieldBaseTestCase):
 
         instance.image.delete(save=False)
 
-    @skipIf(django.VERSION >= (2, 2), "Not applicable for Django>=2.2")
-    def test_webp_wrong_dimensions(self):
-        """Test WebP image dimensions behavior on Django<2.2"""
-        with self.assertRaisesMessage(RuntimeError, "could not create decoder object"):
-            VersatileImageTestModel.objects.create(
-                img_type='webp-no-dimensions',
-                image="python-logo.webp",
-                width=0,
-                height=0
-            )
-
-        try:
-            VersatileImageTestModel.objects.create(
-                img_type='webp-with-dimensions',
-                image="python-logo.webp",
-                width=580,
-                height=164
-            )
-        except RuntimeError as e:
-            self.fail("ImageField raised RuntimeError unexpectedly! msg: %s" % e)
-
-    @skipIf(django.VERSION < (2, 2), "Different behavior exists on Django<2.2")
     def test_webp_dimensions_dimensions(self):
         """Test no failures on all WebP image dimensions"""
         try:

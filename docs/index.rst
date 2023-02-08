@@ -39,20 +39,20 @@ Compatibility
 
 - `Django <https://www.djangoproject.com/>`_:
 
-  - 2.0.x
-  - 2.1.x
-  - 2.2.x
   - 3.0.x
   - 3.1.x
   - 3.2.x
+  - 4.0.x
+  - 4.1.x
 
 - `Pillow <https://pillow.readthedocs.io/en/latest/index.html>`_ >=2.4.0
 
 - `Django REST Framework <http://www.django-rest-framework.org/>`_:
 
-  - 3.9.x
-  - 3.10.x
+  - 3.11.x
   - 3.12.x
+  - 3.13.x
+  - 3.14.x
 
 Code
 ====
@@ -78,6 +78,12 @@ Table of Contents
 
 Release Notes
 =============
+3.0
+^^^
+- Removed support for Django < 3.x. Thanks, `@browniebroke <https://github.com/browniebroke>`_!
+- Added support for Django 4.0 & 4.1. Thanks, `@browniebroke <https://github.com/browniebroke>`_!
+- General code clean-up, improved Django REST Framework support and doc updates. Thanks, `@browniebroke <https://github.com/browniebroke>`_!
+
 2.2
 ^^^
 - Added WEBP support for sizers & filters. Thanks, `@ahmedaljazzar <https://github.com/ahmedaljazzar>`_!

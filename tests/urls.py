@@ -1,19 +1,19 @@
 from django.conf import settings
-from django.conf.urls import include, url
+from django.urls import include, path, re_path
 from django.contrib import admin
 
 admin.autodiscover()
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
 ]
 
 if settings.DEBUG:
     urlpatterns = [
-        url(
+        re_path(
             r'^media/(?P<path>.*)$',
             'django.views.static.serve',
             {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}
         ),
-        url(r'', include('django.contrib.staticfiles.urls')),
+        path('', include('django.contrib.staticfiles.urls')),
     ] + urlpatterns

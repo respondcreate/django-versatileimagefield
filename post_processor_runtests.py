@@ -11,8 +11,7 @@ if __name__ == "__main__":
     from django.test.utils import get_runner
     # Run post-processor tests
     os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.post_processor.test_settings'
-    if django.VERSION >= (1, 7):
-        django.setup()
+    django.setup()
     TestRunnerPostProcessor = get_runner(
         settings,
         'tests.post_processor.discover_tests.DiscoverPostProcessorRunner'

@@ -13,30 +13,8 @@ jobs:
       matrix:
         os: [ubuntu-20.04]
         python-version: [python3.9, python3.8]
-        django-version: [django3.2, django3.1, django3.0, django2.2, django2.1, django2.0]
-        drf-version: [drf3.12, drf3.11, drf3.10, drf3.09]
-        exclude:
-         - os: ubuntu-20.04
-           django-version: django3.2
-           drf-version: drf3.10
-         - os: ubuntu-20.04
-           django-version: django3.1
-           drf-version: drf3.10
-         - os: ubuntu-20.04
-           django-version: django3.2
-           drf-version: drf3.09
-         - os: ubuntu-20.04
-           django-version: django3.1
-           drf-version: drf3.09
-         - os: ubuntu-20.04
-           django-version: django3.0
-           drf-version: drf3.09
-         - os: ubuntu-20.04
-           django-version: django2.1
-           drf-version: drf3.12
-         - os: ubuntu-20.04
-           django-version: django2.0
-           drf-version: drf3.12
+        django-version: [django4.0, django3.2, django3.1, django3.0]
+        drf-version: [drf3.14, drf3.13, drf3.12, drf3.11]
     name: ${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.django-version }}-${{ matrix.drf-version }}
     steps:
     - name: "Set job environments"
@@ -66,7 +44,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install --upgrade tox tox-gh-actions testfixtures
+        python -m pip install --upgrade 'tox>=3,<4' tox-gh-actions testfixtures
     - name: Tox tests
       run: |
         tox -e $TOXENV
@@ -89,10 +67,10 @@ jobs:
     needs: run-tests
     steps:
     - uses: actions/checkout@master
-    - name: Set up Python 3.7
+    - name: Set up Python 3.9
       uses: actions/setup-python@v1
       with:
-        python-version: 3.7
+        python-version: 3.9
     - name: Install pypa/build
       run: >-
         python -m
