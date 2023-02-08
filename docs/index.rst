@@ -78,6 +78,12 @@ Table of Contents
 
 Release Notes
 =============
+3.0
+^^^
+- Removed support for Django < 3.x. Thanks, `@browniebroke <https://github.com/browniebroke>`_!
+- Added support for Django 4.0 & 4.1. Thanks, `@browniebroke <https://github.com/browniebroke>`_!
+- General code clean-up, improved Django REST Framework support and doc updates. Thanks, `@browniebroke <https://github.com/browniebroke>`_!
+
 2.2
 ^^^
 - Added WEBP support for sizers & filters. Thanks, `@ahmedaljazzar <https://github.com/ahmedaljazzar>`_!

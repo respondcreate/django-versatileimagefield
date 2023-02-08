@@ -38,15 +38,15 @@ Compatibility
   - 4.0.x
   - 4.1.x
 
-**NOTE**: Python 3.6 does not have support for Django <= 1.x.
-
 **NOTE**: The 1.4 release dropped support for Django 1.5.x & 1.6.x.
 
 **NOTE**: The 1.7 release dropped support for Django 1.7.x.
 
 **NOTE**: The 2.1 release dropped support for Django 1.9.x.
 
-- `Pillow <https://pillow.readthedocs.io/en/latest/index.html>`_ >= 2.4.0
+**NOTE**: The 3.0 release dropped support for Django 2.x.
+
+- `Pillow <https://pillow.readthedocs.io/en/latest/index.html>`_ >= 6.2.0
 
 - `Django REST Framework <http://www.django-rest-framework.org/>`_:
 
