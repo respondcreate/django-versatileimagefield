@@ -37,6 +37,7 @@ Compatibility
   - 3.2.x
   - 4.0.x
   - 4.1.x
+  - 5.0.x
 
 **NOTE**: The 1.4 release dropped support for Django 1.5.x & 1.6.x.
 

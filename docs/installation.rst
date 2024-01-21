@@ -23,6 +23,7 @@ Django Compatibility
 -  3.2.x
 -  4.0.x
 -  4.1.x
+-  5.0.x
 
 Dependencies
 ------------

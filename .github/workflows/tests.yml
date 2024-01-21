@@ -3,7 +3,13 @@ name: Run Tests, Evaluate Coverage, Package & Release
 
 on: 
   push: {}
-  pull_request: {}
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+    branches:
+      - master
   pull_request_target:
     types:
       - opened
@@ -83,7 +89,7 @@ jobs:
         parallel-finished: true
   publish-to-pypi:
     name: Build and publish Python 🐍 distributions 📦 to PyPI and TestPyPI
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     needs: run-tests
     steps:
     - uses: actions/checkout@master
