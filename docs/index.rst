@@ -78,6 +78,12 @@ Table of Contents
 
 Release Notes
 =============
+3.1
+^^^
+- If available when resizing, ``Image.Resampling.LANCZOS`` will be used instead of ``Image.ANTIALIAS``. Thanks, `@alexei <https://github.com/alexei>`_!
+- Removed support for djangorestframework < 3.14.x.
+- Added support for Django 5.0.
+
 3.0
 ^^^
 - Removed support for Django < 3.x. Thanks, `@browniebroke <https://github.com/browniebroke>`_!
