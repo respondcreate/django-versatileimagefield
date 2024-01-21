@@ -18,6 +18,7 @@ from .settings import (
 # https://infohost.nmt.edu/tcc/help/pubs/pil/formats.html
 # {mime type: PIL Identifier}
 MIME_TYPE_TO_PIL_IDENTIFIER = {
+    'image/x-ms-bmp': 'BMP',
     'image/bmp': 'BMP',
     'image/dcx': 'DCX',
     'image/eps': 'eps',
