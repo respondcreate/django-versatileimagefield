@@ -77,7 +77,7 @@ For an example, let's take a look at the ``thumbnail`` Sizer (``versatileimagefi
             imagefile = BytesIO()
             image.thumbnail(
                 (width, height),
-                Image.ANTIALIAS
+                Image.Resampling.LANCZOS
             )
             image.save(
                 imagefile,
@@ -311,7 +311,7 @@ is registered (see the highlighted lines in the following code block for the rel
             imagefile = BytesIO()
             image.thumbnail(
                 (width, height),
-                Image.ANTIALIAS
+                Image.Resampling.LANCZOS
             )
             image.save(
                 imagefile,
