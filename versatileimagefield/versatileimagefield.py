@@ -7,6 +7,12 @@ from .datastructures import FilteredImage, SizedImage
 from .registry import versatileimagefield_registry
 
 
+try:
+    ANTIALIAS = Image.Resampling.LANCZOS
+except AttributeError:
+    ANTIALIAS = Image.ANTIALIAS  # deprecated in 9.1.0 and removed in 10.0.0
+
+
 class CroppedImage(SizedImage):
     """
     A SizedImage subclass that creates a 'cropped' image.
@@ -115,7 +121,7 @@ class CroppedImage(SizedImage):
         # (as determined by `width`x`height`)
         return cropped_image.resize(
             (width, height),
-            Image.ANTIALIAS
+            ANTIALIAS
         )
 
     def process_image(self, image, image_format, save_kwargs,
@@ -168,7 +174,7 @@ class ThumbnailImage(SizedImage):
         imagefile = BytesIO()
         image.thumbnail(
             (width, height),
-            Image.ANTIALIAS
+            ANTIALIAS
         )
         image.save(
             imagefile,
