@@ -1,7 +1,16 @@
 name: Run Tests, Evaluate Coverage, Package & Release
 
-on: [push, pull_request]
 
+on: 
+  push: {}
+  pull_request: {}
+  pull_request_target:
+    types:
+      - opened
+      - reopened
+      - synchronize
+    branches:
+      - master
 jobs:
   run-tests:
     env:
@@ -36,7 +45,18 @@ jobs:
          sudo apt-get install -y build-essential
          echo "Installing python Pillow library dependencies"
          sudo apt-get install -y libraqm0 libfreetype6-dev libfribidi-dev libimagequant-dev libjpeg-dev liblcms2-dev libopenjp2-7-dev libtiff5-dev libwebp-dev libxcb1-dev
-    - uses: actions/checkout@v2
+    - name: Checkout code (Push)
+      uses: actions/checkout@v4
+      if: github.event_name == 'push'
+    - name: Checkout code (Pull Request)
+      uses: actions/checkout@v4
+      if: github.event_name == 'pull_request_target' || github.event_name == 'pull_request'
+      with:
+        # Assume PRs are less than 50 commits
+        ref: ${{ github.event.pull_request.head.ref }}
+        repository: ${{ github.event.pull_request.head.repo.full_name }}
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 50
     - name: Set up Python "${{ env.PYTHON_V }}"
       uses: actions/setup-python@v2
       with:
